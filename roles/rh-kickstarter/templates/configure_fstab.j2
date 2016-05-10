@@ -1,0 +1,6 @@
+#!/bin/bash
+grep -v "/var/www/html/{{ tftp_file }}" /etc/fstab > /tmp/fstab
+mv /tmp/fstab /etc/fstab
+echo "/var/www/html/iso/{{ tftp_file }}-x86_64-dvd.iso /var/www/html/{{ tftp_file }} iso9660 loop,ro,auto,context=unconfined_u:object_r:httpd_sys_content_t:s0 0 0" >> /etc/fstab
+mount -a
+rm -f $0
