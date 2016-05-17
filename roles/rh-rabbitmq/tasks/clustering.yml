@@ -76,7 +76,7 @@
 
 - name: Finalize the setup by creating file /etc/rabbitmq/clustered
   copy:
-    content="Cluster created: {{ ansible_date_time.date }}"
+    content="Cluster created:{{ ansible_date_time.date }}"
     dest=/etc/rabbitmq/clustered
     owner=rabbitmq
     group=rabbitmq

@@ -23,3 +23,7 @@
 - include: vhosts.yml
 - include: policies.yml
 - include: users.yml
+
+- name: restart all rabbimq servers
+  command: systemctl restart rabbitmq-server
+
