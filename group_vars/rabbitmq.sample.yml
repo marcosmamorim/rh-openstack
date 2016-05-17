@@ -1,0 +1,144 @@
+###############################################
+# RabbitMQ
+
+# OpenStack RabbitMQ users password
+rabbitmq_glance_password: gl4nc3p4ssw0rd
+rabbitmq_nova_password: n0v4p4ssw0rd
+rabbitmq_cinder_password: cind3rp4ssw0rd
+rabbitmq_ceilometer_password: ceil0m3terp4ssw0rd
+rabbitmq_heat_password: he4tp4ssw0rd
+rabbitmq_keystone_password: keyst0n3p4ssw0rd
+rabbitmq_trove_password: tr0vep4ssw0rd
+rabbitmq_admin_password: vW3Ap9-Y5?fLk9Y=
+
+# SSL
+rabbitmq_ssl: True
+rabbitmq_cacert_file: etc/rabbitmq/ssl/cacert.pem
+rabbitmq_cert_file: etc/rabbitmq/ssl/cert.pem
+rabbitmq_key_file: etc/rabbitmq/ssl/key.pem
+rabbitmq_ssl_bind_address: 0.0.0.0
+rabbitmq_ssl_port: 5672
+
+rabbitmq_bind_address: 0.0.0.0
+rabbitmq_port: 5671
+
+# Memory
+rabbitmq_vm_memory: 0.4
+rabbitmq_vm_memory_ratio: 0.5
+rabbitmq_mem_relative: 1.0
+rabbitmq_heartbeat: 10
+rabbitmq_fd_limits: 8192
+
+rabbitmq_env_vars: False
+rabbitmq_conf_env: []
+
+# Firewall
+fw_epmd: 4369/tcp
+fw_erlang_distrib: 25672/tcp
+fw_rabbitmq: 5672/tcp
+fw_rabbitmq_ssl: 5671/tcp
+fw_management: 15672/tcp
+
+# WARNING This flag remove current cluster configuration
+rabbitmq_reset_cluster: False
+
+# CLUSTER
+rabbitmq_clustering: true
+rabbitmq_erlang_cookie: 'AbCd3rl4ngC00k13WxYz'
+rabbitmq_master: rabbit-01
+rabbitmq_cluster_name: rabbit-01
+
+# Plugins
+rabbitmq_management_plugin: true
+
+# Enable firewalld
+rabbitmq_firewalld: False
+
+# VHOSTS
+rabbitmq_vhost_list:
+  - name: glance
+  - name: nova
+  - name: cinder
+  - name: ceilometer
+  - name: heat
+  - name: keystone
+  - name: trove
+
+# POLICIES
+rabbitmq_policies_list:
+  - name: HA-Glance
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: glance
+  - name: HA-Nova
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: nova
+  - name: HA-Cinder
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: cinder
+  - name: HA-Ceilometer
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: ceilometer
+  - name: HA-Heat
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: heat
+  - name: HA-Keystone
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: keystone
+  - name: HA-Trove
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: trove
+  - name: HA
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: /
+
+# USERS
+rabbitmq_users_list:
+  - vhost: glance
+    user: glance
+    password: "{{ rabbitmq_glance_password | default('gl4nc3p4ssw0rd') }}"
+  - vhost: nova
+    user: nova
+    password: "{{ rabbitmq_nova_password | default('n0v4p4ssw0rd') }}"
+  - vhost: cinder
+    user: cinder
+    password: "{{ rabbitmq_cinder_password | default('cind3rp4ssw0rd') }}"
+  - vhost: ceilometer
+    user: ceilometer
+    password: "{{ rabbitmq_ceilometer_password | default('ceil0m3terp4ssw0rd') }}"
+  - vhost: heat
+    user: heat
+    password: "{{ rabbitmq_heat_password | default('he4tp4ssw0rd') }}"
+  - vhost: keystone
+    user: keystone
+    password: "{{ rabbitmq_keystone_password | default('keyst0n3p4ssw0rd') }}"
+  - vhost: trove
+    user: trove
+    password: "{{ rabbitmq_trove_password | default('tr0vep4ssw0rd') }}"
+  - vhost: /
+    user: admin
+    password: "{{ rabbitmq_admin_password }}"
+    tags:
+    - administrator
+
+
+# TODO: Verificar o uso
+rabbitmq_hosts:
+  - rabbit-01
+  - rabbit-02
+  - rabbit-03
