@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: Marcos Amorim
+  description: Deploy a RabbitMQ cluster or a single node, supports firewalld and SSL. Based on Gaetan Trellu (goldyfruit)
+  company: Red Hat
+  license: license (Apache)
+  min_ansible_version: 1.9
+  platforms:
+  - name: EL
+    versions:
+    - 7
+  categories:
+  - cloud
+  - clustering
+  - system
+  - openstack
+dependencies: []
