@@ -1,0 +1,27 @@
+---
+- name: MySQL/MariaDB/Galera firewalld rules
+  firewalld:
+    port={{ item }}
+    permanent=true
+    state=enabled
+    immediate=true
+  with_items:
+    - "{{ fw_galera }}/tcp"
+    - "{{ fw_galera }}/udp"
+    - "{{ fw_mysql }}/tcp"
+
+- name: IST replication firewalld rule
+  firewalld:
+    port={{ fw_mysql_ist }}/tcp
+    permanent=true
+    state=enabled
+    immediate=true
+  when: not galera_sst_method
+
+- name: SST replication firewalld rule
+  firewalld:
+    port={{ fw_mysql_sst }}/tcp
+    permanent=true
+    state=enabled
+    immediate=true
+  when: galera_sst_method

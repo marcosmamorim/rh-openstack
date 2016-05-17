@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  author: Marcos Amorim
+  description: Deploy a Galera 3 cluster with MariaDB 10.1, supports SELinux, firewalld, Pacemaker. Based on Gaetan Trellu (goldyfruit).
+  company: Red Hat
+  license: Apache
+  min_ansible_version: 2.0
+  platforms:
+  - name: RHEL
+    versions:
+    - 7
+  galaxy_tags:
+    - cloud
+    - clustering
+    - database
+    - database:sql
+    - openstack
+
+dependencies: []

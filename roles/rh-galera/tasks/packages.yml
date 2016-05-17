@@ -1,0 +1,23 @@
+---
+
+- name: Install yum-utils package (RedHat)
+  package:
+    name=yum-utils
+    state=latest
+    update_cache=yes
+
+- name: Enable extras repository (RedHat)
+  command: yum-config-manager --enable rhel-7-server-extras-rpms
+
+- name: Installing MariaDB Galera packages
+  yum:
+    name={{ item }}
+    state=latest
+  with_items:
+    - mariadb-galera-server
+    - socat
+    - MySQL-python
+    - galera
+    - policycoreutils-python
+    - checkpolicy
+    - xinetd

@@ -1,0 +1,58 @@
+---
+# clustered variable is exported and will be used as a condition
+- name: Checking if a RabbitMQ cluster already exists
+  stat:
+    path=/etc/mysql_clustered
+  register: galera_clustered
+
+- include: packages.yml
+  tags:
+    - galera
+    - galera-repo
+  when: galera_clustered.stat.exists != True
+
+- include: reset.yml
+  when: galera_reset_cluster is defined and
+        galera_reset_cluster and
+        galera_clustered.stat.exists != True
+  tags:
+    - galera
+    - galera-reset
+
+- include: firewall.yml
+  when: galera_firewalld is defined and
+        galera_firewalld and
+        galera_clustered.stat.exists != True
+  tags:
+    - galera
+    - galera-firewall
+
+- include: configuration.yml
+  tags:
+    - galera
+    - galera-config
+  when: galera_clustered.stat.exists != True
+
+- include: secure.yml
+  tags:
+    - galera
+    - galera-secure
+  when: galera_clustered.stat.exists != True
+
+- include: user.yml
+  tags:
+    - galera
+    - galera-users
+  when: galera_clustered.stat.exists != True
+
+- include: bootstrap.yml
+  tags:
+    - galera
+    - galera-bootstrap
+  when: galera_clustered.stat.exists != True
+
+- include: databases.yml
+  tags:
+    - galera
+    - galera-databases
+  when: galera_clustered.stat.exists != True

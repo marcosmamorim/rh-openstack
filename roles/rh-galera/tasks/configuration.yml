@@ -1,0 +1,96 @@
+---
+
+- include: selinux.yml
+  when: galera_selinux is defined and
+        galera_selinux == true
+  tags:
+    - galera
+    - galera-selinux
+
+- name: Set root password for localhost
+  mysql_user:
+    name=root
+    password={{ mariadb_root_password }}
+    host=localhost
+    state=present
+  when: inventory_hostname == galera_master
+
+- name: Creating the /root/.my.cnf file
+  ini_file: >
+    dest=/root/.my.cnf
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=root
+    owner=root
+    mode=0600
+  with_items: "{{ mycnf_options }}"
+
+- name: Fix correct wrep cluster address on first node
+  ini_file: >
+    dest=/etc/my.cnf.d/server.cnf
+    section='galera'
+    option='wsrep_cluster_address'
+    value='gcomm://'
+  when: inventory_hostname == galera_master
+
+- name: Fix correct wrep cluster address
+  ini_file: >
+    dest=/etc/my.cnf.d/server.cnf
+    section="galera"
+    option="wsrep_cluster_address"
+    value="gcomm://{{ ','.join(galera_cluster_nodes) }}"
+  when: inventory_hostname != galera_master
+
+
+- name: Deleting galera config file
+  file:
+    path=/etc/my.cnf.d/galera.cnf
+    state=absent
+
+- name: Configuring Galera cluster (RedHat family)
+  ini_file: >
+    dest=/etc/my.cnf.d/server.cnf
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=root
+    owner=root
+    mode=0600
+  with_items: "{{ galera_config_options }}"
+
+- name: Enabling MariaDB service
+  command: systemctl enable mariadb
+
+- name: Starting MariaDB service
+  command: systemctl start mariadb
+  when: inventory_hostname == galera_master
+
+- name: Removing wap-wsp* services from /etc/services
+  lineinfile:
+    dest=/etc/services
+    state=absent
+    regexp="^wap-wsp         {{ galera_xinet_port}}"
+
+- name: Adding mysqlchk /etc/services
+  lineinfile:
+    dest=/etc/services
+    state=present
+    regexp="^mysqlchk"
+    insertafter="sun-as-jpda     9191/udp"
+    line="mysqlchk        {{ galera_xinet_port }}/tcp                \# Galera Clustercheck"
+
+- name: Adding galera-status script in /usr/bin/
+  copy:
+    src=usr/bin/galera-status
+    dest=/usr/bin/galera-status
+    mode=0755
+
+- name: Finalize the setup by creating file /etc/mysql_clustered
+  copy:
+    content="Cluster created:{{ ansible_date_time.time }}"
+    dest=/etc/mysql_clustered
+    owner=mysql
+    group=mysql

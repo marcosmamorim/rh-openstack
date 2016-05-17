@@ -1,0 +1,17 @@
+---
+# file: roles/galera/tasks/bootstrap.yml
+- name: Restarting MariaDB service on master node
+  command: systemctl restart {{ mariadb_svc_name }}
+  when: inventory_hostname == galera_master
+
+- name: Syncing other nodes to the master
+  command: systemctl restart {{ mariadb_svc_name }}
+  when: inventory_hostname != galera_master
+
+- name: Set gcomm:// on the master node
+  lineinfile:
+    dest=/etc/{{ mariadb_config }}
+    state=present
+    regexp='^wsrep_cluster_address='
+    line='wsrep_cluster_address=gcomm://{{ ",".join(galera_cluster_nodes) }}'
+  when: inventory_hostname == galera_master
