@@ -1,23 +1,46 @@
 ---
 # clustered variable is exported and will be used as a condition
+- name: Force delete a Galera cluster if already exists
+  file:
+    path=/etc/mysql_clustered
+    state=absent
+  when: galera_reset_cluster is defined and
+        galera_reset_cluster
+  tags:
+    - galera
+    - galera-reset
+
+- name: Checking if a Galera cluster already exists
+  stat:
+    path=/etc/mysql_clustered
+  register: galera_clustered
+
 - name: Checking if a RabbitMQ cluster already exists
   stat:
     path=/etc/mysql_clustered
   register: galera_clustered
 
-- include: packages.yml
-  tags:
-    - galera
-    - galera-repo
-  when: galera_clustered.stat.exists != True
+#- include: packages.yml
+#  tags:
+#    - galera
+#    - galera-repo
+#  when: galera_clustered.stat.exists != True
 
 - include: reset.yml
   when: galera_reset_cluster is defined and
-        galera_reset_cluster and
-        galera_clustered.stat.exists != True
+        galera_reset_cluster
   tags:
     - galera
     - galera-reset
+
+- name: Fix mariadb permissions
+  file:
+    dest=/var/log/mariadb/mariadb.log
+    owner=mysql
+    group=mysql
+    state=file
+  tags:
+    - log-files
 
 - include: firewall.yml
   when: galera_firewalld is defined and
@@ -26,6 +49,10 @@
   tags:
     - galera
     - galera-firewall
+
+- name: Stop firewalld
+  command: systemctl stop firewalld
+  when: not galera_firewalld
 
 - include: configuration.yml
   tags:
@@ -56,3 +83,4 @@
     - galera
     - galera-databases
   when: galera_clustered.stat.exists != True
+

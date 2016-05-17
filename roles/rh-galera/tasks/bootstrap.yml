@@ -5,7 +5,7 @@
   when: inventory_hostname == galera_master
 
 - name: Syncing other nodes to the master
-  command: systemctl restart {{ mariadb_svc_name }}
+  command: systemctl restart mariadb
   when: inventory_hostname != galera_master
 
 - name: Set gcomm:// on the master node
@@ -15,3 +15,4 @@
     regexp='^wsrep_cluster_address='
     line='wsrep_cluster_address=gcomm://{{ ",".join(galera_cluster_nodes) }}'
   when: inventory_hostname == galera_master
+

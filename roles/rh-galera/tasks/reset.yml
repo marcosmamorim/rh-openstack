@@ -32,3 +32,8 @@
   file:
     path=/root/.my.cnf
     state=absent
+
+- name: Deleting Cluster MariaDB
+  file:
+    path=/etc/my.cnf.d/server.cnf
+    state=absent

@@ -1,4 +1,4 @@
 ---
 # file: roles/galera/handlers/main.yml
-- name: Restart MariaDB
-  command: systemctl restart {{ mariadb_svc_name }}
+- name: restart mariadb
+  command: systemctl restart mariadb

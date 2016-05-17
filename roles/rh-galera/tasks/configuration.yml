@@ -1,4 +1,12 @@
 ---
+- name: Deleting galera config file
+  file:
+    path=/etc/my.cnf.d/galera.cnf
+    state=absent
+
+- name: Starting MariaDB service
+  command: systemctl restart mariadb
+  when: inventory_hostname == galera_master
 
 - include: selinux.yml
   when: galera_selinux is defined and
@@ -15,6 +23,7 @@
     state=present
   when: inventory_hostname == galera_master
 
+
 - name: Creating the /root/.my.cnf file
   ini_file: >
     dest=/root/.my.cnf
@@ -27,46 +36,22 @@
     mode=0600
   with_items: "{{ mycnf_options }}"
 
-- name: Fix correct wrep cluster address on first node
-  ini_file: >
-    dest=/etc/my.cnf.d/server.cnf
-    section='galera'
-    option='wsrep_cluster_address'
-    value='gcomm://'
-  when: inventory_hostname == galera_master
-
-- name: Fix correct wrep cluster address
-  ini_file: >
-    dest=/etc/my.cnf.d/server.cnf
-    section="galera"
-    option="wsrep_cluster_address"
-    value="gcomm://{{ ','.join(galera_cluster_nodes) }}"
-  when: inventory_hostname != galera_master
-
-
-- name: Deleting galera config file
-  file:
-    path=/etc/my.cnf.d/galera.cnf
-    state=absent
-
 - name: Configuring Galera cluster (RedHat family)
-  ini_file: >
+  template:
+    src=etc/my.cnf.d/server.cnf.j2
     dest=/etc/my.cnf.d/server.cnf
-    section={{ item.section }}
-    option={{ item.option }}
-    value={{ item.value }}
-    state={{item.state| default('present')}}
-    group=root
-    owner=root
-    mode=0600
-  with_items: "{{ galera_config_options }}"
 
-- name: Enabling MariaDB service
-  command: systemctl enable mariadb
-
-- name: Starting MariaDB service
-  command: systemctl start mariadb
-  when: inventory_hostname == galera_master
+#- name: Configuring Galera cluster (RedHat family)
+#  ini_file: >
+#    dest=/etc/my.cnf.d/server.cnf
+#    section={{ item.section }}
+#    option={{ item.option }}
+#    value={{ item.value }}
+#    state={{item.state| default('present')}}
+#    group=root
+#    owner=root
+#    mode=0644
+#  with_items: "{{ galera_config_options }}"
 
 - name: Removing wap-wsp* services from /etc/services
   lineinfile:
@@ -88,9 +73,29 @@
     dest=/usr/bin/galera-status
     mode=0755
 
+
+- name: Fix correct wrep cluster address
+  ini_file: >
+    dest=/etc/my.cnf.d/server.cnf
+    section="galera"
+    option="wsrep_cluster_address"
+    value="gcomm://{{ ','.join(galera_cluster_nodes) }}"
+  when: inventory_hostname != galera_master
+
+- name: Enabling MariaDB service
+  command: systemctl enable mariadb
+#
+#
+#
+#- name: Starting MariaDB service
+#  command: systemctl start mariadb
+#  when: inventory_hostname != galera_master
+
 - name: Finalize the setup by creating file /etc/mysql_clustered
   copy:
     content="Cluster created:{{ ansible_date_time.time }}"
     dest=/etc/mysql_clustered
     owner=mysql
     group=mysql
+
+

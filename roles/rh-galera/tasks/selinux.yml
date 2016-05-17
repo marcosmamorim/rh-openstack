@@ -5,12 +5,14 @@
     src=selinux/galera_cluster.te
     dest=/tmp/
 
-- command:
-    /usr/bin/checkmodule -M -m -o galera_cluster.mod /tmp/galera_cluster.te
-- command:
-    /usr/bin/semodule_package -m galera_cluster.mod -o /tmp/galera_cluster.pp
-- command:
-    /usr/sbin/semodule -i /tmp/galera_cluster.pp
+- name: check SELinux module galera_cluster
+  command: /usr/bin/checkmodule -M -m -o galera_cluster.mod /tmp/galera_cluster.te
+
+- name: check SELinux package galera_cluster
+  command: /usr/bin/semodule_package -m galera_cluster.mod -o /tmp/galera_cluster.pp
+
+- name: activate SELinux module galera_cluster
+  command: /usr/sbin/semodule -i /tmp/galera_cluster.pp
 
 - seport:
     ports={{ mariadb_port }},{{ fw_mysql_ist }},{{ fw_mysql_sst }},{{ fw_galera }},{{ fw_xinetd }}
