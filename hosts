@@ -1,0 +1,13 @@
+[rabbitmq]
+rabbit-01 ansible_ssh_host=10.211.55.9
+rabbit-02 ansible_ssh_host=10.211.55.10
+rabbit-03 ansible_ssh_host=10.211.55.11
+
+
+[kickstarter]
+rh-kickstarter ansible_ssh_host=172.16.0.1 primary_if=eth0
+
+[rh-full:children]
+rabbitmq
+mariadb
+kickstarter
