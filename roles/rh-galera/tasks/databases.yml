@@ -16,3 +16,4 @@
     host: "{{item.host | default('localhost')}}"
   with_items: "{{ mariadb_users }}"
   when: mariadb_users|length > 0 and inventory_hostname == galera_master
+

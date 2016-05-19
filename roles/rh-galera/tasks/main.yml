@@ -20,11 +20,11 @@
     path=/etc/mysql_clustered
   register: galera_clustered
 
-#- include: packages.yml
-#  tags:
-#    - galera
-#    - galera-repo
-#  when: galera_clustered.stat.exists != True
+- include: packages.yml
+  tags:
+    - galera
+    - galera-repo
+  when: galera_clustered.stat.exists != True
 
 - include: reset.yml
   when: galera_reset_cluster is defined and

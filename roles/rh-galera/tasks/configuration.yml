@@ -8,6 +8,9 @@
   command: systemctl restart mariadb
   when: inventory_hostname == galera_master
 
+- name: Enable MariaDB service
+  command: systemctl enable mariadb
+
 - include: selinux.yml
   when: galera_selinux is defined and
         galera_selinux == true
