@@ -1,0 +1,18 @@
+---
+# Setup/install tasks.
+- name: Install Memcached.
+  yum: name=memcached state=installed
+  when: ansible_os_family == 'RedHat'
+
+# Configure Memcached.
+- name: Copy Memcached configuration.
+  template:
+    src: memcached.conf.j2
+    dest: "{{ memcached_config_file }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart memcached
+
+- name: Ensure Memcached is set to run on startup.
+  command: systemctl enable memcached
