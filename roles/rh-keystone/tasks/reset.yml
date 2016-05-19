@@ -1,0 +1,35 @@
+---
+- name: remove WSGI keystone configuration
+  file: state=absent path=/etc/http/conf.d/wsgi-keystone.conf
+
+- name: remove WSGI configuration dir
+  file: state=absent path={{ keystone_cgibin_dir }}
+
+#- name: Remove keystone configuration file
+#  file: state=absent path={{ item }}
+#  with_items:
+#    - "/etc/keystone/keystone.conf"
+#    - "policy.json"
+
+- name: Removing keystone default database
+  mysql_db:
+    name: keystone
+    state: absent
+  run_once: True
+
+- name: Restart httpd
+  command: systemctl restart httpd
+
+- name: Removing keystone database
+  mysql_db:
+    name: keystone
+    state: present
+  run_once: True
+
+- name: Make sure the keystone database is present
+  mysql_db:
+    name: 'keystone'
+    collation: 'utf8_general_ci'
+    encoding: "utf8"
+    state: present
+

@@ -1,0 +1,35 @@
+---
+
+- meta: flush_handlers
+
+- name: WSGI Tell apache to use the hostname as the servername
+  lineinfile:
+    dest={{ webserver_conf_path }}
+    line="ServerName {{ keystone_hostname }}"
+
+- name: WSGI Create the WSGI Keystone configuration file
+  template:
+    src=wsgi-keystone.conf
+    dest={{ webserver_new_conf_dir_path }}/wsgi-keystone.conf
+
+- name: WSGI Setup directory structure
+  file:
+    path={{ keystone_cgibin_dir }}
+    state=directory
+
+- name: WSGI link the components from the installed path
+  command: cp -f {{ keystone_wsgi_path }} {{ keystone_cgibin_dir }}/{{ item }}
+  with_items:
+    - "{{ keystone_wsgi_main_name }}"
+    - "{{ keystone_wsgi_admin_name }}"
+
+- name: WSGI Fix ownership and permissions
+  file:
+    path={{ keystone_cgibin_dir }}
+    owner=keystone
+    group=keystone
+    mode=0755
+    recurse=yes
+
+- name: set SELinux WSGI directory structute
+  command: restorecon /var/www/cgi-bin
