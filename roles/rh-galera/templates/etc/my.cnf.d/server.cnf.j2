@@ -25,7 +25,7 @@ wsrep_sst_auth={{ galera_sst_user }}:{{ galera_sst_password }}
 {% if inventory_hostname == galera_master %}
 wsrep_cluster_address=gcomm://
 {% else %}
-wsrep_cluster_address=gcomm://{{ ",".join(galera_cluster_nodes) }}
+wsrep_cluster_address=gcomm://{{ ",".join(galera_hosts) }}
 {% endif %}
 wsrep_sst_method={{ galera_sst_method | default('rsync') }}
 wsrep_node_address="{{ galera_node_address | default('127.0.0.1') }}"

@@ -82,7 +82,7 @@
     dest=/etc/my.cnf.d/server.cnf
     section="galera"
     option="wsrep_cluster_address"
-    value="gcomm://{{ ','.join(galera_cluster_nodes) }}"
+    value="gcomm://{{ ','.join(galera_hosts) }}"
   when: inventory_hostname != galera_master
 
 - name: Enabling MariaDB service

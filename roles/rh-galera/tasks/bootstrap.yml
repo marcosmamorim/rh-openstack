@@ -13,6 +13,6 @@
     dest=/etc/{{ mariadb_config }}
     state=present
     regexp='^wsrep_cluster_address='
-    line='wsrep_cluster_address=gcomm://{{ ",".join(galera_cluster_nodes) }}'
+    line='wsrep_cluster_address=gcomm://{{ ",".join(galera_hosts) }}'
   when: inventory_hostname == galera_master
 

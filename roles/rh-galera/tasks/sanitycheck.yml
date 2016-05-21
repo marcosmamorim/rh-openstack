@@ -1,0 +1,21 @@
+---
+
+- name: SANITY CHECK Galera cluster status
+  shell:  galera-status
+  register: cluster_status
+  changed_when: cluster_status.rc != 0
+- debug: var=cluster_status.stdout_lines
+
+- name: SANITY CHECK Galera show databases
+  shell:  mysql -uroot -e "show databases;"
+  register: show_databases
+  changed_when: show_databases.rc != 0
+  when: cluster_status.rc == 0
+- debug: var=show_databases.stdout_lines
+
+- name: SANITY CHECK Galera show users
+  shell:  mysql -uroot -e "SELECT User, Host FROM mysql.user;"
+  register: show_users
+  changed_when: show_users.rc != 0
+  when: cluster_status.rc == 0
+- debug: var=show_users.stdout_lines

@@ -54,7 +54,7 @@ galera_cluster_name: uoi-sql-cluster
 galera_sst_method: xtrabackup-v2
 galera_sst_user: sst-replication
 galera_sst_password: gr34tp4ss0rd
-galera_cluster_nodes:
+galera_hosts:
   - ctrl01
   - ctrl02
   - ctrl03
@@ -128,7 +128,7 @@ galera_clustercheck_user: clustercheck
 galera_clustercheck_password: Y3aH1l0ved2CH3CK
 galera_cluster_name: uoi-sql-cluster
 galera_sst_password: gr34tp4ss0rd
-galera_cluster_nodes:
+galera_hosts:
   - node-1
   - node-2
   - node-3

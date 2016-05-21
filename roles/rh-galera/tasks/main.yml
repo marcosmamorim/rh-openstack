@@ -84,3 +84,8 @@
     - galera-databases
   when: galera_clustered.stat.exists != True
 
+- include: sanitycheck.yml
+  tags:
+    - galera
+    - galera-databases
+  when: galera_clustered.stat.exists != True
