@@ -27,3 +27,6 @@
 - name: restart all rabbimq servers
   command: systemctl restart rabbitmq-server
 
+- include: sanitycheck.yml
+  when: rabbitmq_sanitycheck and
+        rabbitmq_clustering or (clustered.stat.exists != True)
