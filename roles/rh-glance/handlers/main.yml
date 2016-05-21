@@ -1,0 +1,8 @@
+---
+
+- name: restart glance api
+  command: systemctl restart {{ glance_api_service }}
+
+- name: restart glance registry
+  command: systemctl restart {{ glance_registry_service }}
+

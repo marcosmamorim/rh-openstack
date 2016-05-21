@@ -1,0 +1,53 @@
+---
+
+#
+# Copyright (c) 2015 Davide Guerri <davide.guerri@gmail.com>
+#
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+# implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# Glance
+glance_bind_host: 0.0.0.0
+glance_user: glance
+glance_pass: glance_pass_default
+glance_port: 9292
+glance_protocol: http
+glance_log_dir: /var/log/glance
+glance_api_debug: False
+glance_api_verbose: False
+glance_registry_debug: False
+glance_registry_verbose: False
+
+# Keystone
+keystone_admin_port: 35357
+keystone_hostname: localhost
+keystone_port: 5000
+keystone_protocol: http
+
+# Database
+glance_database_url: sqlite:////var/lib/glance/glance.sqlite
+
+# RabbitMQ
+glance_rabbit_userid: rabbit_pass_default
+glance_rabbit_password: rabbit_username_default
+glance_rabbit_virtual_host: /
+glance_rabbit_retry_interval: 1
+glance_rabbit_host: localhost
+glance_rabbit_port: 5672
+glance_rabbit_hosts: "{{ glance_rabbit_host }}:{{ glance_rabbit_port }}"
+glance_rabbit_ha_queues: False
+
+# Misc
+glance_bootstrap: true

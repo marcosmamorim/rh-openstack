@@ -1,0 +1,67 @@
+---
+
+- name: force owner user glance log
+  file:
+    path=/var/log/glance
+    state=directory
+    owner=glance
+    group=glance
+    recurse=yes
+  tags: glance
+
+- name: Configure Glance API
+  ini_file: >
+    dest=/etc/glance/glance-api.conf
+     section={{ item.section }}
+     option={{ item.option }}
+     value={{ item.value }}
+     state={{ item.state |default('present')}}
+     owner=root
+     group=glance
+     mode=0640
+  with_items: "{{ glance_api_options }}"
+  tags:
+    - glance
+    - glance-config
+    - glance-api-config
+
+- name: Configure Glance Registry
+  ini_file: >
+    dest=/etc/glance/glance-registry.conf
+     section={{ item.section }}
+     option={{ item.option }}
+     value={{ item.value }}
+     state={{ item.state |default('present')}}
+     owner=root
+     group=glance
+     mode=0640
+  with_items: "{{ glance_registry_options }}"
+  tags:
+    - glance
+    - glance-config
+    - glance-api-config
+
+- name: Mount NFS server to glance images
+  mount:
+    name={{item.mount_point}}
+    src={{item.server_address}}:{{item.export_mount}}
+    fstype={{item.fstype |default('nfs')}}
+    opts={{item.mount_options}}
+    state={{ item.state |default('mounted')}}
+  with_items: "{{ glance_mount_image }}"
+  when: glance_use_nfs
+  tags:
+    - glance
+    - glance_nfs
+
+- name: Fix permissions to mount point
+  file:
+    path={{ glance_image_dir }}
+    state=directory
+    owner=glance
+    group=glance
+    recurse=yes
+  when: glance_use_nfs
+  tags:
+    - glance
+    - glance_nfs

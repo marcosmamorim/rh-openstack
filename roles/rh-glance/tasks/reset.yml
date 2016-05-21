@@ -1,0 +1,26 @@
+---
+
+- name: stop glance api
+  command: systemctl stop {{ glance_api_service }}
+
+- name: stop glance registry
+  command: systemctl stop {{ glance_registry_service }}
+
+- name: Removing glance default database
+  mysql_db:
+    name: "{{ db_glance_name }}"
+    state: absent
+  run_once: True
+
+- name: Make sure the keystone database is present
+  mysql_db:
+    name: "{{ db_glance_name }}"
+    collation: 'utf8_general_ci'
+    encoding: "utf8"
+    state: present
+
+#- name: remove glance configuration
+#  file: state=absent path=/etc/glance/{{ item }}
+#  with_items:
+#    - "glance-registry.conf"
+#    - "glance-api.conf"
