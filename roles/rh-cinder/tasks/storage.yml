@@ -1,0 +1,49 @@
+---
+
+- name: Configure storage LVM
+  ini_file: >
+    dest=/etc/cinder/cinder.conf
+     section={{ item.section }}
+     option={{ item.option }}
+     value={{ item.value }}
+     state={{item.state| default('present')}}
+  with_items: "{{ cinder_storage_backend }}"
+  when: cinder_storage_backend |length > 0
+  notify: restart cinder volume
+  tags:
+    - cinder
+    - cinder-lvm
+
+
+# TODO: create new method to deploy this
+- name: Create Storage type
+  shell: OS_USERNAME={{ keystone_admin_user }} OS_TENANT_NAME=admin OS_PASSWORD={{ keystone_admin_password }} OS_AUTH_URL=http://10.211.55.12:35357/v2.0/ cinder type-create {{ item.name}}
+  run_once: true
+  ignore_errors: True
+  with_items: cinder_storage_types
+  when: cinder_storage_types |length > 0
+  notify: restart cinder volume
+  tags:
+    - cinder
+    - cinder-lvm
+    - cinder-type
+
+- name: Create storage type spec
+  shell: OS_USERNAME={{ keystone_admin_user }} OS_TENANT_NAME=admin OS_PASSWORD={{ keystone_admin_password }} OS_AUTH_URL=http://10.211.55.12:35357/v2.0/ cinder type-key {{ item.name }} set volume_backend_name={{ item.volume_backend_name}}
+  run_once: true
+  ignore_errors: True
+  with_items: cinder_storage_types
+  when: cinder_storage_types |length > 0
+  notify: restart cinder volume
+  tags:
+    - cinder
+    - cinder-lvm
+    - cinder-type
+
+#- name: Create extra specs
+#  command: cinder type-key lvm set volume_backend_name=LVM
+#  when: cinder_storage_backend |length > 0
+#  tags:
+#    - cinder
+#    - cinder-lvm
+

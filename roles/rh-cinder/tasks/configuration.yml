@@ -1,0 +1,52 @@
+---
+
+- name: Configure Cinder API
+  ini_file: >
+    dest=/etc/cinder/cinder.conf
+     section={{ item.section }}
+     option={{ item.option }}
+     value={{ item.value }}
+     state={{item.state| default('present')}}
+  with_items: "{{ cinder_options }}"
+  tags:
+    - cinder
+    - cinder-deploy
+
+
+#- name: deploy cinder config file
+#  template:
+#    src=cinder.conf.j2
+#    dest=/etc/cinder/cinder.conf
+#    mode=0640
+#    owner=cinder
+#    group=cinder
+#  notify: restart cinder
+#  tags:
+#    - cinder
+#    - cinder-deploy
+
+- name: enable cinder services in systemd
+  command: systemctl enable {{ item }}
+  with_items:
+    - openstack-cinder-api
+    - openstack-cinder-scheduler
+    - openstack-cinder-volume
+  tags: cinder
+
+- name: start cinder services in systemd
+  command: systemctl start {{ item }}
+  with_items:
+    - openstack-cinder-api
+    - openstack-cinder-scheduler
+    - openstack-cinder-volume
+  tags: cinder
+
+- name: audit volume usage crontab
+  cron: minute="0" hour="*" weekday="*"
+        name="Audit cinder volume usage"
+        cron_file="CinderVolumeUsage"
+        user="root"
+        job="PYTHONIOENCODING=utf-8 /usr/bin/cinder-volume-usage-audit"
+  tags:
+    - basics
+    - cinder

@@ -1,0 +1,28 @@
+---
+
+- name: stop cinder api
+  command: systemctl stop {{ cinder_api_service }}
+
+- name: stop cinder scheduler
+  command: systemctl stop {{ cinder_scheduler_service }}
+
+- name: stop cinder volume
+  command: systemctl stop {{ cinder_volume_service }}
+
+- name: Removing cinder default database
+  mysql_db:
+    name: "cinder"
+    state: absent
+  run_once: True
+
+- name: Make sure the cinder database is present
+  mysql_db:
+    name: "cinder"
+    collation: 'utf8_general_ci'
+    encoding: "utf8"
+    state: present
+
+- name: remove cinder configuration
+  file: state=absent path=/etc/cinder/{{ item }}
+  with_items:
+    - "cinder.conf"

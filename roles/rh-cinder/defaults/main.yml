@@ -1,0 +1,60 @@
+---
+
+notification_driver: messagingv2
+rpc_backend: rabbit
+control_exchange: cinder
+
+cinder_osapi_volume_workers: 10
+
+
+cinder_auth_strategy: keystone
+
+cinder_host: localhost
+cinder_api_version: 2
+cinder_port: 8776
+
+enable_v1_api: True
+enable_v2_api: True
+
+default_volume_type: lvm
+enabled_backends: lvm
+
+cinder_database_url: sqlite:////var/lib/cinder/cinder.sqlite
+
+# Keystone
+keystone_admin_port: 35357
+keystone_hostname: localhost
+keystone_port: 5000
+keystone_protocol: http
+
+
+cinder_rabbit_userid: guest
+cinder_rabbit_password: guest
+cinder_rabbit_virtual_host: /
+cinder_rabbit_retry_interval: 1
+cinder_rabbit_host: localhost
+cinder_rabbit_port: 5672
+cinder_rabbit_hosts: "{{ cinder_rabbit_host }}:{{ cinder_rabbit_port }}"
+cinder_rabbit_ha_queues: False
+
+memcached_hosts:
+  - "localhost"
+
+
+# Storage Backend
+use_netapp: False
+
+use_ceph: False
+
+volume_audit: True
+volume_usage_audit_period: hour
+
+auth_strategy: keystone
+
+
+cinder_api_debug: False
+cinder_api_verbose: False
+cinder_volume_debug: False
+cinder_volume_verbose: False
+cinder_scheduler_debug: False
+cinder_scheduler_verbose: False

@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: Marcos Amorim
+  description:
+  company: Red Hat
+  license: Apache
+  min_ansible_version: 1.9
+  categories:
+    - cloud
+    - openstack
+  platforms:
+    - name: EL
+      versions:
+        - 6
+        - 7
+dependencies: []

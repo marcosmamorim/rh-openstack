@@ -1,0 +1,13 @@
+---
+
+- name: restart cinder
+  command: systemctl restart {{ item }}
+  with_items:
+    - openstack-cinder-api
+    - openstack-cinder-scheduler
+    - openstack-cinder-volume
+
+- name: restart cinder volume
+  command: systemctl restart {{ item }}
+  with_items:
+    - openstack-cinder-volume
