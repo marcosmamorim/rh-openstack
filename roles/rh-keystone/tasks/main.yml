@@ -45,6 +45,7 @@
   tags:
     - endpoints
     - keystone
+    - endpoints2
 - include: tenants.yml
 - include: users.yml
 - include: roles.yml
