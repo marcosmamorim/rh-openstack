@@ -1,4 +1,6 @@
 ---
+- name: start openvswitch
+  command: systemctl start openvswitch
 
 - name: create integration bridge legacy
   openvswitch_bridge: bridge=br-int state=present
@@ -33,7 +35,7 @@
 - name: configure ovs ports physical net
   openvswitch_port: bridge={{ neutron_ovs_bridges }} port={{ pnet_interface }} state=present
   when: use_neutron
-  run_once: True
+#  run_once: True
   ignore_errors: True
   tags:
     - neutron
@@ -42,7 +44,7 @@
 - name: configure ovs ports
   openvswitch_port: bridge={{ neutron_external_bridge | default('br-ex') }} port={{ ext_interface }} state=present
   when: use_neutron
-  run_once: True
+#  run_once: True
   ignore_errors: True
   tags:
     - neutron

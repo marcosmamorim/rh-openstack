@@ -1,0 +1,72 @@
+---
+
+- name: remove openvswitch bridges
+  command: ovs-vsctl del-br {{ item }}
+  with_items:
+    - br-int
+    - br-pnet1
+    - br-ex
+    - br-tun
+
+- name: Reset the network configuration file for ethernet devices
+  file:
+    dest={{ net_path }}/ifcfg-{{ item.device }}
+    state=absent
+  with_items: network_ether_interfaces
+  when: network_ether_interfaces is defined and network_ether_interfaces| length > 0
+
+
+- name: Reset configuration files for rhel route configuration
+  file:
+    dest={{ net_path }}/route-{{ item.device }}
+    state=absent
+  with_items: network_ether_interfaces
+  when: network_ether_interfaces is defined and
+        network_ether_interfaces| length > 0 and
+        item.route is defined
+
+- name: Reset the network configuration file for bridge devices
+  file:
+    dest={{ net_path }}/ifcfg-{{ item.device }}
+    state=absent
+  with_items: network_bridge_interfaces
+  when: network_bridge_interfaces is defined
+
+- name: Write configuration files for rhel route configuration
+  file:
+    dest={{ net_path }}/route-{{ item.device }}
+    state=absent
+  with_items: network_bridge_interfaces
+  when: network_bridge_interfaces is defined and item.route is defined and ansible_os_family == 'RedHat'
+
+- name: Reset the network configuration file for port on the bridge devices
+  file:
+    dest={{ net_path }}/ifcfg-{{ item.1 }}
+    state=absent
+  with_subelements:
+   - network_bridge_interfaces
+   - ports
+  when: network_bridge_interfaces is defined
+
+- name: Reset the network configuration file for bond devices
+  file:
+    dest={{ net_path }}/ifcfg-{{ item.device }}
+    state=absent
+  with_items: network_bond_interfaces
+  when: network_bond_interfaces is defined
+
+- name: Reset configuration files for route configuration
+  file:
+    dest={{ net_path }}/route-{{ item.device }}
+    state=absent
+  with_items: network_bond_interfaces
+  when: network_bond_interfaces is defined and item.route is defined and ansible_os_family == 'RedHat'
+
+- name: Reset the network configuration file for slave in the bond devices
+  file:
+    dest={{ net_path }}/ifcfg-{{ item.1 }}
+    state=absent
+  with_subelements:
+   - network_bond_interfaces
+   - bond_slaves
+  when: network_bond_interfaces is defined
