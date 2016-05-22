@@ -45,3 +45,4 @@
   with_items: "{{ keystone_endpoints }}"
   when: inventory_hostname == keystone_master
   tags: endpoints2
+

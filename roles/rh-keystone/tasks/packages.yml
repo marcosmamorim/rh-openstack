@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-- name: Install Applications (yum)
+- name: Install keystone
   yum: name="{{ item }}" state=present
   with_items:
     - httpd
