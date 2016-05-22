@@ -1,0 +1,9 @@
+#!/bin/bash
+
+exec /sbin/modprobe nf_conntrack >/dev/null 2>&1
+exec /sbin/modprobe nf_conntrack_pptp >/dev/null 2>&1
+exec /sbin/modprobe vhost_net >/dev/null 2>&1
+exec /sbin/modprobe nf_conntrack_ipv6 >/dev/null 2>&1
+exec /sbin/modprobe nf_conntrack_ipv4 >/dev/null 2>&1
+
+
