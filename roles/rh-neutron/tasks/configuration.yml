@@ -1,0 +1,331 @@
+---
+
+#
+# Copyright (c) 2014 Davide Guerri <davide.guerri@gmail.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+# implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+- name: start openvswitch
+  command: systemctl start openvswitch
+  when: use_neutron
+  tags:
+    - neutron
+    - neutron-basics
+
+- name: Configure neutron
+  ini_file: >
+    dest=/etc/neutron/neutron.conf
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=neutron
+    owner=root
+    mode=0640
+  with_items: "{{ neutron_options }}"
+  tags:
+    - neutron
+    - neutron-config
+
+- name: Configure metadata
+  ini_file: >
+    dest=/etc/neutron/metadata_agent.ini
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=neutron
+    owner=root
+    mode=0640
+  with_items: "{{ neutron_metadata_options }}"
+  tags:
+    - neutron
+    - neutron-config
+    - neutron-metadata
+
+- name: Configure dhcp agent
+  ini_file: >
+    dest=/etc/neutron/dhcp_agent.ini
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=neutron
+    owner=root
+    mode=0640
+  with_items: "{{ neutron_dhcp_agent_options }}"
+  tags:
+    - neutron
+    - neutron-config
+    - neutron-dhcp
+
+- name: Configure lbaas agent
+  ini_file: >
+    dest=/etc/neutron/lbaas_agent.ini
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=neutron
+    owner=root
+    mode=0640
+  with_items: "{{ neutron_lbaas_agent_options }}"
+  tags:
+    - neutron
+    - neutron-config
+    - neutron-lbaas
+
+- name: Configure l3 agent
+  ini_file: >
+    dest=/etc/neutron/l3_agent.ini
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=neutron
+    owner=root
+    mode=0640
+  with_items: "{{ neutron_l3_agent_options }}"
+  tags:
+    - neutron
+    - neutron-config
+    - neutron-l3
+
+- name: Configure openvswitch plugin
+  ini_file: >
+    dest=/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=neutron
+    owner=root
+    mode=0640
+  with_items: "{{ neutron_ovs_plugin_options }}"
+  tags:
+    - neutron
+    - neutron-config
+    - neutron-ovs
+
+- name: Configure ml2 plugin
+  ini_file: >
+    dest=/etc/neutron/plugins/ml2/ml2_conf.ini
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=neutron
+    owner=root
+    mode=0640
+  with_items: "{{ neutron_ml2_plugin_options }}"
+  tags:
+    - neutron
+    - neutron-config
+    - neutron-ml2
+
+- name: Configure lbaas
+  ini_file: >
+    dest=/etc/neutron/neutron_lbaas.conf
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=neutron
+    owner=root
+    mode=0640
+  with_items: "{{ neutron_lbaas_options }}"
+  tags:
+    - neutron
+    - neutron-config
+    - neutron-lbaas
+
+- name: Configure metering agent
+  ini_file: >
+    dest=/etc/neutron/metering_agent.ini
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=neutron
+    owner=root
+    mode=0640
+  with_items: "{{ neutron_metering_agent_options }}"
+  tags:
+    - neutron
+    - neutron-config
+    - neutron-lbaas
+
+- name: Configure dnsmasq options
+  copy:
+    dest=/etc/neutron/dnsmasq-neutron.conf
+    content="{{neutron_dnsmasq_options}}\n"
+    mode=0644
+    owner=root
+    group=neutron
+#  notify: restart neutron server
+  tags:
+    - neutron
+    - neutron-config
+    - neutron-dnsmasq
+
+- name: Configure neutron sysctl options
+  copy:
+    dest=/etc/sysctl.d/neutron.conf
+    src=neutron-sysctl.conf
+    mode=0644
+    owner=root
+    group=neutron
+#  notify: restart neutron server
+  tags:
+    - neutron
+    - neutron-config
+    - neutron-sysctl
+
+- name: restart sysctl
+  command: sysctl -p
+  when: use_neutron
+  tags:
+    - neutron
+    - neutron-deploy
+    - neutron-sysctl
+
+- name: link plugin.ini to the ml2 plugin config file
+  file:
+    src=/etc/neutron/plugins/ml2/ml2_conf.ini
+    dest=/etc/neutron/plugin.ini
+    state=link
+#  notify: restart neutron server
+  tags:
+    - neutron
+    - neutron-ml2
+
+- name: sync neutron database
+  command: neutron-db-manage upgrade heads
+
+#- name: deploy l3_hamode py
+#  copy: src={{ item.src }} dest={{ item.dest }} owner=root group=neutron
+#  with_items:
+#    - { src: l3_hamode_db.py, dest: /usr/lib/python2.7/site-packages/neutron/db/l3_hamode_db.py }
+#    - { src: l3_ext_ha_mode.py, dest: /usr/lib/python2.7/site-packages/neutron/extensions/l3_ext_ha_mode.py }
+#  notify: restart neutron server
+#  when: use_neutron
+#  tags:
+#    - neutron
+#    - neutron-deploy
+
+
+
+#- name: Dump service tenant id
+#  shell: keystone tenant-get service | awk '/ id / {print $4}'
+#  register: service_tenant_id
+#  changed_when: false
+#  environment: openstack_service_env
+#  when: not nova_admin_tenant_id
+
+#- name: Configure Neutron Database
+#  ini_file: dest=/etc/neutron/neutron.conf
+#            section="{{ item.section }}"
+#            option="{{ item.option }}"
+#            value="{{ item.value }}"
+#  with_items:
+#    - section:  database
+#      option:   connection
+#      value:    "{{ neutron_database_url }}"
+#  notify:
+#    - Restart Neutron server
+#
+#- name: Configure Neutron
+#  ini_file: dest=/etc/neutron/neutron.conf
+#            section="{{ item.section }}"
+#            option="{{ item.option }}"
+#            value="{{ item.value }}"
+#  with_items:
+#    - section:  database
+#      option:   connection
+#      value:    "{{ neutron_database_url }}"
+#    - section:  DEFAULT
+#      option:   bind_port
+#      value:    "{{ neutron_port }}"
+#    - section:  DEFAULT
+#      option:   auth_strategy
+#      value:    keystone
+#    - section:  DEFAULT
+#      option:   rpc_backend
+#      value:    neutron.openstack.common.rpc.impl_kombu
+#    - section:  DEFAULT
+#      option:   rabbit_host
+#      value:    "{{ rabbit_hostname }}"
+#    - section:  DEFAULT
+#      option:   rabbit_userid
+#      value:    "{{ rabbit_username }}"
+#    - section:  DEFAULT
+#      option:   rabbit_password
+#      value:    "{{ rabbit_pass }}"
+#    - section:  DEFAULT
+#      option:   notify_nova_on_port_status_changes
+#      value:    True
+#    - section:  DEFAULT
+#      option:   notify_nova_on_port_data_changes
+#      value:    True
+#    - section:  DEFAULT
+#      option:   nova_url
+#      value:    "{{ nova_protocol }}://{{ nova_api_hostname }}:{{ nova_port }}/v2"
+#    - section:  DEFAULT
+#      option:   nova_admin_tenant_id
+#      value:    "{{ service_tenant_id.stdout }}"
+#    - section:  DEFAULT
+#      option:   nova_admin_username
+#      value:    "{{ nova_user }}"
+#    - section:  DEFAULT
+#      option:   nova_admin_password
+#      value:    "{{ nova_pass }}"
+#    - section:  DEFAULT
+#      option:   nova_admin_auth_url
+#      value:    "{{ keystone_protocol }}://{{ keystone_hostname }}:{{ keystone_admin_port }}/v2.0"
+#    - section:  DEFAULT
+#      option:   core_plugin
+#      value:    ml2
+#    - section:  DEFAULT
+#      option:   service_plugins
+#      value:    router
+#    - section:  DEFAULT
+#      option:   allow_overlapping_ips
+#      value:    True
+#    - section:  DEFAULT
+#      option:   log_dir
+#      value:    "{{ neutron_log_dir }}"
+#    - section:  keystone_authtoken
+#      option:   auth_uri
+#      value:    "{{ keystone_protocol }}://{{ keystone_hostname }}:{{ keystone_port }}"
+#    - section:  keystone_authtoken
+#      option:   auth_host
+#      value:    "{{ keystone_hostname }}"
+#    - section:  keystone_authtoken
+#      option:   auth_port
+#      value:    "{{ keystone_admin_port }}"
+#    - section:  keystone_authtoken
+#      option:   auth_protocol
+#      value:    "{{ keystone_protocol }}"
+#    - section:  keystone_authtoken
+#      option:   admin_tenant_name
+#      value:    service
+#    - section:  keystone_authtoken
+#      option:   admin_user
+#      value:    "{{ neutron_user }}"
+#    - section:  keystone_authtoken
+#      option:   admin_password
+#      value:    "{{ neutron_pass }}"
+#  notify:
+#    - Reload Neutron server

@@ -1,0 +1,48 @@
+---
+
+#
+# Copyright (c) 2014 Davide Guerri <davide.guerri@gmail.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+# implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# Neutron
+neutron_server_hostname: localhost
+neutron_user: neutron
+neutron_pass: neutron_pass_default
+neutron_port: 9696
+neutron_protocol: http
+neutron_log_dir: /var/log/neutron
+
+# Keystone
+keystone_admin_port: 35357
+keystone_hostname: localhost
+keystone_port: 5000
+keystone_protocol: http
+
+# Nova
+nova_api_hostname: localhost
+nova_user: nova
+nova_pass: nova_pass_default
+nova_port: 8774
+nova_protocol: http
+nova_admin_tenant_id: false
+
+# Database
+neutron_database_url: "sqlite:////var/lib/neutron/neutron.sqlite"
+
+# RabbitMQ
+rabbit_hostname: localhost
+rabbit_username: rabbit_username_default
+rabbit_pass: rabbit_pass_default

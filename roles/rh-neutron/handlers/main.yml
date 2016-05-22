@@ -1,0 +1,19 @@
+---
+- name: restart neutron server
+  command: systemctl restart neutron-server
+
+- name: restart neutron metadata agent
+  command: systemctl restart neutron-metadata-agent
+
+- name: restart neutron dhcp agent
+  command: systemctl restart neutron-dhcp-agent
+
+- name: restart neutron openvswitch agent
+  command: systemctl restart neutron-openvswitch-agent
+
+- name: restart neutron l3 agent
+  command: systemctl restart neutron-l3-agent
+
+- name: restart neutron metering agent
+  command: systemctl restart neutron-metering-agent
+
