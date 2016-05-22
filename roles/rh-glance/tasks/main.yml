@@ -31,9 +31,7 @@
 - meta: flush_handlers
 
 - name: Sync Glance database
-  glance_manage: action=db_sync
-  sudo: yes
-  sudo_user: glance
+  command: glance-manage db sync
   notify:
     - restart glance api
     - restart glance registry
