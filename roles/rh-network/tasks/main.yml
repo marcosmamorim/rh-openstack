@@ -1,0 +1,15 @@
+---
+
+- include: packages.yml
+
+- include: openvswitch.yml
+  when: use_openvswitch
+
+- include: ethernet.yml
+  when: network_ether_interfaces is defined and network_ether_interfaces |length > 0
+
+- include: bridge.yml
+  when: network_bridge_interfaces is defined and network_bridge_interfaces |length > 0
+
+- include: bond.yml
+  when: network_bond_interfaces is defined and network_bond_interfaces |length > 0

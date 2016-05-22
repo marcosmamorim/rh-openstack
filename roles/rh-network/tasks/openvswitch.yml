@@ -1,0 +1,49 @@
+---
+
+- name: create integration bridge legacy
+  openvswitch_bridge: bridge=br-int state=present
+  when: use_neutron
+  tags:
+    - neutron
+    - neutron-bridge
+
+- name: create tunneling bridge legacy
+  openvswitch_bridge: bridge=br-tun state=present
+  when: neutron_ovs_tunnel_type is defined
+  tags:
+    - neutron
+    - neutron-bridge
+
+- name: create external network bridge
+  openvswitch_bridge: bridge={{ neutron_external_bridge | default('br-ex') }} state=present
+  ignore_errors: yes
+  when: use_neutron_l3
+  tags:
+    - neutron
+    - neutron-bridge
+
+- name: create ovs bridges pnet1
+  openvswitch_bridge: bridge={{ item }} state=present
+  with_items: neutron_ovs_bridges
+  when: use_neutron
+  tags:
+    - neutron
+    - neutron-bridge
+
+- name: configure ovs ports physical net
+  openvswitch_port: bridge={{ neutron_ovs_bridges }} port={{ pnet_interface }} state=present
+  when: use_neutron
+  run_once: True
+  ignore_errors: True
+  tags:
+    - neutron
+    - neutron-bridge
+
+- name: configure ovs ports
+  openvswitch_port: bridge={{ neutron_external_bridge | default('br-ex') }} port={{ ext_interface }} state=present
+  when: use_neutron
+  run_once: True
+  ignore_errors: True
+  tags:
+    - neutron
+    - neutron-bridge

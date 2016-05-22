@@ -1,0 +1,21 @@
+---
+
+- name: remove NetworkManager
+  yum: name=NetworkManager state=removed
+
+- name: Install the required  packages
+  yum: name={{ item }} state=installed
+  with_items: network_pkgs
+
+- name: Install openvswitch if required
+  yum: name=openvswitch state=installed
+  when: use_openvswitch
+  notify: restart openvswitch
+
+- name: enable openvswitch
+  command: systemctl enable openvswitch
+  when: use_openvswitch
+
+- name: enable network instead of NetworkManager
+  command: systemctl enable network
+
