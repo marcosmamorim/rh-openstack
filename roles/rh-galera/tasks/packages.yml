@@ -6,8 +6,9 @@
     state=latest
     update_cache=yes
 
-- name: Enable extras repository (RedHat)
-  command: yum-config-manager --enable rhel-7-server-extras-rpms
+# TODO: Send to another role
+#- name: Enable extras repository (RedHat)
+#  command: yum-config-manager --enable rhel-7-server-extras-rpms
 
 - name: Installing MariaDB Galera packages
   yum:
