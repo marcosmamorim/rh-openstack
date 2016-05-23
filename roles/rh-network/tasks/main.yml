@@ -17,3 +17,9 @@
 - include: bridge.yml
   when: network_bridge_interfaces is defined and network_bridge_interfaces |length > 0
 
+- name: set sysctl parameters
+  copy: src=conntrack-sysctl.conf dest=/etc/sysctl.d/conntrack.conf mode=0644 owner=root group=root
+  notify: reload kernel parameters
+  tags:
+    - nova
+    - nova-kernel_parameters
