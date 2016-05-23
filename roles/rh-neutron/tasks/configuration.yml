@@ -103,6 +103,20 @@
     - neutron-config
     - neutron-l3
 
+- name: Fix perms plugins dir
+  file:
+    dest=/etc/neutron/plugins/openvswitch
+    state=directory
+    owner=root
+    group=neutron
+    recurse=yes
+    force=yes
+    mode=0755
+  tags:
+    - neutron
+    - neutron-config
+    - neutron-ovs
+
 - name: Configure openvswitch plugin
   ini_file: >
     dest=/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini
@@ -112,7 +126,7 @@
     state={{item.state| default('present')}}
     group=neutron
     owner=root
-    mode=0640
+    mode=0644
   with_items: "{{ neutron_ovs_plugin_options }}"
   tags:
     - neutron
@@ -213,7 +227,9 @@
 
 - name: sync neutron database
   command: neutron-db-manage upgrade heads
+  when: inventory_hostname == neutron_master
 
+# TODO: Sent do rh-network tasks
 - name: configure nf_conntrack_pptp
   template:
     src: nf_conntrack_pptp.conf.j2

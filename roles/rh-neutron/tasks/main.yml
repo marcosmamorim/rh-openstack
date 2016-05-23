@@ -26,5 +26,12 @@
 - meta: flush_handlers
 
 - name: Make sure Neutron server is started
-  command: systemctl start neutron-server
-
+  command: systemctl start {{ item }}
+  with_items:
+    - neutron-server
+    - neutron-metadata-agent
+    - neutron-dhcp-agent
+    - neutron-openvswitch-agent
+    - neutron-l3-agent
+    - neutron-metering-agent
+    - neutron-lbaas-agent
