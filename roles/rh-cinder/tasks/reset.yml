@@ -14,6 +14,7 @@
     name: "cinder"
     state: absent
   run_once: True
+  when: inventory_hostname == cinder_master
 
 - name: Make sure the cinder database is present
   mysql_db:
