@@ -1,0 +1,4 @@
+- hosts: memcache
+  gather_facts: True
+  roles:
+    - rh-memcached

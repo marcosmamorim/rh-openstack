@@ -1,0 +1,4 @@
+- hosts: cinder
+  gather_facts: True
+  roles:
+    - rh-cinder

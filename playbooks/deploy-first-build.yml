@@ -1,0 +1,12 @@
+---
+- hosts: controller
+  gather_facts: True
+  roles:
+    - rh-basics
+    - rh-setfacts
+    - rh-pacemaker
+    - rh-galera
+    - rh-haproxy
+    - rh-memcached
+    - rh-rabbitmq
+    - rh-pcs_scripts

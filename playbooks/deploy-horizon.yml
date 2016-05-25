@@ -1,0 +1,4 @@
+- hosts: network
+  gather_facts: True
+  roles:
+    - rh-horizon

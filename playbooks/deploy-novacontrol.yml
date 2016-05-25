@@ -1,0 +1,4 @@
+- hosts: nova
+  gather_facts: True
+  roles:
+    - rh-nova-control

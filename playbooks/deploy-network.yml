@@ -1,0 +1,5 @@
+- hosts: network
+  gather_facts: True
+  roles:
+    - rh-network
+#    - rh-neutron

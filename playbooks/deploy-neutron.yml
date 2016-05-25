@@ -1,0 +1,4 @@
+- hosts: neutron
+  gather_facts: True
+  roles:
+    - rh-neutron

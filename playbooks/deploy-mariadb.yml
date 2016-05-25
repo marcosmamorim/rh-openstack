@@ -1,0 +1,4 @@
+- hosts: mariadb
+  gather_facts: True
+  roles:
+    - rh-galera

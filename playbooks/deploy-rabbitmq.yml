@@ -1,0 +1,4 @@
+- hosts: rabbitmq
+  gather_facts: True
+  roles:
+    - rh-rabbitmq

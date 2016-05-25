@@ -1,0 +1,4 @@
+- hosts: glance
+  gather_facts: True
+  roles:
+    - rh-glance
