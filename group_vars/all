@@ -1215,3 +1215,24 @@ pacemaker_resources:
         options:
           interval: 5s
 
+################################################
+## Red Hat Subscribe
+
+# Use red hat subscribe
+use_rhel: false
+
+# RHN Username and password
+rhel_subscription_user: username_rhn
+rhel_subscription_pass: password_rhn
+
+# Attach to pool_id
+rhel_pool_id: redhat_pool_id
+
+# Register repos
+rhel_repos:
+  - rhel-7-server-extras-rpms
+  - rhel-ha-for-rhel-7-server-rpms
+  - rhel-7-server-rpms
+  - rhel-7-server-optional-rpms
+  - rhel-7-server-openstack-8-rpms
+
