@@ -1,25 +1,192 @@
 ---
+###############################################
+# Users and Passwords
+keystone_admin_token: 88f2fb012387912987d16a129038938b
+neutron_metadata_proxy_shared_secret: 9a31180afe1171283712839712713f96516ce365
+
+openstack_version: 8
+
+# RabbitMQ Users 
+rabbitmq_admin_user: admin
+rabbitmq_keystone_user: keystone
+rabbitmq_glance_user: glance
+rabbitmq_cinder_user: cinder
+rabbitmq_nova_user: nova
+rabbitmq_heat_user: heat
+rabbitmq_ceilometer_user: ceilometer
+rabbitmq_neutron_user: neutron
+
+# OpenStack RabbitMQ users password
+rabbitmq_admin_password: vW3Ap9-Y5?fLk9Y=
+rabbitmq_keystone_password: keyst0n3p4ssw0rd
+rabbitmq_glance_password: gl4nc3p4ssw0rd
+rabbitmq_cinder_password: cind3rp4ssw0rd
+rabbitmq_nova_password: n0v4p4ssw0rd
+rabbitmq_heat_password: he4tp4ssw0rd
+rabbitmq_ceilometer_password: ceil0m3terp4ssw0rd
+rabbitmq_neutron_password: n3utr0np4ssw0rd
+
+# RabbitMQ vhost 
+rabbitmq_admin_vhost: /
+rabbitmq_keystone_vhost: keystone
+rabbitmq_glance_vhost: glance
+rabbitmq_cinder_vhost: cinder
+rabbitmq_nova_vhost: nova
+rabbitmq_heat_vhost: heat
+rabbitmq_ceilometer_vhost: ceilometer
+rabbitmq_neutron_vhost: neutron
+
+# MariaDB users password
+mariadb_root_password: vW3Ap9-Y5?fLk9Y=
+mariadb_maintenance_password: 9&CB8$5?FSzN6uHf
+galera_clustercheck_user: clustercheck
+galera_clustercheck_password: K8+jgGBPPK!p-4LE
+galera_sst_password: gr34tp4ss0rd
+
+# MariaDB databases
+db_keystone_name: keystone
+db_glance_name: glance
+db_cinder_name: cinder
+db_nova_name: nova
+db_neutron_name: neutron
+db_heat_name: heat
+db_ceilometer_name: ceilometer
+
+# MariaDB users
+db_keystone_user: keystone
+db_glance_user: glance
+db_cinder_user: cinder
+db_nova_user: nova
+db_neutron_user: neutron
+db_heat_user: heat
+db_ceilometer_user: ceilometer
+
+# MariaDB users password
+db_root_password: c012893471fasfe54e409cc742a2RedHat
+db_keystone_password: c75QWR1234891342223e797865f5RedHat
+db_glance_password: fb9d08f332324O2I3Re10a6332RedHat
+db_cinder_password: 501a37d11623KU42IO3471d671bRedHat
+db_nova_password: 7e7e7c946602O3I4723894b7aafRedHat
+db_neutron_password: 96739fa29977P238942938Rb0abRedHat
+db_heat_password: ba6b2304bc324PO82F907Fc3b9ddRedHat
+db_ceilometer_pasword: c2342GFPAWJGeilometdfasdassRedHat
+
+# OpenStack Keystone password
+keystone_admin_password: 123@mudar
+keystone_glance_password: gdjDh7Txs6NhnUjr
+keystone_cinder_password: X7QPEnxC947bDKj9
+keystone_neutron_password: bd94apRNgmJqRGX4
+keystone_nova_password: mvDzraWn6thEfXVR
+keystone_heat_password: 9aWDuE8kxjZdGdtV
+keystone_ceilometer_password: t7RaxzmrRkumBezs
+
+keystone_admin_user: admin
+keystone_glance_user: glance
+keystone_cinder_user: cinder
+keystone_nova_user: nova
+keystone_neutron_user: neutron
+keystone_heat_user: heat
+keystone_ceilometer_user: ceilometer
+
+###############################################
+# IP Address
+
+#Netmask VIP address
+vip_netmask: 24
+public_netmask: 24
+internal_netmask: 24
+
+public_network_prefix: 172.16.0
+internal_network_prefix: 172.17.0
+
+# IF false use diferent IPs for each services
+vips_all_in_one: False
+
+db_vip: "{{ internal_network_prefix }}.20"
+
+keystone_internal_vip: "{{ internal_network_prefix }}.21"
+glance_internal_vip: "{{ internal_network_prefix }}.22"
+cinder_internal_vip: "{{ internal_network_prefix }}.23"
+neutron_internal_vip: "{{ internal_network_prefix }}.24"
+nova_internal_vip: "{{ internal_network_prefix }}.25"
+heat_internal_vip: "{{ internal_network_prefix }}.26"
+ceilometer_internal_vip: "{{ internal_network_prefix }}.27"
+
+keystone_admin_vip: "{{ keystone_internal_vip }}"
+glance_admin_vip: "{{ glance_internal_vip }}"
+cinder_admin_vip: "{{ cinder_internal_vip }}"
+neutron_admin_vip: "{{ neutron_internal_vip }}"
+nova_admin_vip: "{{ nova_internal_vip }}"
+heat_admin_vip: "{{ heat_internal_vip }}"
+ceilometer_admin_vip: "{{ ceilometer_internal_vip }}"
+
+keystone_public_vip: "{{ public_network_prefix }}.21"
+glance_public_vip: "{{ public_network_prefix }}.22"
+cinder_public_vip: "{{ public_network_prefix }}.23"
+neutron_public_vip: "{{ public_network_prefix }}.24"
+nova_public_vip: "{{ public_network_prefix }}.25"
+heat_public_vip: "{{ public_network_prefix }}.26"
+ceilometer_public_vip: "{{ public_network_prefix }}.27"
+
+
+
+
+###############################################
+# Custom Settings
+
+global_debug: True
+global_verbose: True
+
+
+# Glance Settings
+glance_use_nfs: True
+glance_image_dir: /var/lib/glance/images/
+glance_mount_image:
+- { server_address: 172.18.0.1, export_mount: /home/glance, fstype: nfs, mount_options: "_netdev,rw", mount_point: "{{ glance_image_dir }}" }
+
+# Cinder Settings
+cinder_default_volume_type: lvm
+cinder_enabled_backends: lvm,lvm2
+
+###############################################
+# Group of Servers short hostname
+
+# First galera hostname
+galera_master: controller01
+
+# First rabbitmq hostname
+rabbitmq_master: controller01
+
+# Can we use IP or hostname
+rabbitmq_hosts:
+  - controller01
+  - controller02
+  - controller03
+
+# Used to deploy galera cluster, can we use IP or hostname
+galera_hosts:
+  - controller01
+  - controller02
+  - controller03
+
+memcached_hosts:
+  - controller01
+  - controller02
+  - controller03
 
 ###############################################
 # RabbitMQ
 
-# OpenStack RabbitMQ users password
-rabbitmq_glance_password: gl4nc3p4ssw0rd
-rabbitmq_nova_password: n0v4p4ssw0rd
-rabbitmq_cinder_password: cind3rp4ssw0rd
-rabbitmq_ceilometer_password: ceil0m3terp4ssw0rd
-rabbitmq_heat_password: he4tp4ssw0rd
-rabbitmq_keystone_password: keyst0n3p4ssw0rd
-rabbitmq_trove_password: tr0vep4ssw0rd
-rabbitmq_admin_password: vW3Ap9-Y5?fLk9Y=
-
 # SSL
-rabbitmq_ssl: True
+rabbitmq_ssl: False
 rabbitmq_cacert_file: etc/rabbitmq/ssl/cacert.pem
 rabbitmq_cert_file: etc/rabbitmq/ssl/cert.pem
 rabbitmq_key_file: etc/rabbitmq/ssl/key.pem
 rabbitmq_ssl_bind_address: 0.0.0.0
 rabbitmq_ssl_port: 5672
+
+
+rabbitmq_sanitycheck: True
 
 rabbitmq_bind_address: 0.0.0.0
 rabbitmq_port: 5671
@@ -47,8 +214,7 @@ rabbitmq_reset_cluster: False
 # CLUSTER
 rabbitmq_clustering: true
 rabbitmq_erlang_cookie: 'AbCd3rl4ngC00k13WxYz'
-rabbitmq_master: rabbit-01
-rabbitmq_cluster_name: rabbit-01
+rabbitmq_cluster_name: controller01
 
 # Plugins
 rabbitmq_management_plugin: true
@@ -58,90 +224,994 @@ rabbitmq_firewalld: False
 
 # VHOSTS
 rabbitmq_vhost_list:
-  - name: glance
-  - name: nova
-  - name: cinder
-  - name: ceilometer
-  - name: heat
-  - name: keystone
-  - name: trove
+  - name: "{{ rabbitmq_keystone_vhost }}"
+  - name: "{{ rabbitmq_glance_vhost }}"
+  - name: "{{ rabbitmq_cinder_vhost }}"
+  - name: "{{ rabbitmq_nova_vhost }}"
+  - name: "{{ rabbitmq_heat_vhost }}"
+  - name: "{{ rabbitmq_ceilometer_vhost }}"
+  - name: "{{ rabbitmq_neutron_vhost }}"
 
 # POLICIES
+# TODO: Fix permissions to admin to view all vhost
 rabbitmq_policies_list:
-  - name: HA-Glance
-    pattern: .*
-    tags:
-      ha-mode: all
-    vhost: glance
-  - name: HA-Nova
-    pattern: .*
-    tags:
-      ha-mode: all
-    vhost: nova
-  - name: HA-Cinder
-    pattern: .*
-    tags:
-      ha-mode: all
-    vhost: cinder
-  - name: HA-Ceilometer
-    pattern: .*
-    tags:
-      ha-mode: all
-    vhost: ceilometer
-  - name: HA-Heat
-    pattern: .*
-    tags:
-      ha-mode: all
-    vhost: heat
-  - name: HA-Keystone
-    pattern: .*
-    tags:
-      ha-mode: all
-    vhost: keystone
-  - name: HA-Trove
-    pattern: .*
-    tags:
-      ha-mode: all
-    vhost: trove
   - name: HA
     pattern: .*
     tags:
       ha-mode: all
-    vhost: /
+    vhost: "{{ rabbitmq_admin_vhost }}"
+  - name: HA-Keystone
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: "{{ rabbitmq_keystone_vhost }}"
+  - name: HA-Glance
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: "{{ rabbitmq_glance_vhost }}"
+  - name: HA-Cinder
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: "{{ rabbitmq_cinder_vhost }}"
+  - name: HA-Nova
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: "{{ rabbitmq_nova_vhost }}"
+  - name: HA-Heat
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: "{{ rabbitmq_heat_vhost }}"
+  - name: HA-Ceilometer
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: "{{ rabbitmq_ceilometer_vhost }}"
+  - name: HA-Neutron
+    pattern: .*
+    tags:
+      ha-mode: all
+    vhost: "{{ rabbitmq_neutron_vhost }}"
 
 # USERS
 rabbitmq_users_list:
-  - vhost: glance
-    user: glance
-    password: "{{ rabbitmq_glance_password | default('gl4nc3p4ssw0rd') }}"
-  - vhost: nova
-    user: nova
-    password: "{{ rabbitmq_nova_password | default('n0v4p4ssw0rd') }}"
-  - vhost: cinder
-    user: cinder
-    password: "{{ rabbitmq_cinder_password | default('cind3rp4ssw0rd') }}"
-  - vhost: ceilometer
-    user: ceilometer
-    password: "{{ rabbitmq_ceilometer_password | default('ceil0m3terp4ssw0rd') }}"
-  - vhost: heat
-    user: heat
-    password: "{{ rabbitmq_heat_password | default('he4tp4ssw0rd') }}"
-  - vhost: keystone
-    user: keystone
-    password: "{{ rabbitmq_keystone_password | default('keyst0n3p4ssw0rd') }}"
-  - vhost: trove
-    user: trove
-    password: "{{ rabbitmq_trove_password | default('tr0vep4ssw0rd') }}"
-  - vhost: /
-    user: admin
+  - vhost: "{{ rabbitmq_admin_vhost }}"
+    user: "{{ rabbitmq_admin_user }}"
     password: "{{ rabbitmq_admin_password }}"
     tags:
     - administrator
+    - Admin
+  - vhost: "{{ rabbitmq_keystone_vhost }}"
+    user: "{{ rabbitmq_keystone_user }}"
+    password: "{{ rabbitmq_keystone_password | default('keyst0n3p4ssw0rd') }}"
+  - vhost: "{{ rabbitmq_glance_vhost }}"
+    user: "{{ rabbitmq_glance_user }}"
+    password: "{{ rabbitmq_glance_password | default('gl4nc3p4ssw0rd') }}"
+  - vhost: "{{ rabbitmq_cinder_vhost }}"
+    user: "{{ rabbitmq_cinder_user }}"
+    password: "{{ rabbitmq_cinder_password | default('cind3rp4ssw0rd') }}"
+  - vhost: "{{ rabbitmq_nova_vhost }}"
+    user: "{{ rabbitmq_nova_user }}"
+    password: "{{ rabbitmq_nova_password | default('n0v4p4ssw0rd') }}"
+  - vhost: "{{ rabbitmq_heat_vhost }}"
+    user: "{{ rabbitmq_heat_user }}"
+    password: "{{ rabbitmq_heat_password | default('he4tp4ssw0rd') }}"
+  - vhost: "{{ rabbitmq_ceilometer_vhost }}"
+    user: "{{ rabbitmq_ceilometer_user }}"
+    password: "{{ rabbitmq_ceilometer_password | default('ceil0m3terp4ssw0rd') }}"
+  - vhost: "{{ rabbitmq_neutron_vhost }}"
+    user: "{{ rabbitmq_neutron_user }}"
+    password: "{{ rabbitmq_neutron_password | default('n3utr0np4ssw0rd') }}"
+
+###############################################
+# Galera - MariaDB
+
+# WARNING This flag remove current cluster configuration
+galera_reset_cluster: False
+
+### GALERA
+galera_selinux: True
+
+galera_node_address: "{{ ansible_eth0.ipv4.address }}"
+galera_firewalld: False
+
+# This is a best way to configure dynamic ini files and we can add more options without change roles
+# section: [section_on_file]
+# option: option_name =
+# value: option_name = value
+
+# if you want comment or remove an option add option state: absent to your var
+# - { section: server, option: debug, value: false, state=absent }
+
+galera_config_options:
+  - { section: server, option: debug, value: false, state: absent }
+  - { section: mysqld, option: datadir, value: "{{ mariadb_datadir |default('/var/lib/mysql')}}" }
+  - { section: galera, option: wsrep_on, value: ON }
+  - { section: galera, option: wsrep_provider, value: "{{ galera_provider }}" }
+  - { section: galera, option: wsrep_provider_options, value: "{{ galera_provider_options | default('pc.ignore_quorum=true') }}" }
+  - { section: galera, option: wsrep_cluster_name, value: "{{ galera_cluster_name | default('osp-cluster') }}" }
+  - { section: galera, option: wsrep_sst_auth, value: "{{ galera_sst_user }}:{{ galera_sst_password }}" }
+  - { section: galera, option: wsrep_sst_method, value: "{{ galera_sst_method | default('rsync') }}" }
+  - { section: galera, option: wsrep_node_address, value: "{{ galera_node_address | default('127.0.0.1') }}" }
+  - { section: galera, option: wsrep_node_name, value: "{{ ansible_hostname }}" }
+  - { section: galera, option: wsrep_retry_autocommit, value: "{{ galera_retry_autocommit | default('10') }}" }
+  - { section: galera, option: wsrep_slave_threads, value: "{{ galera_slave_threads | default('8') }}" }
+  - { section: galera, option: binlog_format, value: ROW }
+  - { section: galera, option: default_storage_engine, value: "{{ mariadb_default_storage_engine | default('InnoDB') }}" }
+  - { section: galera, option: innodb_autoinc_lock_mode, value: 2 }
+  - { section: galera, option: innodb_doublewrite, value: 1 }
+  - { section: galera, option: innodb_doublewrite, value: "{{ mariadb_default_storage_engine | default('InnoDB') }}" }
+  - { section: galera, option: bind-address, value: "{{ mariadb_bind_address | default('127.0.0.1') }}" }
+  - { section: galera, option: query_cache_size, value: "{{ mariadb_query_cache_size | default('64M') }}" }
+  - { section: galera, option: innodb_flush_log_at_trx_commit, value: 2 }
+
+mariadb_bind_address: 0.0.0.0
+mariadb_port: 3306
+mariadb_max_connections: 4096
+
+galera_provider_options: 'pc.ignore_quorum=true; gcache.size=1G'
+galera_retry_autocommit: 10
+galera_slave_threads: 8
+galera_xinet_port: 9200
+
+# FIREWALL PORTS
+fw_mysql: "{{ mariadb_port }}"
+fw_mysql_ist: 4568
+fw_mysql_sst: 4444
+fw_galera: 4567
+fw_xinetd: "{{ galera_xinet_port }}"
 
 
-# TODO: Verificar o uso
-rabbitmq_hosts:
-  - rabbit-01
-  - rabbit-02
-  - rabbit-03
+# List of databases to be created (optional)
+mariadb_databases:
+  - name: "{{ db_keystone_name }}"
+    collation: "utf8_general_ci"
+    encoding: "utf8"
+  - name: "{{ db_glance_name }}"
+    collation: "utf8_general_ci"
+    encoding: "utf8"
+  - name: "{{ db_cinder_name }}"
+    collation: "utf8_general_ci"
+    encoding: "utf8"
+  - name: "{{ db_nova_name }}"
+    collation: "utf8_general_ci"
+    encoding: "utf8"
+  - name: "{{ db_heat_name }}"
+    collation: "utf8_general_ci"
+    encoding: "utf8"
+  - name: "{{ db_neutron_name }}"
+    collation: "utf8_general_ci"
+    encoding: "utf8"
+
+mariadb_users:
+  - name: "{{ db_keystone_user }}"
+    pass: "{{ db_keystone_password }}"
+    priv: "{{ db_keystone_name }}.*:ALL"
+    host: "%"
+  - name: "{{ db_glance_user }}"
+    pass: "{{ db_glance_password }}"
+    priv: "{{ db_glance_name }}.*:ALL"
+    host: "%"
+  - name: "{{ db_cinder_user }}"
+    pass: "{{ db_cinder_password }}"
+    priv: "{{ db_cinder_name }}.*:ALL"
+    host: "%"
+  - name: "{{ db_nova_user }}"
+    pass: "{{ db_nova_password }}"
+    priv: "{{ db_nova_name }}.*:ALL"
+    host: "%"
+  - name: "{{ db_heat_user }}"
+    pass: "{{ db_heat_password }}"
+    priv: "{{ db_heat_name }}.*:ALL"
+    host: "%"
+  - name: "{{ db_neutron_user }}"
+    pass: "{{ db_neutron_password }}"
+    priv: "{{ db_neutron_name}}.*:ALL"
+    host: "%"
+
+###############################################
+# Memcache
+memcached_port: 11211
+memcached_listen_ip: 0.0.0.0
+
+memcached_memory_limit: 64
+memcached_connections: 1024
+
+memcached_log_file: /var/log/memcached.log
+memcached_log_verbosity: ""
+
+###############################################
+# Keystone
+keystone_default_region: RegionOne
+
+keystone_reset: False
+keystone_disable_auth_token: False
+keystone_master: controller01
+
+#keystone_hostname: controller01
+keystone_protocol: http
+keystone_admin_port: 35357
+keystone_port: 5000
+keystone_verbose: False
+keystone_debug: "{{ global_debug }}"
+keystone_run_sanity_check: false
+keystone_wsgi_path: /usr/share/keystone/keystone.wsgi
+keystone_api_version: v2.0
+keystone_api_retries_delay: 5
+keystone_api_retries: 3
+
+# TODO: Fix database IP address
+keystone_database_url: "mysql://{{ db_keystone_user }}:{{ db_keystone_password }}@{{ db_vip }}/{{ db_keystone_name }}"
+
+keystone_tenants:
+  - { name: admin, description: "Admin tenant" }
+  - { name: services, description: "Service tenant" }
+
+keystone_users:
+  - { name: "{{ keystone_admin_user }}", password: "{{ keystone_admin_password }}", tenant: admin, email: mamorim@redhat.com }
+  - { name: "{{ keystone_glance_user }}", password: "{{ keystone_glance_password }}", tenant: admin, email: mamorim@redhat.com }
+  - { name: "{{ keystone_cinder_user }}", password: "{{ keystone_cinder_password }}", tenant: admin, email: mamorim@redhat.com }
+  - { name: "{{ keystone_neutron_user }}", password: "{{ keystone_neutron_password }}", tenant: admin, email: mamorim@redhat.com }
+  - { name: "{{ keystone_nova_user }}", password: "{{ keystone_nova_password }}", tenant: admin, email: mamorim@redhat.com }
+  - { name: "{{ keystone_heat_user }}", password: "{{ keystone_heat_password }}", tenant: admin, email: mamorim@redhat.com }
+  - { name: "{{ keystone_ceilometer_user }}", password: "{{ keystone_ceilometer_password }}", tenant: admin, email: mamorim@redhat.com }
+
+keystone_roles:
+  - { name: admin, user: "{{ keystone_admin_user }}", tenant: admin }
+  - { name: admin, user: "{{ keystone_glance_user }}", tenant: services }
+  - { name: admin, user: "{{ keystone_cinder_user }}", tenant: services }
+  - { name: admin, user: "{{ keystone_neutron_user }}", tenant: services }
+  - { name: admin, user: "{{ keystone_nova_user }}", tenant: services }
+  - { name: admin, user: "{{ keystone_heat_user }}", tenant: services }
+  - { name: admin, user: "{{ keystone_ceilometer_user }}", tenant: services }
+
+keystone_services:
+  - { name: keystone, service_type: identity, state: present, description: "Idendity Services" }
+  - { name: glance, service_type: image, state: present, description: "Glance Image Services" }
+  - { name: cinder, service_type: volume, state: present, description: "Cinder Volume Services" }
+  - { name: cinderV2, service_type: volumev2, state: present, description: "Cinder Volume Services V2" }
+  - { name: neutron, service_type: network, state: present, description: "OpenStack Networking Services" }
+  - { name: compute, service_type: compute, state: present, description: "OpenStack Compute Services" }
+  - { name: heat, service_type: orchestration, state: present, description: "OpenStack Orchestration Services" }
+  - { name: heat-cfn, service_type: cloudformation, state: present, description: "OpenStack CloudFormation Services" }
+  - { name: ceilometer, service_type: metering, state: present, description: "OpenStack Telemetry Service" }
+
+keystone_endpoints:
+  - service_name: keystone
+    public_url: "http://{{keystone_public_vip}}:5000/v2.0"
+    internal_url: "http://{{keystone_internal_vip}}:5000/v2.0"
+    admin_url: "http://{{keystone_admin_vip}}:35357/v2.0"
+  - service_name: glance
+    public_url: "http://{{ glance_public_vip }}:9292"
+    internal_url: "http://{{glance_internal_vip}}:9292"
+    admin_url: "http://{{ glance_admin_vip }}:9292"
+  - service_name: cinder
+    public_url: "http://{{ cinder_public_vip }}:8776/v1/%(tenant_id)s"
+    internal_url: "http://{{ cinder_internal_vip }}:8776/v1/%(tenant_id)s"
+    admin_url: "http://{{ cinder_admin_vip }}:8776/v1/%(tenant_id)s"
+  - service_name: cinderV2
+    public_url: "http://{{ cinder_public_vip }}:8776/v2/%(tenant_id)s"
+    internal_url: "http://{{ cinder_internal_vip }}:8776/v2/%(tenant_id)s"
+    admin_url: "http://{{ cinder_admin_vip }}:8776/v2/%(tenant_id)s"
+  - service_name: neutron
+    public_url: "http://{{ neutron_public_vip }}:9696"
+    internal_url: "http://{{ neutron_internal_vip }}:9696"
+    admin_url: "http://{{ neutron_admin_vip }}:9696"
+  - service_name: compute
+    public_url: "http://{{ nova_public_vip }}:8774/v2/$(tenant_id)s"
+    internal_url: "http://{{ nova_internal_vip }}:8774/v2/$(tenant_id)s"
+    admin_url: "http://{{ nova_admin_vip }}:8774/v2/$(tenant_id)s"
+  - service_name: heat
+    public_url: "http://{{ heat_public_vip }}:8004/v1/%(tenant_id)s"
+    internal_url: "http://{{ heat_internal_vip }}:8004/v1/%(tenant_id)s"
+    admin_url: "http://{{ heat_admin_vip }}:8004/v1/%(tenant_id)s"
+  - service_name: heat-cfn
+    public_url: "http://{{ heat_public_vip }}:8000/v1"
+    internal_url: "http://{{ heat_internal_vip }}:8000/v1"
+    admin_url: "http://{{ heat_admin_vip }}:8000/v1"
+  - service_name: ceilometer
+    public_url: "http://{{ ceilometer_public_vip }}:8777"
+    internal_url: "http://{{ ceilometer_internal_vip }}:8777"
+    admin_url: "http://{{ ceilometer_admin_vip }}:8777"
+
+keystone_options:
+  - { section: DEFAULT, option: debug, value: "{{ keystone_debug |default('False') }}"}
+  - { section: DEFAULT, option: verbose, value: "{{ keystone_verbose |default('False') }}"}
+  - { section: DEFAULT, option: admin_token, value: "{{ keystone_admin_token }}"}
+  - { section: database, option: connection, value: "{{ keystone_database_url }}"}
+  - { section: memcache, option: servers, value: "{{ memcached_hosts | shuffle | join(',') |default('localhost') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_hosts, value: "{{ rabbitmq_hosts | shuffle | join(',') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_ha_queues, value: "{{ rabbitmq_clustering | default('True') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_port, value: "{{ rabbitmq_port| default('5671') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_userid, value: "{{ rabbitmq_keystone_user| default('guest') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_password, value: "{{ rabbitmq_keystone_password |default('guest') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_virtual_host, value: "{{ rabbitmq_keystone_vhost| default('/') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_use_ssl, value: "{{ rabbitmq_ssl | default('False') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_port, value: "{{ rabbitmq_ssl_port| default('5672') }}"}
+
+###############################################
+# Glance
+glance_reset: False
+glance_bind_host: 0.0.0.0
+glance_port: 9292
+glance_registry_port: 9191
+glance_log_dir: /var/log/glance
+
+glance_debug: "{{ global_debug }}"
+glance_verbose: False
+glance_registry_debug: "{{ global_debug }}"
+glance_registry_verbose: False
+
+glance_version: 2
+
+glance_protocol: http
+
+# Database
+glance_database_url: "mysql://{{ db_glance_user }}:{{ db_glance_password }}@{{ db_vip }}/{{ db_glance_name }}"
+
+# Misc
+glance_bootstrap: true
+
+glance_master: "{{ keystone_master }}"
+
+glance_api_options:
+  - { section: DEFAULT, option: debug, value: "{{ glance_debug |default('False') }}"}
+  - { section: DEFAULT, option: verbose, value: "{{ glance_verbose |default('False') }}"}
+  - { section: DEFAULT, option: bind_host, value: "{{ glance_bind_host |default('0.0.0.0')}}"}
+  - { section: DEFAULT, option: bind_port, value: "{{ glance_port |default('9292') }}" }
+  - { section: DEFAULT, option: log_file, value: "{{ glance_log_dir }}/api.log"}
+  - { section: DEFAULT, option: registry_host, value: "{{ glance_internal_vip }}"}
+  - { section: DEFAULT, option: registry_port, value: "{{ glance_registry_port }}"}
+  - { section: DEFAULT, option: registry_client_protocol, value: http}
+  - { section: DEFAULT, option: notification_driver, value: messaging}
+  - { section: DEFAULT, option: image_cache_dir, value: /var/lib/glance/image-cache}
+
+  - { section: database, option: connection, value: "{{ glance_database_url }}"}
+
+  - { section: keystone_authtoken, option: auth_host, value: "{{ keystone_internal_vip }}"}
+  - { section: keystone_authtoken, option: auth_port, value: "{{ keystone_admin_port }}"}
+  - { section: keystone_authtoken, option: auth_protocol, value: "{{ keystone_protocol }}"}
+  - { section: keystone_authtoken, option: admin_tenant_name, value: services}
+  - { section: keystone_authtoken, option: admin_user, value: "{{ keystone_glance_user }}"}
+  - { section: keystone_authtoken, option: admin_password, value: "{{ keystone_glance_password }}"}
+  - { section: keystone_authtoken, option: auth_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}"}
+
+  - { section: glance_store, option: stores, value: "glance.store.http.Store,glance.store.filesystem.Store"}
+  - { section: glance_store, option: default_store, value: file}
+  - { section: glance_store, option: filesystem_store_datadir, value: "{{ glance_image_dir |default('/var/lib/glance/images/') }}"}
+  - { section: glance_store, option: cinder_catalog_info, value: "cinder_catalog_info=volume:cinder:internalURL"}
+  - { section: glance_store, option: os_region_name, value: "{{ keystone_default_region }}"}
+
+  - { section: oslo_messaging_rabbit, option: rabbit_userid, value: "{{ rabbitmq_glance_user| default('guest') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_use_ssl, value: "{{ rabbitmq_ssl | default('False') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_ha_queues, value: "{{ rabbitmq_clustering | default('True') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_virtual_host, value: "{{ rabbitmq_glance_vhost| default('/') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_notification_exchange, value: glance}
+  - { section: oslo_messaging_rabbit, option: rabbit_password, value: "{{ rabbitmq_glance_password |default('guest') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_hosts, value: "{{ rabbitmq_hosts | shuffle | join(',') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_port, value: "{{ rabbitmq_port| default('5671') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_notification_topic, value: notifications}
+
+  - { section: paste_deploy, option: flavor, value: keystone}
+
+glance_registry_options:
+  - { section: DEFAULT, option: debug, value: "{{ glance_registry_debug |default('True') }}"}
+  - { section: DEFAULT, option: verbose, value: "{{ glance_registry_verbose |default('True') }}"}
+  - { section: DEFAULT, option: log_file, value: "{{ glance_log_dir |default('/var/log/glance') }}/registry.log"}
+  - { section: DEFAULT, option: log_dir, value: "{{ glance_log_dir |default('/var/log/glance') }}"}
+  - { section: DEFAULT, option: bind_port, value: "{{ glance_registry_port |default('9191') }}"}
+  - { section: database, option: connection, value: "{{ glance_database_url }}"}
+  - { section: keystone_authtoken, option: auth_host, value: "{{ keystone_internal_vip }}"}
+  - { section: keystone_authtoken, option: auth_port, value: "{{ keystone_admin_port }}"}
+  - { section: keystone_authtoken, option: auth_protocol, value: "{{ keystone_protocol }}"}
+  - { section: keystone_authtoken, option: admin_tenant_name, value: services}
+  - { section: keystone_authtoken, option: admin_user, value: "{{ keystone_glance_user }}"}
+  - { section: keystone_authtoken, option: admin_password, value: "\"{{ keystone_glance_password }}\""}
+  - { section: keystone_authtoken, option: auth_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}"}
+  - { section: paste_deploy, option: flavor, value: keystone}
+
+
+###############################################
+# Cinder
+cinder_reset: False
+cinder_bind_host: 0.0.0.0
+cinder_port: 9292
+cinder_log_dir: /var/log/cinder
+cinder_debug: "{{ global_debug }}"
+cinder_verbose: "{{ global_verbose }}"
+
+cinder_master: "{{ keystone_master }}"
+cinder_protocol: http
+
+# Database
+cinder_database_url: "mysql://{{ db_cinder_user }}:{{ db_cinder_password }}@{{ db_vip }}/{{ db_cinder_name }}"
+
+notification_driver: messagingv2
+control_exchange: cinder
+rpc_backend: rabbit
+cinder_osapi_volume_listen_port: 8776
+cinder_osapi_volume_workers: 10
+cinder_auth_strategy: keystone
+
+# Misc
+cinder_bootstrap: true
+
+cinder_options:
+  - { section: DEFAULT, option: debug, value: "{{ cinder_debug |default('False') }}"}
+  - { section: DEFAULT, option: verbose, value: "{{ cinder_verbose |default('False') }}"}
+
+  - { section: DEFAULT, option: notification_driver, value: "{{ notification_driver |default('messagingv2') }}"}
+  - { section: DEFAULT, option: rpc_backend, value: "{{ rpc_backend |default('rabbit')}}"}
+  - { section: DEFAULT, option: control_exchange, value: "{{ control_exchange }}"}
+
+  - { section: DEFAULT, option: osapi_volume_listen, value: "{{ cinder_bind_host }}"}
+  - { section: DEFAULT, option: osapi_volume_listen_port, value: "{{ cinder_osapi_volume_listen_port }}"}
+  - { section: DEFAULT, option: osapi_volume_workers, value: "{{ cinder_osapi_volume_workers |default('10') }}"}
+
+  - { section: DEFAULT, option: glance_host, value: "{{ glance_internal_vip }}"}
+  - { section: DEFAULT, option: glance_api_version, value: "{{ glance_version }}"}
+  - { section: DEFAULT, option: glance_port, value: "{{ glance_port |default('9292') }}"}
+
+  - { section: DEFAULT, option: enable_v2_api, value: True}
+
+  - { section: DEFAULT, option: default_volume_type, value: "{{ cinder_default_volume_type }}"}
+  - { section: DEFAULT, option: volume_usage_audit_period, value: hour}
+  - { section: DEFAULT, option: auth_strategy, value: "{{ cinder_auth_strategy|default('keystone') }}"}
+  - { section: DEFAULT, option: enabled_backends, value: "{{ cinder_enabled_backends }}"}
+  - { section: DEFAULT, option: scheduler_driver, value: cinder.scheduler.filter_scheduler.FilterScheduler}
+  - { section: DEFAULT, option: nova_catalog_info, value: "compute:Compute Service:internalURL"}
+
+  - { section: database, option: connection, value: "{{ cinder_database_url }}"}
+
+  - { section: keystone_authtoken, option: admin_tenant_name, value: services}
+  - { section: keystone_authtoken, option: auth_host, value: "{{ keystone_internal_vip }}"}
+  - { section: keystone_authtoken, option: auth_port, value: "{{ keystone_admin_port }}"}
+  - { section: keystone_authtoken, option: auth_protocol, value: "{{ keystone_protocol }}"}
+  - { section: keystone_authtoken, option: admin_tenant_name, value: services}
+  - { section: keystone_authtoken, option: admin_user, value: "{{ keystone_cinder_user }}"}
+  - { section: keystone_authtoken, option: admin_password, value: "{{ keystone_cinder_password }}"}
+  - { section: keystone_authtoken, option: auth_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}"}
+
+  - { section: keystone_authtoken, option: memcached_servers, value: "{{ memcached_hosts | shuffle | join(',') |default('localhost') }}"}
+
+  - { section: oslo_messaging_rabbit, option: rabbit_userid, value: "{{ rabbitmq_cinder_user| default('guest') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_use_ssl, value: "{{ rabbitmq_ssl | default('False') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_ha_queues, value: "{{ rabbitmq_clustering | default('True') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_virtual_host, value: "{{ rabbitmq_cinder_vhost| default('/') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_password, value: "{{ rabbitmq_cinder_password |default('guest') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_hosts, value: "{{ rabbitmq_hosts | shuffle | join(',') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_port, value: "{{ rabbitmq_port| default('5671') }}"}
+
+cinder_storage_types:
+  - { name: lvm, volume_backend_name: LVM }
+  - { name: lvm2, volume_backend_name: LVM2 }
+
+cinder_storage_backend:
+  - { section: lvm, option: volume_group, value: cinder-volumes}
+  - { section: lvm, option: volume_driver, value: cinder.volume.drivers.lvm.LVMISCSIDriver}
+  - { section: lvm, option: volume_backend_name, value: LVM}
+
+  - { section: lvm2, option: volume_group, value: cinder-volumes2}
+  - { section: lvm2, option: volume_driver, value: cinder.volume.drivers.lvm.LVMISCSIDriver}
+  - { section: lvm2, option: volume_backend_name, value: LVM2}
+
+
+###############################################
+# Nova controller
+nova_debug: "{{ global_debug}}"
+nova_verbose: "{{ global_verbose }}"
+nova_bind_host: 0.0.0.0
+nova_master: "{{ keystone_master }}"
+
+keystone_ec2_url: "{{ keystone_protocol | default('http') }}://{{ keystone_internal_vip }}:{{ keystone_port }}/v2.0/ec2tokens"
+
+nova_database_url: "mysql://{{ db_nova_user }}:{{ db_nova_password }}@{{ db_vip }}/{{ db_nova_name }}"
+
+nova_novncproxy_port: 6080
+nova_protocol: http
+ram_allocation_ratio: 1.2
+cpu_allocation_ratio: 16.0
+disk_allocation_ratio: 1.0
+
+scheduler_default_filters:
+  - AggregateImagePropertiesIsolation
+  - RetryFilter
+  - AvailabilityZoneFilter
+  - RamFilter
+  - ComputeFilter
+  - ComputeCapabilitiesFilter
+  - ImagePropertiesFilter
+  - ServerGroupAntiAffinityFilter
+  - ServerGroupAffinityFilter
+
+virt_type: qemu
+snapshots_directory: /var/lib/snapshots
+images_type: qcow2
+
+nova_options:
+  - { section: DEFAULT, option: debug, value: "{{ nova_debug |default('False') }}"}
+  - { section: DEFAULT, option: verbose, value: "{{ nova_verbose |default('False') }}"}
+  - { section: DEFAULT, option: notification_driver, value: messagingv2}
+  - { section: DEFAULT, option: notification_topics, value: notifications}
+  - { section: DEFAULT, option: rpc_backend, value: rabbit}
+  - { section: DEFAULT, option: notify_on_state_change, value: vm_and_task_state}
+  - { section: DEFAULT, option: state_path, value: "/var/lib/nova"}
+  - { section: DEFAULT, option: report_interval, value: 10}
+  - { section: DEFAULT, option: ec2_listen, value: "{{ nova_bind_host }}"}
+  - { section: DEFAULT, option: ec2_workers, value: 1}
+  - { section: DEFAULT, option: osapi_compute_listen, value: "{{ nova_bind_host }}"}
+  - { section: DEFAULT, option: osapi_compute_workers, value: 1}
+  - { section: DEFAULT, option: metadata_listen, value: "{{ nova_bind_host }}"}
+  - { section: DEFAULT, option: metadata_workers, value: 1}
+  - { section: DEFAULT, option: service_down_time, value: 60}
+  - { section: DEFAULT, option: instance_usage_audit_period, value: "hour"}
+  - { section: DEFAULT, option: rootwrap_config, value: "/etc/nova/rootwrap.conf"}
+  - { section: DEFAULT, option: auth_strategy, value: keystone}
+  - { section: DEFAULT, option: use_forwarded_for, value: False}
+  - { section: DEFAULT, option: keystone_ec2_url, value: "{{ keystone_ec2_url }}"}
+  - { section: DEFAULT, option: novncproxy_host, value: "{{ nova_bind_host }}"}
+  - { section: DEFAULT, option: novncproxy_port, value: "{{ nova_novncproxy_port }}"}
+  - { section: DEFAULT, option: allow_resize_to_same_host, value: True}
+  - { section: DEFAULT, option: instance_usage_audit, value: True}
+  - { section: DEFAULT, option: network_api_class, value: "nova.network.neutronv2.api.API"}
+  - { section: DEFAULT, option: security_group_api, value: neutron}
+  - { section: DEFAULT, option: s3_listen, value: "{{ nova_bind_host }}"}
+  - { section: DEFAULT, option: log_dir, value: "/var/log/nova"}
+  - { section: DEFAULT, option: scheduler_host_manager, value: "nova.scheduler.host_manager.HostManager"}
+  - { section: DEFAULT, option: scheduler_host_subset_size, value: 20}
+  - { section: DEFAULT, option: cpu_allocation_ratio, value: "{{ cpu_allocation_ratio }}"}
+  - { section: DEFAULT, option: disk_allocation_ratio, value: "{{ disk_allocation_ratio }}"}
+  - { section: DEFAULT, option: max_io_ops_per_host, value: 8}
+  - { section: DEFAULT, option: max_instances_per_host, value: 50}
+  - { section: DEFAULT, option: ram_allocation_ratio, value: "{{ ram_allocation_ratio }}"}
+  - { section: DEFAULT, option: scheduler_available_filters, value: "nova.scheduler.filters.all_filters"}
+  - { section: DEFAULT, option: scheduler_default_filters, value: "{{ scheduler_default_filters| join(',')}}"}
+  - { section: DEFAULT, option: scheduler_weight_classes, value: "nova.scheduler.weights.all_weighers"}
+  - { section: DEFAULT, option: scheduler_max_attempts, value: 3}
+  - { section: DEFAULT, option: vif_plugging_is_fatal, value: False}
+  - { section: DEFAULT, option: vif_plugging_timeout, value: 10}
+  - { section: DEFAULT, option: firewall_driver, value: "nova.virt.firewall.NoopFirewallDriver"}
+  - { section: DEFAULT, option: novncproxy_base_url, value: "{{ nova_protocol }}://{{ nova_public_vip }}:6080/vnc_auto.html"}
+  - { section: DEFAULT, option: vncserver_listen, value: "{{ nova_bind_host }}"}
+  - { section: DEFAULT, option: vncserver_proxyclient_address, value: "{{ nova_internal_vip }}"}
+  - { section: DEFAULT, option: volume_api_class, value: "nova.volume.cinder.API"}
+  - { section: DEFAULT, option: volume_api_class, value: "nova.volume.cinder.API"}
+  - { section: DEFAULT, option: memcached_servers, value: "{{ memcached_hosts | shuffle | join(',') |default('localhost') }}"}
+  - { section: DEFAULT, option: amqp_durable_queues, value: False}
+  - { section: DEFAULT, option: image_service, value: "nova.image.glance.GlanceImageService"}
+  - { section: DEFAULT, option: lock_path, value: "/var/lib/nova/tmp"}
+
+  - { section: cinder, option: catalog_info, value: "volumev2:cinderv2:internalURL"}
+
+  - { section: database, option: connection, value: "{{ nova_database_url }}"}
+
+  - { section: glance, option: host, value: "{{ glance_internal_vip }}"}
+  - { section: glance, option: port, value: "{{ glance_port | default(9292) }}"}
+  - { section: glance, option: api_servers, value: "{{ glance_protocol }}://{{ glance_internal_vip }}:9292"}
+  - { section: glance, option: api_servers, value: "{{ glance_protocol }}://{{ glance_internal_vip }}:9292"}
+
+  - { section: keystone_authtoken, option: admin_tenant_name, value: services}
+  - { section: keystone_authtoken, option: auth_host, value: "{{ keystone_internal_vip }}"}
+  - { section: keystone_authtoken, option: auth_port, value: "{{ keystone_admin_port }}"}
+  - { section: keystone_authtoken, option: auth_protocol, value: "{{ keystone_protocol }}"}
+  - { section: keystone_authtoken, option: admin_tenant_name, value: services}
+  - { section: keystone_authtoken, option: admin_user, value: "{{ keystone_nova_user }}"}
+  - { section: keystone_authtoken, option: admin_password, value: "{{ keystone_nova_password }}"}
+  - { section: keystone_authtoken, option: auth_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}"}
+  - { section: keystone_authtoken, option: memcached_servers, value: "{{ memcached_hosts | shuffle | join(',') |default('localhost') }}"}
+
+  - { section: libvirt, option: virt_type, value: "{{ virt_type |default('qemu') }}"}
+  - { section: libvirt, option: snapshot_image_format, value: "qcow2"}
+  - { section: libvirt, option: snapshots_directory, value: "{{ snapshots_directory }}"}
+  - { section: libvirt, option: images_type, value: "{{ images_type }}"}
+  - { section: libvirt, option: snapshot_compression, value: True}
+  - { section: libvirt, option: snapshot_compression, value: True}
+
+  - { section: neutron, option: service_metadata_proxy, value: True}
+  - { section: neutron, option: metadata_proxy_shared_secret, value: "{{ neutron_metadata_proxy_shared_secret }}"}
+  - { section: neutron, option: url, value: "http://{{ neutron_internal_vip }}:9696"}
+  - { section: neutron, option: admin_username, value: "{{ keystone_neutron_user }}"}
+  - { section: neutron, option: admin_password, value: "{{ keystone_neutron_password }}"}
+  - { section: neutron, option: admin_tenant_name, value: services}
+  - { section: neutron, option: region_name, value: "{{ keystone_default_region }}"}
+  - { section: neutron, option: admin_auth_url, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_admin_port }}/v2.0"}
+  - { section: neutron, option: neutron_admin_auth_url, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}/v2.0"}
+  - { section: neutron, option: auth_strategy, value: keystone}
+  - { section: neutron, option: ovs_bridge, value: br-int}
+  - { section: neutron, option: extension_sync_interval, value: 600}
+  - { section: neutron, option: url_timeout, value: 30}
+  - { section: neutron, option: default_tenant_id, value: default}
+
+  - { section: osapi_v3, option: enabled, value: True}
+
+  - { section: spice, option: html5proxy_host, value: "{{ nova_bind_host }}"}
+  - { section: spice, option: html5proxy_port, value: 6082}
+  - { section: spice, option: agent_enabled, value: False}
+  - { section: spice, option: enabled, value: False}
+
+  - { section: workarounds, option: disable_libvirt_livesnapshot, value: False}
+
+  - { section: oslo_messaging_rabbit, option: rabbit_userid, value: "{{ rabbitmq_nova_user| default('guest') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_use_ssl, value: "{{ rabbitmq_ssl | default('False') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_ha_queues, value: "{{ rabbitmq_clustering | default('True') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_virtual_host, value: "{{ rabbitmq_nova_vhost| default('/') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_password, value: "{{ rabbitmq_nova_password |default('guest') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_hosts, value: "{{ rabbitmq_hosts | shuffle | join(',') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_port, value: "{{ rabbitmq_port| default('5671') }}"}
+
+nova_api_options:
+  - { section: "filter:authtoken", option: paste.filter_factory, value: "keystonemiddleware.auth_token:filter_factory"}
+  - { section: "filter:authtoken", option: auth_host, value: "{{ keystone_internal_vip }}"}
+  - { section: "filter:authtoken", option: admin_tenant_name, value: services}
+  - { section: "filter:authtoken", option: admin_user, value: "{{ keystone_nova_user }}"}
+  - { section: "filter:authtoken", option: admin_password, value: "{{ keystone_nova_password }}"}
+
+
+
+###############################################
+# Neutron
+network_reset: False
+neutron_master: "{{ keystone_master }}"
+neutron_debug: "{{ global_debug }}"
+neutron_verbose: "{{ global_verbose }}"
+neutron_bind_host: 0.0.0.0
+neutron_port: 9696
+neutron_metadata_port: 9697
+neutron_router_dvr: False
+neutron_log_dir: /var/log/neutron
+neutron_core_plugin: ml2
+neutron_service_plugins:
+ - router
+ - lbaas
+ - metering
+
+# OpenVSwitch
+use_openvswitch: True
+use_neutron: "{{ use_openvswitch }}"
+neutron_external_bridge: br-ex
+neutron_ovs_tunnel_type: vxlan
+neutron_ovs_bridges: br-pnet1
+
+use_neutron_l3: "{{ use_openvswitch }}"
+#ovs_bridge:
+#  - br-ex
+neutron_vxlan_network_bridge: br-vxlan
+
+neutron_auth_strategy: keystone
+neutron_ovs_bridge_mappings: "public:br-ex,pnet1:br-pnet1"
+neutron_l3_ha: True
+neutron_max_l3_agents_per_router: 3
+neutron_min_l3_agents_per_router: 2
+neutron_l3_ha_net_cidr: 169.254.192.0/18
+neutron_l3_ha_network_type: vxlan
+neutron_l2_population: False
+neutron_ml2_type_drivers:
+  - vxlan
+  - vlan
+  - flat
+neutron_network_vlan_ranges: "pnet1:100:200"
+neutron_ml2_tenant_network_types:
+  - vlan
+neutron_ml2_mechanism_drivers:
+  - openvswitch
+neutron_database_url: "mysql://{{ db_neutron_user }}:{{ db_neutron_password }}@{{ db_vip }}/{{ db_neutron_name }}"
+
+neutron_dnsmasq_options: "dhcp-option-force=26,1400"
+
+neutron_options:
+  - { section: DEFAULT, option: debug, value: "{{ neutron_debug |default('False') }}"}
+  - { section: DEFAULT, option: verbose, value: "{{ neutron_verbose |default('False') }}"}
+  - { section: DEFAULT, option: router_distributed, value: "{{ neutron_router_dvr |default('False') }}"}
+  - { section: DEFAULT, option: state_path, value: "/var/lib/neutron"}
+  - { section: DEFAULT, option: log_dir, value: "{{ neutron_log_dir }}"}
+  - { section: DEFAULT, option: bind_host, value: "{{ neutron_bind_host }}"}
+  - { section: DEFAULT, option: bind_port, value: "{{ neutron_port }}"}
+  - { section: DEFAULT, option: core_plugin, value: "{{ neutron_core_plugin }}"}
+  - { section: DEFAULT, option: service_plugins, value: "{{ neutron_service_plugins |join(',') }}"}
+  - { section: DEFAULT, option: auth_strategy, value: "{{ neutron_auth_strategy }}"}
+  - { section: DEFAULT, option: base_mac, value: "fa:16:3e:00:00:00"}
+  - { section: DEFAULT, option: mac_generation_retries, value: 16}
+  - { section: DEFAULT, option: dhcp_lease_duration, value: 86400}
+  - { section: DEFAULT, option: dhcp_agent_notification, value: True}
+  - { section: DEFAULT, option: allow_bulk, value: True}
+  - { section: DEFAULT, option: allow_pagination, value: False}
+  - { section: DEFAULT, option: allow_overlapping_ips, value: False}
+  - { section: DEFAULT, option: agent_down_time, value: 75}
+  - { section: DEFAULT, option: router_scheduler_driver, value: "neutron.scheduler.l3_agent_scheduler.ChanceScheduler"}
+
+  - { section: DEFAULT, option: allow_automatic_l3agent_failover, value: False}
+  - { section: DEFAULT, option: dhcp_agents_per_network, value: 2}
+
+  - { section: DEFAULT, option: l3_ha, value: "{{ neutron_l3_ha }}"}
+  - { section: DEFAULT, option: l3_ha, value: "{{ neutron_l3_ha }}"}
+  - { section: DEFAULT, option: max_l3_agents_per_router, value: "{{ neutron_max_l3_agents_per_router }}"}
+  - { section: DEFAULT, option: min_l3_agents_per_router, value: "{{ neutron_min_l3_agents_per_router }}"}
+  - { section: DEFAULT, option: l3_ha_net_cidr, value: "{{ neutron_l3_ha_net_cidr }}"}
+  - { section: DEFAULT, option: l3_ha_network_type, value: "{{ neutron_l3_ha_network_type }}"}
+
+  - { section: DEFAULT, option: notify_nova_on_port_status_changes, value: True}
+  - { section: DEFAULT, option: notify_nova_on_port_data_changes, value: True}
+  - { section: DEFAULT, option: nova_url, value: "http://{{ nova_internal_vip }}:8774/v2"}
+  - { section: DEFAULT, option: rpc_backend, value: "neutron.openstack.common.rpc.impl_kombu"}
+  - { section: DEFAULT, option: control_exchange, value: "neutron"}
+
+  - { section: agent, option: root_helper, value: "sudo neutron-rootwrap /etc/neutron/rootwrap.conf"}
+  - { section: agent, option: report_interval, value: 30}
+
+  - { section: keystone_authtoken, option: admin_tenant_name, value: services}
+  - { section: keystone_authtoken, option: auth_host, value: "{{ keystone_internal_vip }}"}
+  - { section: keystone_authtoken, option: auth_port, value: "{{ keystone_admin_port }}"}
+  - { section: keystone_authtoken, option: auth_protocol, value: "{{ keystone_protocol }}"}
+  - { section: keystone_authtoken, option: admin_tenant_name, value: services}
+  - { section: keystone_authtoken, option: admin_user, value: "{{ keystone_neutron_user }}"}
+  - { section: keystone_authtoken, option: admin_password, value: "{{ keystone_neutron_password }}"}
+  - { section: keystone_authtoken, option: auth_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}"}
+
+  - { section: database, option: connection, value: "{{ neutron_database_url }}"}
+
+  - { section: oslo_messaging_rabbit, option: rabbit_userid, value: "{{ rabbitmq_neutron_user| default('guest') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_use_ssl, value: "{{ rabbitmq_ssl | default('False') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_ha_queues, value: "{{ rabbitmq_clustering | default('True') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_virtual_host, value: "{{ rabbitmq_neutron_vhost| default('/') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_password, value: "{{ rabbitmq_neutron_password |default('guest') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_hosts, value: "{{ rabbitmq_hosts | shuffle | join(',') }}"}
+  - { section: oslo_messaging_rabbit, option: rabbit_port, value: "{{ rabbitmq_port| default('5671') }}"}
+
+neutron_metadata_options:
+  - { section: DEFAULT, option: debug, value: "{{ neutron_debug |default('False') }}"}
+  - { section: DEFAULT, option: verbose, value: "{{ neutron_verbose |default('False') }}"}
+  - { section: DEFAULT, option: auth_url, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_admin_port }}/"}
+  - { section: DEFAULT, option: auth_insecure, value: False}
+  - { section: DEFAULT, option: auth_insecure, value: False}
+
+  - { section: DEFAULT, option: admin_tenant_name, value: services}
+  - { section: DEFAULT, option: admin_user, value: "{{ keystone_neutron_user }}"}
+  - { section: DEFAULT, option: admin_password, value: "{{ keystone_neutron_password }}"}
+  - { section: DEFAULT, option: nova_metadata_ip, value: "{{ nova_internal_vip }}"}
+  - { section: DEFAULT, option: nova_metadata_port, value: "{{ nova_metadata_port|default('8775') }}"}
+  - { section: DEFAULT, option: nova_metadata_protocol, value: "{{ nova_metadata_protocol|default('http') }}"}
+  - { section: DEFAULT, option: metadata_proxy_shared_secret, value: "{{ neutron_metadata_proxy_shared_secret }}"}
+  - { section: DEFAULT, option: metadata_workers, value: 1}
+  - { section: DEFAULT, option: metadata_backlog, value: 2048}
+  - { section: DEFAULT, option: cache_url, value: "memory://?default_ttl=5"}
+
+neutron_dhcp_agent_options:
+  - { section: DEFAULT, option: interface_driver, value: "neutron.agent.linux.interface.OVSInterfaceDriver"}
+  - { section: DEFAULT, option: enable_isolated_metadata, value: False}
+  - { section: DEFAULT, option: enable_metadata_network, value: False}
+  - { section: DEFAULT, option: dhcp_delete_namespaces, value: False}
+
+neutron_lbaas_agent_options:
+  - { section: DEFAULT, option: debug, value: "{{ neutron_debug |default('False') }}"}
+  - { section: DEFAULT, option: verbose, value: "{{ neutron_verbose |default('False') }}"}
+  - { section: DEFAULT, option: interface_driver, value: "neutron.agent.linux.interface.OVSInterfaceDriver"}
+  - { section: DEFAULT, option: device_driver, value: "neutron_lbaas.services.loadbalancer.drivers.haproxy.namespace_driver.HaproxyNSDriver"}
+  - { section: DEFAULT, option: use_namespaces, value: True}
+  - { section: haproxy, option: user_group, value: nobody}
+
+neutron_l3_agent_options:
+  - { section: DEFAULT, option: debug, value: "{{ neutron_debug |default('False') }}"}
+  - { section: DEFAULT, option: verbose, value: "{{ neutron_verbose |default('False') }}"}
+  - { section: DEFAULT, option: interface_driver, value: "neutron.agent.linux.interface.OVSInterfaceDriver"}
+  - { section: DEFAULT, option: ovs_use_veth, value: False}
+  - { section: DEFAULT, option: use_namespaces, value: True}
+  - { section: DEFAULT, option: handle_internal_only_routers, value: True}
+  - { section: DEFAULT, option: external_network_bridge, value: br-ex}
+  - { section: DEFAULT, option: metadata_port, value: "{{ neutron_metadata_port|default('9697')}}"}
+  - { section: DEFAULT, option: send_arp_for_ha, value: 3}
+  - { section: DEFAULT, option: periodic_interval, value: 40}
+  - { section: DEFAULT, option: periodic_fuzzy_delay, value: 5}
+  - { section: DEFAULT, option: enable_metadata_proxy, value: True}
+  - { section: DEFAULT, option: router_delete_namespaces, value: True}
+  - { section: DEFAULT, option: agent_mode, value: legacy}
+
+neutron_ovs_plugin_options:
+  - { section: ovs, option: debug, value: "{{ neutron_debug |default('False') }}"}
+  - { section: ovs, option: integration_bridge, value: "br-int"}
+  - { section: ovs, option: tunnel_bridge, value: "br-tun"}
+  - { section: ovs, option: local_ip, value: "{{ ansible_eth0.ipv4.address }}"}
+  - { section: ovs, option: bridge_mappings, value: "{{ ansible_eth0.ipv4.address }}"}
+  - { section: ovs, option: bridge_mappings, value: "{{ neutron_ovs_bridge_mappings }}"}
+  - { section: ovs, option: enable_tunneling, value: "{{ neutron_enable_tunneling|default('True') }}"}
+
+  - { section: agent, option: polling_interval, value: 2}
+  - { section: agent, option: tunnel_types, value: vxlan}
+  - { section: agent, option: vxlan_udp_port, value: 4789}
+  - { section: agent, option: l2_population, value: "{{ neutron_l2_population|default('False') }}"}
+  - { section: agent, option: arp_responder, value: False}
+  - { section: agent, option: enable_distributed_routing, value: False}
+
+  - { section: securitygroup, option: firewall_driver, value: "neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"}
+
+neutron_ml2_plugin_options:
+  - { section: ml2, option: type_drivers, value: "{{ neutron_ml2_type_drivers |join(',') }}"}
+  - { section: ml2, option: tenant_network_types, value: "{{ neutron_ml2_tenant_network_types |join(',') }}"}
+  - { section: ml2, option: mechanism_drivers, value: "{{ neutron_ml2_mechanism_drivers |join(',') }}"}
+
+  - { section: ml2_type_vlan, option: network_vlan_ranges, value: "{{ neutron_network_vlan_ranges|default('pnet1:100:200') }}"}
+
+  - { section: ml2_type_vxlan, option: vni_ranges, value: "{{ neutron_vxlan_vni_ranges|default('1:2000') }}"}
+  - { section: ml2_type_vxlan, option: vxlan_group, value: "{{ neutron_vxlan_group|default('239.1.1.1') }}"}
+
+  - { section: securitygroup, option: enable_security_group, value: "{{ neutron_enable_security_group|default('True') }}"}
+  - { section: ovs, option: bridge_mappings, value: "{{ neutron_ovs_bridge_mappings }}"}
+
+neutron_lbaas_options:
+  - { section: service_providers, option: service_provider, value: "LOADBALANCER:Haproxy:neutron_lbaas.services.loadbalancer.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default"}
+
+neutron_metering_agent_options:
+  - { section: DEFAULT, option: debug, value: "{{ neutron_debug |default('False') }}"}
+  - { section: DEFAULT, option: verbose, value: "{{ neutron_verbose |default('False') }}"}
+  - { section: DEFAULT, option: driver, value: "neutron.services.metering.drivers.iptables.iptables_driver.IptablesMeteringDriver "}
+  - { section: DEFAULT, option: measure_interval, value: 30}
+  - { section: DEFAULT, option: report_interval, value: 30}
+  - { section: DEFAULT, option: interface_driver, value: "neutron.agent.linux.interface.OVSInterfaceDriver"}
+  - { section: DEFAULT, option: use_namespaces, value: True}
+
+###############################################
+# Pacemaker
+pacemaker_ansible_group: controller
+# python -c "from passlib.hash import sha512_crypt; import getpass; print sha512_crypt.encrypt(getpass.getpass())"
+pacemaker_password: '$6$rounds=656000$Igxt8mWyAlUHXPIw$LEDKdZhQT0V0qBVeBI6XjC5oIzsCAD5b9olDA7prcS1lLy8PL8On3m/Qbd0/IPhn4sU4DVRPv97RSSvfghOgI/'
+pacemaker_user: pacemaker
+pacemaker_properties:
+  stonith_enabled: "false"
+
+pacemaker_resources:
+  - id: vip-db
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ db_vip }}"
+      cidr_netmask: "{{ internal_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+
+  - id: vip-pub-keystone
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ keystone_public_vip }}"
+      cidr_netmask: "{{ public_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+
+  - id: vip-int-keystone
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ keystone_internal_vip }}"
+      cidr_netmask: "{{ internal_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+
+  - id: vip-pub-glance
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ glance_public_vip }}"
+      cidr_netmask: "{{ public_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+  - id: vip-int-glance
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ glance_internal_vip }}"
+      cidr_netmask: "{{ internal_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+
+  - id: vip-pub-cinder
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ cinder_public_vip }}"
+      cidr_netmask: "{{ public_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+
+  - id: vip-int-cinder
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ cinder_internal_vip }}"
+      cidr_netmask: "{{ internal_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+
+  - id: vip-pub-neutron
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ neutron_public_vip }}"
+      cidr_netmask: "{{ public_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+  - id: vip-int-neutron
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ neutron_internal_vip }}"
+      cidr_netmask: "{{ internal_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+
+  - id: vip-pub-nova
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ nova_public_vip }}"
+      cidr_netmask: "{{ public_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+  - id: vip-int-nova
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ nova_internal_vip }}"
+      cidr_netmask: "{{ internal_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+
+  - id: vip-pub-heat
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ heat_public_vip }}"
+      cidr_netmask: "{{ public_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+  - id: vip-int-heat
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ heat_internal_vip }}"
+      cidr_netmask: "{{ internal_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+
+  - id: vip-pub-ceilometer
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ ceilometer_public_vip }}"
+      cidr_netmask: "{{ public_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+  - id: vip-adm-ceilometer
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ ceilometer_admin_vip }}"
+      cidr_netmask: "{{ internal_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+  - id: vip-int-ceilometer
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ ceilometer_internal_vip }}"
+      cidr_netmask: "{{ internal_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
 
