@@ -1,6 +1,6 @@
 # Public interface
 ext_interface: eth1
-pnet_interface: eth2
+pnet_interface: eth3
 
 network_ether_interfaces:
   # Public API
@@ -8,20 +8,25 @@ network_ether_interfaces:
     onboot: yes
     type: Ethernet
     bootproto: static
-    address: 10.211.55.12
+    address: 192.168.122.118
     netmask: 255.255.255.0
-    gateway: 10.211.55.1
-    dns1: 10.211.55.1
+    gateway: 192.168.122.1
+    dns1: 192.168.122.1
     dns2: 8.8.8.8
-#    vlan: "yes"
-#  - device: eth1
-#    onboot: yes
-#    type: Ethernet
-#    bootproto: none
+  # Internal
   - device: eth2
     onboot: yes
     type: Ethernet
-    bootproto: none
+    bootproto: static
+    address: 172.17.0.118
+    netmask: 255.255.255.0
+  # Storage
+  - device: eth4
+    onboot: yes
+    type: Ethernet
+    bootproto: static
+    address: 172.18.0.118
+    netmask: 255.255.255.0
 
 network_bridge_interfaces:
   -  device: br-ex
@@ -30,7 +35,7 @@ network_bridge_interfaces:
      type: OVSIntPort
      devicetype: ovs
      ovs_bridge: br-ex
-     address: 192.168.10.12
+     address: 172.16.0.118
      netmask: 255.255.255.0
      bootproto: static
      stp: "off"

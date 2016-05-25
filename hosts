@@ -1,13 +1,65 @@
 [rabbitmq]
-rabbit-01 ansible_ssh_host=10.211.55.9
-rabbit-02 ansible_ssh_host=10.211.55.10
-rabbit-03 ansible_ssh_host=10.211.55.11
+controller01 ansible_ssh_host=192.168.122.118
+controller02 ansible_ssh_host=192.168.122.116
+controller03 ansible_ssh_host=192.168.122.115
+
+[mariadb]
+controller01 ansible_ssh_host=192.168.122.118
+controller02 ansible_ssh_host=192.168.122.116
+controller03 ansible_ssh_host=192.168.122.115
+
+[memcache]
+controller01 ansible_ssh_host=192.168.122.118
+controller02 ansible_ssh_host=192.168.122.116
+controller03 ansible_ssh_host=192.168.122.115
+
+[keystone]
+controller01 ansible_ssh_host=192.168.122.118
+controller02 ansible_ssh_host=192.168.122.116
+controller03 ansible_ssh_host=192.168.122.115
+
+[glance]
+controller01 ansible_ssh_host=192.168.122.118
+controller02 ansible_ssh_host=192.168.122.116
+controller03 ansible_ssh_host=192.168.122.115
+
+[cinder]
+controller01 ansible_ssh_host=192.168.122.118
+controller02 ansible_ssh_host=192.168.122.116
+controller03 ansible_ssh_host=192.168.122.115
+
+[neutron]
+controller01 ansible_ssh_host=192.168.122.118
+controller02 ansible_ssh_host=192.168.122.116
+controller03 ansible_ssh_host=192.168.122.115
+
+[network]
+controller01 ansible_ssh_host=192.168.122.118
+controller02 ansible_ssh_host=192.168.122.116
+controller03 ansible_ssh_host=192.168.122.115
+
+[nova]
+controller01 ansible_ssh_host=192.168.122.118
+controller02 ansible_ssh_host=192.168.122.116
+controller03 ansible_ssh_host=192.168.122.115
+
+[nova]
+controller01 ansible_ssh_host=192.168.122.118
+controller02 ansible_ssh_host=192.168.122.116
+controller03 ansible_ssh_host=192.168.122.115
+
+[controller]
+controller01 ansible_ssh_host=192.168.122.118
+controller02 ansible_ssh_host=192.168.122.116
+controller03 ansible_ssh_host=192.168.122.115
 
 
-[kickstarter]
-rh-kickstarter ansible_ssh_host=172.16.0.1 primary_if=eth0
+[tftpserver]
+172.17.0.70
 
 [rh-full:children]
 rabbitmq
 mariadb
-kickstarter
+controller
+compute
+tftpserver
