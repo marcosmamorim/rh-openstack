@@ -37,16 +37,16 @@
   service: name=haproxy enabled=no
   tags: haproxy
 
-- name: create haproxy pacemaker cloned resources
-  pacemaker: command=create name=haproxy type=systemd:haproxy clone=yes
-  args:
-    operations:
-      - action: monitor
-        options:
-          start-delay: 10s
-  run_once: true
-  tags: haproxy
-
+#- name: create haproxy pacemaker cloned resources
+#  pacemaker: command=create name=haproxy type=systemd:haproxy clone=yes
+#  args:
+#    operations:
+#      - action: monitor
+#        options:
+#          start-delay: 10s
+#  run_once: true
+#  tags: haproxy
+#
 #- name: up resources
 ##  command: pcs cluster cib-push /root/dump_pcsresources
 #  command: pcs cluster cib-push /root/dump_pcsresources-novo --config
