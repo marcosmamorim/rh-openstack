@@ -6,7 +6,9 @@ neutron_metadata_proxy_shared_secret: 9a31180afe1171283712839712713f96516ce365
 
 openstack_version: 8
 
+# Used to bind services
 mgmt_interface: eth0
+internal_ip: "{{ hostvars[inventory_hostname][ 'ansible_' + mgmt_interface ].ipv4.address }}"
 
 # RabbitMQ Users 
 rabbitmq_admin_user: admin
@@ -104,7 +106,8 @@ internal_network_prefix: 172.17.0
 # IF false use diferent IPs for each services
 vips_all_in_one: False
 
-db_vip: "{{ internal_network_prefix }}.20"
+#db_vip: "{{ internal_network_prefix }}.20"
+db_vip: "{{ internal_ip }}"
 
 keystone_internal_vip: "{{ internal_network_prefix }}.21"
 glance_internal_vip: "{{ internal_network_prefix }}.22"
@@ -184,13 +187,13 @@ rabbitmq_ssl: False
 rabbitmq_cacert_file: etc/rabbitmq/ssl/cacert.pem
 rabbitmq_cert_file: etc/rabbitmq/ssl/cert.pem
 rabbitmq_key_file: etc/rabbitmq/ssl/key.pem
-rabbitmq_ssl_bind_address: "{{ hostvars[inventory_hostname][ "ansible_" + mgmt_interface ].ipv4.address }}"
+rabbitmq_ssl_bind_address: "{{ hostvars[inventory_hostname][ 'ansible_' + mgmt_interface ].ipv4.address }}"
 rabbitmq_ssl_port: 5672
 
 
 rabbitmq_sanitycheck: True
 
-rabbitmq_bind_address: "{{ hostvars[inventory_hostname][ "ansible_" + mgmt_interface ].ipv4.address }}"
+rabbitmq_bind_address: "{{ internal_ip }}"
 rabbitmq_port: 5671
 
 # Memory
@@ -317,7 +320,8 @@ galera_reset_cluster: False
 ### GALERA
 galera_selinux: True
 
-galera_node_address: "{{ ansible_eth0.ipv4.address }}"
+galera_node_address: "{{ internal_ip }}"
+
 galera_firewalld: False
 
 # This is a best way to configure dynamic ini files and we can add more options without change roles
@@ -350,7 +354,7 @@ galera_config_options:
   - { section: galera, option: query_cache_size, value: "{{ mariadb_query_cache_size | default('64M') }}" }
   - { section: galera, option: innodb_flush_log_at_trx_commit, value: 2 }
 
-mariadb_bind_address: "{{ hostvars[inventory_hostname][ "ansible_" + mgmt_interface ].ipv4.address }}"
+mariadb_bind_address: "{{ internal_ip }}"
 mariadb_port: 3306
 mariadb_max_connections: 4096
 
@@ -417,7 +421,7 @@ mariadb_users:
 ###############################################
 # Memcache
 memcached_port: 11211
-memcached_listen_ip: "{{ hostvars[inventory_hostname][ "ansible_" + mgmt_interface ].ipv4.address }}"
+memcached_listen_ip: "{{ internal_ip }}"
 
 memcached_memory_limit: 64
 memcached_connections: 1024
@@ -537,7 +541,7 @@ keystone_options:
 ###############################################
 # Glance
 glance_reset: False
-glance_bind_host: "{{ hostvars[inventory_hostname][ "ansible_" + mgmt_interface ].ipv4.address }}"
+glance_bind_host: "{{ internal_ip }}"
 glance_port: 9292
 glance_registry_port: 9191
 glance_log_dir: /var/log/glance
@@ -619,7 +623,7 @@ glance_registry_options:
 ###############################################
 # Cinder
 cinder_reset: False
-cinder_bind_host: "{{ hostvars[inventory_hostname][ "ansible_" + mgmt_interface ].ipv4.address }}"
+cinder_bind_host: "{{ internal_ip }}"
 cinder_port: 9292
 cinder_log_dir: /var/log/cinder
 cinder_debug: "{{ global_debug }}"
@@ -705,7 +709,7 @@ cinder_storage_backend:
 # Nova controller
 nova_debug: "{{ global_debug}}"
 nova_verbose: "{{ global_verbose }}"
-nova_bind_host: "{{ hostvars[inventory_hostname][ "ansible_" + mgmt_interface ].ipv4.address }}"
+nova_bind_host: "{{ internal_ip }}"
 nova_master: "{{ keystone_master }}"
 
 keystone_ec2_url: "{{ keystone_protocol | default('http') }}://{{ keystone_internal_vip }}:{{ keystone_port }}/v2.0/ec2tokens"
@@ -859,7 +863,7 @@ network_reset: False
 neutron_master: "{{ keystone_master }}"
 neutron_debug: "{{ global_debug }}"
 neutron_verbose: "{{ global_verbose }}"
-neutron_bind_host: "{{ hostvars[inventory_hostname][ "ansible_" + mgmt_interface ].ipv4.address }}"
+neutron_bind_host: "{{ internal_ip }}"
 neutron_port: 9696
 neutron_metadata_port: 9697
 neutron_router_dvr: False
@@ -1065,15 +1069,15 @@ pacemaker_properties:
   stonith_enabled: "false"
 pacemaker_cluster_name: OSPCluster
 pacemaker_resources:
-  - id: vip-db
-    type: "ocf:heartbeat:IPaddr2"
-    options:
-      ip: "{{ db_vip }}"
-      cidr_netmask: "{{ internal_netmask|default('24') }}"
-    op:
-      - action: monitor
-        options:
-          interval: 5s
+#  - id: vip-db
+#    type: "ocf:heartbeat:IPaddr2"
+#    options:
+#      ip: "{{ db_vip }}"
+#      cidr_netmask: "{{ internal_netmask|default('24') }}"
+#    op:
+#      - action: monitor
+#        options:
+#          interval: 5s
 
   - id: vip-pub-keystone
     type: "ocf:heartbeat:IPaddr2"
