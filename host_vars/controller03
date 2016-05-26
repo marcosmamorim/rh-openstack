@@ -1,6 +1,7 @@
 # Public interface
 ext_interface: eth1
 pnet_interface: eth3
+mgmt_interface: eth0
 
 network_ether_interfaces:
   # Public API
