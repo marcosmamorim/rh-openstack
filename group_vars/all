@@ -1053,13 +1053,15 @@ neutron_metering_agent_options:
 
 ###############################################
 # Pacemaker
+
+pacemaker_reset: True
 pacemaker_ansible_group: controller
 # python -c "from passlib.hash import sha512_crypt; import getpass; print sha512_crypt.encrypt(getpass.getpass())"
-pacemaker_password: '$6$rounds=656000$Igxt8mWyAlUHXPIw$LEDKdZhQT0V0qBVeBI6XjC5oIzsCAD5b9olDA7prcS1lLy8PL8On3m/Qbd0/IPhn4sU4DVRPv97RSSvfghOgI/'
-pacemaker_user: pacemaker
+pacemaker_password: '123@mudar'
+pacemaker_user: hacluster
 pacemaker_properties:
   stonith_enabled: "false"
-
+pacemaker_cluster_name: OSPCluster
 pacemaker_resources:
   - id: vip-db
     type: "ocf:heartbeat:IPaddr2"
@@ -1196,15 +1198,6 @@ pacemaker_resources:
       - action: monitor
         options:
           interval: 5s
-  - id: vip-adm-ceilometer
-    type: "ocf:heartbeat:IPaddr2"
-    options:
-      ip: "{{ ceilometer_admin_vip }}"
-      cidr_netmask: "{{ internal_netmask|default('24') }}"
-    op:
-      - action: monitor
-        options:
-          interval: 5s
   - id: vip-int-ceilometer
     type: "ocf:heartbeat:IPaddr2"
     options:
@@ -1226,6 +1219,8 @@ rhel_subscription_user: username_rhn
 rhel_subscription_pass: password_rhn
 
 # Attach to pool_id
+# Red Hat Employee
+# 8a85f98144844aff014488d058bf15be
 rhel_pool_id: redhat_pool_id
 
 # Register repos
