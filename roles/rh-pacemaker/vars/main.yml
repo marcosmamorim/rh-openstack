@@ -1,2 +1,6 @@
 ---
-pacemaker_package: pcs
+pacemaker_package:
+  - pcs
+  - fence-agents-all
+  - corosync
+  - pacemaker

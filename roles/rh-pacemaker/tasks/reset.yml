@@ -1,8 +1,9 @@
 ---
 
 - name: Stop pacemaker cluster
-  command: pcs cluster stop
+  command: pcs cluster stop --force
   when: pacemaker_reset
+  ignore_errors: True
   tags:
     - pacemaker
     - pacemaker-reset
@@ -10,3 +11,31 @@
 - name: remove pacemaker cluster configuration
   command: pcs cluster destroy
   when: pacemaker_reset
+  ignore_errors: True
+  tags:
+    - pacemaker
+    - pacemaker-reset
+
+- name: stop pcsd
+  service: name=pcsd state=stopped
+  ignore_errors: True
+  tags:
+    - pacemaker
+    - pacemaker-reset
+
+- name: reset auth
+  command: pcs pcsd clear-auth
+  when: pacemaker_reset
+  ignore_errors: True
+  tags:
+    - pacemaker
+    - pacemaker-reset
+
+- name: remove cluster files config
+  file:
+    dest={{ item }}
+    state=absent
+  with_items:
+    - /var/lib/pcsd/pcs_users.conf
+    - /var/lib/pcsd/tokens
+

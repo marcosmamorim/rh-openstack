@@ -1,5 +1,13 @@
 ---
 
+- name: Ensure cluster group membership
+  fail: msg="Cluster hosts must be members of a group"
+  when: pacemaker_ansible_group is not iterable
+
+- name: Install Pacemaker Configuration System package
+  yum: name={{ item }} state=installed
+  with_items: pacemaker_package
+
 - name: include cluster reset
   include: reset.yml
   when: pacemaker_reset
@@ -7,24 +15,27 @@
     - pacemaker
     - pacemaker-reset
 
-- name: Ensure cluster group membership
-  fail: msg="Cluster hosts must be members of a group"
-  when: pacemaker_ansible_group is not iterable
-
-- name: Install Pacemaker Configuration System package
-  yum: name={{ pacemaker_package }} state=installed
-
 - name: Start PCS daemon
-  command: systemctl start pcsd
-
-- name: Enable PCS daemon
-  command: systemctl enable pcsd
+  service: name=pcsd state=restarted enabled=yes
 
 - name: Ensure the password for the cluster user
   user:
     name={{ pacemaker_user }}
     group=haclient
     password={{ pacemaker_password | password_hash('sha512', ansible_hostname) }}
+
+- name: Authenticate all nodes when pacemaker reset is true
+  command: >
+    pcs cluster auth
+    {% for host in groups[pacemaker_ansible_group] %}
+    {{ hostvars[host]['ansible_hostname'] }}
+    {% endfor %}
+    -u {{ pacemaker_user }} -p {{ pacemaker_password }}
+  run_once: true
+  args:
+    creates: /var/lib/pcsd/tokens
+  when: pacemaker_reset
+  ignore_errors: True
 
 - name: Authenticate all nodes
   command: >
@@ -40,7 +51,7 @@
 - name: Setup cluster message bus
   run_once: true
   command: >
-    pcs cluster setup --name {{ pacemaker_cluster_name }} --force
+    pcs cluster setup --name {{ pacemaker_cluster_name }} --force --enable
     {% for host in groups[pacemaker_ansible_group] %}
     {{ hostvars[host]['ansible_hostname'] }}
     {% endfor %}
@@ -110,3 +121,6 @@
     {% if item.wait is defined %}
       wait={{ item.wait }}
     {% endif %}
+
+- name: Enable cluster
+  command: pcs cluster enable --all
