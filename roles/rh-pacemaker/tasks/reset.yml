@@ -1,0 +1,12 @@
+---
+
+- name: Stop pacemaker cluster
+  command: pcs cluster stop
+  when: pacemaker_reset
+  tags:
+    - pacemaker
+    - pacemaker-reset
+
+- name: remove pacemaker cluster configuration
+  command: pcs cluster destroy
+  when: pacemaker_reset

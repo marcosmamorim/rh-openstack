@@ -1,4 +1,12 @@
 ---
+
+- name: include cluster reset
+  include: reset.yml
+  when: pacemaker_reset
+  tags:
+    - pacemaker
+    - pacemaker-reset
+
 - name: Ensure cluster group membership
   fail: msg="Cluster hosts must be members of a group"
   when: pacemaker_ansible_group is not iterable
@@ -12,10 +20,11 @@
 - name: Enable PCS daemon
   command: systemctl enable pcsd
 
-- name: Ensure the password for the cluster use
+- name: Ensure the password for the cluster user
   user:
-    name="{{ pacemaker_user }}"
-    password="{{ pacemaker_password }}"
+    name={{ pacemaker_user }}
+    group=haclient
+    password={{ pacemaker_password | password_hash('sha512', ansible_hostname) }}
 
 - name: Authenticate all nodes
   command: >
@@ -31,12 +40,14 @@
 - name: Setup cluster message bus
   run_once: true
   command: >
-    pcs cluster setup --name {{ pacemaker_cluster_name }}
+    pcs cluster setup --name {{ pacemaker_cluster_name }} --force
     {% for host in groups[pacemaker_ansible_group] %}
     {{ hostvars[host]['ansible_hostname'] }}
     {% endfor %}
   args:
     creates: /etc/corosync/corosync.conf
+  tags:
+    - pcs-cluster
 
 - name: Start all cluster nodes
   service: name={{ item }} enabled=yes state=started
