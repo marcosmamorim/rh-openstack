@@ -22,52 +22,29 @@
     - kickstart
 
 - name: create dirs rhel-server
-  command: mkdir -p /var/www/html/iso /var/www/html/{{ tftp_file }} /var/www/html/ks
+  command: mkdir -p /var/www/html/iso /var/www/html/{{ rhel_prefix }} /var/www/html/ks
   tags:
     - kickstart
 
 - name: image rhel server
-  copy: src=iso/{{ tftp_file }}-x86_64-dvd.iso dest=/var/www/html/iso/{{ tftp_file }}-x86_64-dvd.iso mode=0644
+  copy: src=iso/{{ rhel_prefix }}-x86_64-dvd.iso dest=/var/www/html/iso/{{ rhel_prefix }}-x86_64-dvd.iso mode=0644
   when: use_rhel_iso
-  tags:
-    - kickstart
-
-- name: template configure_fstab iso
-  template: src=configure_fstab.j2 dest=/root/configure_fstab mode=0755 owner=root group=root
-  tags:
-    - kickstart
-
-- name: configure fstab
-  command: /root/configure_fstab
-  ignore_errors: True
   tags:
     - kickstart
 
 - name: Copy over tftpboot configuration
   copy: src=tftpboot dest=/var/lib/
-  when: use_rhel_iso
+  when: use_rhel_iso or use_rhel_http
   tags:
     - kickstart
 
-- name: Copy Rhel RPM
-  copy: src=repo_openstack dest=/var/www/html/repo_openstack
-  when: use_rhel_iso
-  tags:
-    - kickstart
-
-- name: Create Repo
-  command: createrepo /var/www/html/repo_openstack
-  ignore_errors: True
-  tags:
-    - kickstart
-
-- name: Default PXE
+- name: configure pxe
   template: src=default.j2 dest=/var/lib/tftpboot/pxelinux/pxelinux.cfg/default mode=0644
   tags:
     - kickstart
 
 - name: template ks rhel
-  template: src=rhel-osp-7.2.ks.j2 dest=/var/www/html/ks/rhel-osp-7.2.ks mode=0644
+  template: src={{rhel_prefix}}.ks.j2 dest=/var/www/html/ks/{{rhel_prefix}}.ks mode=0644
   tags:
     - kickstart
 
@@ -77,7 +54,7 @@
     - kickstart
 
 - name: enable and restart services
-  service: name{{ item }} state=restarted enabled=yes
+  service: name={{ item }} state=restarted enabled=yes
   with_items:
     - httpd
     - xinetd

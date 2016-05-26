@@ -36,6 +36,7 @@
     creates: /var/lib/pcsd/tokens
   when: pacemaker_reset
   ignore_errors: True
+  no_log: True
 
 - name: Authenticate all nodes
   command: >
