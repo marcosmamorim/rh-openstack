@@ -1,7 +1,7 @@
 ---
 
 - name: Install yum-utils package (RedHat)
-  package:
+  yum:
     name=yum-utils
     state=latest
     update_cache=yes

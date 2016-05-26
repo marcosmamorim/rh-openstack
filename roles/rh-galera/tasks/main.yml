@@ -39,6 +39,7 @@
     owner=mysql
     group=mysql
     state=file
+  ignore_errors: True
   tags:
     - log-files
 
