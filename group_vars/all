@@ -115,8 +115,9 @@ internal_network_prefix: 172.17.0
 # IF false use diferent IPs for each services
 vips_all_in_one: False
 
-#db_vip: "{{ internal_network_prefix }}.20"
-db_vip: "{{ internal_ip }}"
+db_vip: "{{ internal_network_prefix }}.20"
+#db_vip: "{{ internal_ip }}"
+redis_vip: "{{ internal_network_prefix }}.29"
 
 keystone_internal_vip: "{{ internal_network_prefix }}.21"
 glance_internal_vip: "{{ internal_network_prefix }}.22"
@@ -1079,15 +1080,24 @@ pacemaker_properties:
   stonith_enabled: "false"
 pacemaker_cluster_name: OSPCluster
 pacemaker_resources:
-#  - id: vip-db
-#    type: "ocf:heartbeat:IPaddr2"
-#    options:
-#      ip: "{{ db_vip }}"
-#      cidr_netmask: "{{ internal_netmask|default('24') }}"
-#    op:
-#      - action: monitor
-#        options:
-#          interval: 5s
+  - id: vip-db
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ db_vip }}"
+      cidr_netmask: "{{ internal_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+  - id: vip-redis
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ redis_vip }}"
+      cidr_netmask: "{{ internal_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
 
   - id: vip-pub-keystone
     type: "ocf:heartbeat:IPaddr2"
