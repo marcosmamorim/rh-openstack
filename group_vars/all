@@ -10,6 +10,15 @@ openstack_version: 8
 mgmt_interface: eth0
 internal_ip: "{{ hostvars[inventory_hostname][ 'ansible_' + mgmt_interface ].ipv4.address }}"
 
+# TODO: Usado no haproxy, tem que melhorar isso
+controller_nodes:
+  - name: "controller01"
+    addr_int: "192.168.122.118"
+  - name: "controller02"
+    addr_int: "192.168.122.116"
+  - name: "controller03"
+    addr_int: "192.168.122.115"
+
 # RabbitMQ Users 
 rabbitmq_admin_user: admin
 rabbitmq_keystone_user: keystone
@@ -116,6 +125,7 @@ neutron_internal_vip: "{{ internal_network_prefix }}.24"
 nova_internal_vip: "{{ internal_network_prefix }}.25"
 heat_internal_vip: "{{ internal_network_prefix }}.26"
 ceilometer_internal_vip: "{{ internal_network_prefix }}.27"
+horizon_internal_vip: "{{ internal_network_prefix }}.28"
 
 keystone_admin_vip: "{{ keystone_internal_vip }}"
 glance_admin_vip: "{{ glance_internal_vip }}"
@@ -124,6 +134,7 @@ neutron_admin_vip: "{{ neutron_internal_vip }}"
 nova_admin_vip: "{{ nova_internal_vip }}"
 heat_admin_vip: "{{ heat_internal_vip }}"
 ceilometer_admin_vip: "{{ ceilometer_internal_vip }}"
+horizon_admin_vip: "{{ ceilometer_internal_vip }}"
 
 keystone_public_vip: "{{ public_network_prefix }}.21"
 glance_public_vip: "{{ public_network_prefix }}.22"
@@ -132,8 +143,7 @@ neutron_public_vip: "{{ public_network_prefix }}.24"
 nova_public_vip: "{{ public_network_prefix }}.25"
 heat_public_vip: "{{ public_network_prefix }}.26"
 ceilometer_public_vip: "{{ public_network_prefix }}.27"
-
-
+horizon_public_vip: "{{ public_network_prefix }}.28"
 
 
 ###############################################
@@ -1208,6 +1218,25 @@ pacemaker_resources:
     type: "ocf:heartbeat:IPaddr2"
     options:
       ip: "{{ ceilometer_internal_vip }}"
+      cidr_netmask: "{{ internal_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+
+  - id: vip-pub-horizon
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ horizon_public_vip }}"
+      cidr_netmask: "{{ public_netmask|default('24') }}"
+    op:
+      - action: monitor
+        options:
+          interval: 5s
+  - id: vip-int-horizon
+    type: "ocf:heartbeat:IPaddr2"
+    options:
+      ip: "{{ horizon_internal_vip }}"
       cidr_netmask: "{{ internal_netmask|default('24') }}"
     op:
       - action: monitor
