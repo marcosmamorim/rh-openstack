@@ -1,0 +1,82 @@
+---
+
+#- name: force selinux pemissive
+#  command: setenforce permissive
+#  tags: haproxy
+
+- name: set sysctl parameters
+  copy: src=haproxy-sysctl.conf dest=/etc/sysctl.d/haproxy.conf mode=0644 owner=root group=root
+  notify: reload kernel parameters
+  tags: haproxy
+
+- name: set haproxy config file
+  template:
+     dest=/etc/haproxy/haproxy.cfg
+     src=haproxy.cfg.j2
+  notify: restart haproxy
+  tags: haproxy
+
+- name: create pki directory for haproxy ssl termination
+  file: path=/etc/pki/haproxy state=directory owner=root group=root mode=0755
+  when: use_haproxy_ssl_termination
+  tags: haproxy
+
+- name: deploy certificate file for ssl termination
+  copy: src=credentials/haproxy/cert.pem dest=/etc/pki/haproxy/cert.pem mode=0600
+  when: use_haproxy_ssl_termination
+  notify: restart haproxy
+  tags: haproxy
+
+- name: deploy certificate file for ssl termination
+  copy: src=credentials/haproxy/cert.pem-lab dest=/etc/pki/haproxy/cert.pem mode=0600
+  when: use_haproxy_ssl_termination
+  notify: restart haproxy
+  tags: haproxy
+
+- name: disable haproxy service
+  service: name=haproxy enabled=no
+  tags: haproxy
+
+- name: create haproxy pacemaker cloned resources
+  pacemaker: command=create name=haproxy type=systemd:haproxy clone=yes
+  args:
+    operations:
+      - action: monitor
+        options:
+          start-delay: 10s
+  run_once: true
+  tags: haproxy
+
+#- name: up resources
+##  command: pcs cluster cib-push /root/dump_pcsresources
+#  command: pcs cluster cib-push /root/dump_pcsresources-novo --config
+#  run_once: true
+#  ignore_errors: True
+#  tags: haproxy
+#
+#- name: pause to resources pcs in nodes
+#  pause: seconds=10
+#  tags: haproxy
+#
+#- name: create pacemaker controlled VIP addresses
+#  pcs_resource: command=create name={{ item.name }} type=IPaddr2
+#  args:
+#    options:
+#      ip: "{{ item.addr }}"
+#  with_items: vip_addresses
+#  run_once: true
+#  tags: haproxy
+#
+#- name: create constraint
+#  command: pcs constraint colocation add vip-db haproxy-clone INFINITY
+#  ignore_errors: True
+#  register: command_result
+#  failed_when: "'FAILED' in command_result.stderr"
+#  tags: haproxy
+#
+#- name: create order constraint
+#  command: pcs constraint order vip-db then haproxy-clone kind=Optional
+#  ignore_errors: True
+#  register: command_result
+#  failed_when: "'FAILED' in command_result.stderr"
+#  tags: haproxy

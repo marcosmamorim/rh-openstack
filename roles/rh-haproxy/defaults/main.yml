@@ -1,0 +1,2 @@
+---
+use_haproxy_ssl_termination: false
