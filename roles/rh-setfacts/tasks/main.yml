@@ -1,0 +1,20 @@
+---
+#- name: define first controller fact
+#  set_fact: first_controller={{ groups['controller'][0] }}
+#  tags: setfacts
+#  always_run: yes
+#
+- name: set fact about primary ip address
+  set_fact: primary_ipaddr={{ hostvars[inventory_hostname][ "ansible_" + mgmt_interface ].ipv4.address }}
+  tags: setfacts
+  always_run: yes
+
+- name: debug interface ip address
+  debug: var=primary_ipaddr
+#
+#- name: set fact about private ip address
+#  set_fact: private_ipaddr={{ internal_ipaddr }}
+#  tags: setfacts
+#  always_run: yes
+
+
