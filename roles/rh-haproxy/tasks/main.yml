@@ -1,8 +1,11 @@
 ---
 
-- name: Include packages
+- name: Include haproxy packages
   include: packages.yml
 
-- name: Include configuration
+- name: Include haproxy configuration
   include: configuration.yml
+
+- name: Include haproxy pacemaker
+  include: pacemaker.yml
 

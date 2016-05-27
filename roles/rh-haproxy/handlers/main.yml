@@ -2,5 +2,3 @@
 - name: restart haproxy
   service: name=haproxy state=restarted
 
-- name: reload kernel parameters
-  command: sysctl -p /etc/sysctl.d/haproxy.conf
