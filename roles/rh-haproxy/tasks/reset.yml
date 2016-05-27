@@ -1,0 +1,15 @@
+---
+
+- name: remove haproxy from pacemaker
+  command: pcs resource delete haproxy
+
+- name: remove haproxy configurations
+  file:
+    dest=/etc/haproxy/haproxy.cfg
+    state=absent
+
+- name: remove haproxy ssl directory
+  file:
+    dest=/etc/pki/haproxy
+    state=absent
+  when: use_haproxy_ssl_termination

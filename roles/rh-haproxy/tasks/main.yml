@@ -3,6 +3,10 @@
 - name: Include haproxy packages
   include: packages.yml
 
+- name: include haproxy reset
+  include: reset.yml
+  when: haproxy_reset
+
 - name: Include haproxy configuration
   include: configuration.yml
 
