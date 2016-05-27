@@ -1,0 +1,39 @@
+---
+- name: create galera cluster resource
+  when: ansible_hostname == pacemaker_dc.stdout
+  pcs_resource: command=create resource_id=galera type=heartbeat:galera
+  tags:
+    - pacemaker
+    - pacemaker-galera
+  args:
+    options:
+    operations:
+      - action: start
+        options:
+          timeout: 120s
+      - action: stop
+        options:
+          timeout: 120s
+      - action: monitor
+        options:
+          interval: 20
+          timeout: 30
+      - action: monitor
+        options:
+          interval: 10
+          timeout: 30
+          role: "Master"
+      - action: monitor
+        options:
+          interval: 30
+          timeout: 30
+          role: "Slave"
+      - action: demote
+        options:
+          interval: 0s
+          timeout: 120
+      - action: promote
+        options:
+          interval: 0s
+          timeout: 300s
+          on-fail: "block"

@@ -20,13 +20,15 @@
     path=/etc/mysql_clustered
   register: galera_clustered
 
-- include: packages.yml
+- name: Include galera packages
+  include: packages.yml
   tags:
     - galera
     - galera-repo
   when: galera_clustered.stat.exists != True
 
-- include: reset.yml
+- name: include galera reset
+  include: reset.yml
   when: galera_reset_cluster is defined and
         galera_reset_cluster
   tags:
@@ -43,7 +45,8 @@
   tags:
     - log-files
 
-- include: firewall.yml
+- name: include galera firewall
+  include: firewall.yml
   when: galera_firewalld is defined and
         galera_firewalld and
         galera_clustered.stat.exists != True
@@ -55,37 +58,50 @@
   command: systemctl stop firewalld
   when: not galera_firewalld
 
-- include: configuration.yml
+- name: include galera configuration
+  include: configuration.yml
   tags:
     - galera
     - galera-config
   when: galera_clustered.stat.exists != True
 
-- include: secure.yml
+- name: include galera secure
+  include: secure.yml
   tags:
     - galera
     - galera-secure
   when: galera_clustered.stat.exists != True
 
-- include: user.yml
+- name: include galera users
+  include: user.yml
   tags:
     - galera
     - galera-users
   when: galera_clustered.stat.exists != True
 
-- include: bootstrap.yml
+- name: include galera bootstrap
+  include: bootstrap.yml
   tags:
     - galera
     - galera-bootstrap
   when: galera_clustered.stat.exists != True
 
-- include: databases.yml
+- name: include galera databases
+  include: databases.yml
   tags:
     - galera
     - galera-databases
   when: galera_clustered.stat.exists != True
 
-- include: sanitycheck.yml
+- name: include galera sanity check
+  include: sanitycheck.yml
+  tags:
+    - galera
+    - galera-databases
+  when: galera_clustered.stat.exists != True
+
+- name: include galera pacemaker
+  include: pacemaker.yml
   tags:
     - galera
     - galera-databases
