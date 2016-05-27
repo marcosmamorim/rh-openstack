@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  author: Marcos Amorim
+  description: HAProxy pacemaker cluster configuration role
+  company: Red Hat
+  license: GPLv3
+  min_ansible_version: 1.9
+  platforms:
+  - name: EL
+    versions:
+    - 7
+  - name: Fedora
+    versions:
+    - 19
+  categories:
+  - clustering
+  - haproxy
+  - openstack
+dependencies: [role: rh-setfacts ]
