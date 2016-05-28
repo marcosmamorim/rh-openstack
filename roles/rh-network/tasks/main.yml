@@ -17,9 +17,24 @@
 - include: bridge.yml
   when: network_bridge_interfaces is defined and network_bridge_interfaces |length > 0
 
+- name: setup kernel modules
+  modprobe: name={{ item }} state=present
+  with_items:
+    - nf-conntrack
+    - nf_conntrack_ipv4
+    - nf_conntrack_ipv6
+    - nf_conntrack_pptp
+    - vhost_net
+
 - name: set sysctl parameters
-  copy: src=conntrack-sysctl.conf dest=/etc/sysctl.d/conntrack.conf mode=0644 owner=root group=root
-  notify: reload kernel parameters
-  tags:
-    - nova
-    - nova-kernel_parameters
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_set: yes
+    reload: yes
+    ignoreerrors: yes
+  with_items: net_os_tuning_params
+
+- name: restart network
+  service: name=network state=restarted enabled=yes
