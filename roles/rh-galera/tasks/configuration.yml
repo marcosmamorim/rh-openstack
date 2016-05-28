@@ -32,7 +32,6 @@
     state=present
   when: inventory_hostname == galera_master
 
-
 - name: Creating the /root/.my.cnf file
   ini_file: >
     dest=/root/.my.cnf
@@ -62,7 +61,7 @@
     state=present
     regexp="^mysqlchk"
     insertafter="sun-as-jpda     9191/udp"
-    line="mysqlchk        {{ galera_xinet_port }}/tcp                # Galera Clustercheck"
+    line="mysqlchk        {{ galera_xinet_port }}/tcp                \# Galera Clustercheck"
 
 - name: Adding galera-status script in /usr/bin/
   copy:
@@ -83,9 +82,8 @@
 
 - name: create default clustercheck
   template:
-    src=etc/sysconfig/clustercke.j2
+    src=etc/sysconfig/clustercheck.j2
     dest=/etc/sysconfig/clustercheck
-
 
 - name: Fix correct wrep cluster address
   ini_file: >
@@ -94,15 +92,6 @@
     option="wsrep_cluster_address"
     value="gcomm://{{ ','.join(galera_hosts) }}"
   when: inventory_hostname != galera_master
-
-#- name: Enabling MariaDB service
-#  command: systemctl enable mariadb
-#
-#
-#
-#- name: Starting MariaDB service
-#  command: systemctl start mariadb
-#  when: inventory_hostname != galera_master
 
 - name: Finalize the setup by creating file /etc/mysql_clustered
   copy:
