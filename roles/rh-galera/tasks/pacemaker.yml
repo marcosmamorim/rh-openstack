@@ -16,3 +16,5 @@
   tags:
     - pacemaker
     - pacemaker-galera
+
+# TODO: Create constraints to galera
