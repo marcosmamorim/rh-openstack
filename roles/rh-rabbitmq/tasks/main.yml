@@ -1,8 +1,11 @@
 ---
+#TODO: Create reset rabbitmq
+
 - include: install.yml
 - include: erlang.yml
 - include: configuration.yml
 - include: limits.yml
+
 
 - include: firewall.yml
   when: rabbitmq_firewalld is defined and rabbitmq_firewalld == true
@@ -19,14 +22,20 @@
         rabbitmq_clustering or (clustered.stat.exists != True) and
         rabbitmq_clustering
 
+- name: restart all rabbimq servers
+  command: systemctl restart rabbitmq-server
+
 - include: plugins.yml
 - include: vhosts.yml
 - include: policies.yml
 - include: users.yml
 
-- name: restart all rabbimq servers
-  command: systemctl restart rabbitmq-server
-
 - include: sanitycheck.yml
   when: rabbitmq_sanitycheck and
         rabbitmq_clustering or (clustered.stat.exists != True)
+
+- name: include rabbitmq-server to pacemaker
+  include: pacemaker.yml
+  tags:
+    - rabbitmq
+    - rabbitmq-pacemaker
