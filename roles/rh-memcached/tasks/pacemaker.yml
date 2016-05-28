@@ -1,0 +1,34 @@
+---
+
+- name: stop memcached before add to pacemaker
+  service: name=memcached-server state=stopped enabled=no
+
+- name: Get Current DC
+  shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
+  register: pacemaker_dc
+  tags:
+    - pacemaker
+    - pacemaker-galera
+
+- name: create memcached cluster resource
+  when: ansible_hostname == pacemaker_dc.stdout
+  pcs_resource: command=create resource_id=memcached type=systemd:memcached
+  args:
+    options:
+      interleave: true
+    operations:
+      - action: monitor
+        options:
+          interval: 60s
+      - action: start
+        options:
+          timeout: 0s
+  tags:
+    - pacemaker
+    - pacemaker-rabbit
+
+- name: clone memcached pacemaker
+  command: pcs resource clone memcached
+  tags:
+    - pacemaker
+    - pacemaker-memcached
