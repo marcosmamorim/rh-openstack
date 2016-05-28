@@ -15,3 +15,8 @@
     dest=/etc/pki/haproxy
     state=absent
   when: use_haproxy_ssl_termination
+
+- name: remove haproxy from pacemaker
+  command: pcs resource delete haproxy
+  ignore_errors: True
+  no_log: True
