@@ -35,10 +35,10 @@
 - meta: flush_handlers
 
 - name: Ensure that the Keystone service is stopped
-  command: systemctl stop {{ keystone_service }}
+  service: name={{ keystone_service }} state=stopped enabled=no
 
 - name: Restart httpd
-  command: systemctl restart httpd
+  service: name=httpd state=restarted enabled=no
 
 - include: maintenance.yml
 - include: endpoints.yml
