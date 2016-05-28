@@ -2,12 +2,12 @@
 - hosts: controller
   gather_facts: True
   roles:
-    - rh-network
-    - rh-pacemaker
-    - rh-rabbitmq
-    - rh-galera
-    - rh-memcached
+    - rh-network # OK
+    - rh-pacemaker # OK
     - rh-haproxy
+    - rh-galera
+    - rh-rabbitmq
+    - rh-memcached
 #    - rh-keystone
 #    - rh-glance
 #    - rh-cinder

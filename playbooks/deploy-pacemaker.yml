@@ -2,7 +2,7 @@
 - hosts: controller
   gather_facts: True
   roles:
-#    - rh-network
+    - rh-network
     - rh-pacemaker
 
 #    - rh-rabbitmq

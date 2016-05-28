@@ -1,4 +1,4 @@
-- hosts: keystone
+- hosts: controller
   gather_facts: True
   roles:
     - rh-keystone

@@ -1,4 +1,4 @@
-- hosts: neutron
+- hosts: controller
   gather_facts: True
   roles:
     - rh-neutron

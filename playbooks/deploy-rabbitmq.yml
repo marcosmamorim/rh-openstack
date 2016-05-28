@@ -1,4 +1,4 @@
-- hosts: rabbitmq
+- hosts: controller
   gather_facts: True
   roles:
     - rh-rabbitmq

@@ -1,4 +1,4 @@
-- hosts: memcache
+- hosts: controller
   gather_facts: True
   roles:
     - rh-memcached
