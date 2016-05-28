@@ -1,4 +1,5 @@
 ---
+# TODO: Create reset to memcache
 # Setup/install tasks.
 - name: Install Memcached.
   yum: name=memcached state=installed
@@ -12,7 +13,8 @@
     owner: root
     group: root
     mode: 0644
-  notify: restart memcached
+#  notify: restart memcached
 
-- name: Ensure Memcached is set to run on startup.
-  command: systemctl enable memcached
+
+- name: include pacemaker
+  include: pacemaker.yml

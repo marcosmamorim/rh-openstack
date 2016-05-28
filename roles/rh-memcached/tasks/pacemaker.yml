@@ -1,7 +1,7 @@
 ---
 
 - name: stop memcached before add to pacemaker
-  service: name=memcached-server state=stopped enabled=no
+  service: name=memcached state=stopped enabled=no
 
 - name: Get Current DC
   shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
@@ -22,7 +22,7 @@
           interval: 60s
       - action: start
         options:
-          timeout: 0s
+          timeout: 30s
   tags:
     - pacemaker
     - pacemaker-rabbit
