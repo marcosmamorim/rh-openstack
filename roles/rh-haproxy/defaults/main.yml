@@ -1,3 +1,6 @@
 ---
 use_haproxy_ssl_termination: false
 haproxy_reset: false
+
+haproxy_stats_admin_user: admin
+haproxy_stats_admin_pass: 123@Mudar

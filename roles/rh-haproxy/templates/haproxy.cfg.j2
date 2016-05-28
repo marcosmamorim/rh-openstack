@@ -247,14 +247,14 @@ listen  stats   {{ internal_ip }}:1936
 
         maxconn 10
 
-        clitimeout      100s
-        srvtimeout      100s
-        contimeout      100s
+        timeout client  100s
+        timeout server  100s
+        timeout connect 100s
         timeout queue   100s
 
         stats enable
         stats hide-version
         stats refresh 30s
         stats show-node
-        stats auth admin:nada@nada
+        stats auth {{ haproxy_stats_admin_user }}:{{ haproxy_stats_admin_pass }}
         stats uri  /haproxy?stats
