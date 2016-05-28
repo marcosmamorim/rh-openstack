@@ -2,6 +2,7 @@
 
 - name: remove haproxy from pacemaker
   command: pcs resource delete haproxy
+  when: ansible_hostname == pacemaker_dc.stdout
   ignore_errors: True
 
 - name: remove haproxy configurations

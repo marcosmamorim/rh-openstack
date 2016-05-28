@@ -34,3 +34,14 @@
   service: name=haproxy enabled=no
   tags: haproxy
 
+- name: configure rsyslog to haproxy
+  file:
+    src=haproxy-rsyslog.conf
+    dest=/etc/rsyslog.d/haproxy.conf
+  notify: restart rsyslog
+
+#- name: configure logrotate to haproxy
+#  file:
+#    src=haproxy-logrotate.conf
+#    dest=/etc/logrotate.d/haproxy.conf
+#  notify: restart rsyslog

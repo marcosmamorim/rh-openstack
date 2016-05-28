@@ -1,8 +1,8 @@
 # This file managed by Puppet
 global
   daemon  
-  group  haproxy
-  log  /dev/log local0
+  group haproxy
+  log      127.0.0.1 local0
   maxconn  10000
   pidfile  /var/run/haproxy.pid
   user  haproxy

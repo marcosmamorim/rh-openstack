@@ -34,6 +34,7 @@
   command: pcs constraint colocation add vip-db haproxy-clone INFINITY
   ignore_errors: True
   register: command_result
+  when: ansible_hostname == pacemaker_dc.stdout
   failed_when: "'FAILED' in command_result.stderr"
   tags:
     - pacemaker
@@ -42,6 +43,7 @@
 - name: create order constraint
   command: pcs constraint order vip-db then haproxy-clone kind=Optional
   ignore_errors: True
+  when: ansible_hostname == pacemaker_dc.stdout
   failed_when: "'FAILED' in command_result.stderr"
   tags:
     - pacemaker
