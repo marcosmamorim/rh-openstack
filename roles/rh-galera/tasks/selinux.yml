@@ -14,14 +14,14 @@
 - name: activate SELinux module galera_cluster
   command: /usr/sbin/semodule -i /tmp/galera_cluster.pp
 
-- seport:
-    ports={{ mariadb_port }},{{ fw_mysql_ist }},{{ fw_mysql_sst }},{{ fw_galera }},{{ fw_xinetd }}
-    proto=tcp
-    setype=mysqld_port_t
-    state=present
-
-- seport:
-    ports={{ fw_galera }}
-    proto=udp
-    setype=mysqld_port_t
-    state=present
+#- seport:
+#    ports={{ mariadb_port }},{{ fw_mysql_ist }},{{ fw_mysql_sst }},{{ fw_galera }},{{ fw_xinetd }}
+#    proto=tcp
+#    setype=mysqld_port_t
+#    state=present
+#
+#- seport:
+#    ports={{ fw_galera }}
+#    proto=udp
+#    setype=mysqld_port_t
+#    state=present
