@@ -2,6 +2,7 @@
 
 - name: remove haproxy from pacemaker
   command: pcs resource delete haproxy
+  ignore_errors: True
 
 - name: remove haproxy configurations
   file:

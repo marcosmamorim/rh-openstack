@@ -172,8 +172,8 @@ listen mysql
   option httpchk
   stick on dst
   stick-table type ip size 1000
-  timeout client 0
-  timeout server 0
+  timeout client 10
+  timeout server 10
 {% for node in controller_nodes %}
   server {{ node.name }} {{ node.addr_int }}:3306 backup check fall 5 inter 2000 on-marked-down shutdown-sessions port 9200 rise 2
 {% endfor %}
@@ -235,8 +235,8 @@ listen redis
   option tcp-check
   tcp-check send info\ replication\r\n
   tcp-check expect string role:master
-  timeout client 0
-  timeout server 0
+  timeout client 10
+  timeout server 20
 {% for node in controller_nodes %}
   server {{ node.name }} {{ node.addr_int }}:6379 check fall 5 inter 2000 rise 2
 {% endfor %}  

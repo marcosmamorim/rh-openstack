@@ -3,6 +3,9 @@
 - name: set haproxy sysctl parameters
   sysctl: name=net.ipv4.ip_nonlocal_bind value=1 state=present sysctl_set=yes reload=yes
 
+- name: SELinux for haproxy
+  command: setsebool -P haproxy_connect_any on
+
 - name: set haproxy config file
   template:
      dest=/etc/haproxy/haproxy.cfg
