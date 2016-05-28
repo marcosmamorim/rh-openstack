@@ -1,2 +1,3 @@
 ---
 use_haproxy_ssl_termination: false
+haproxy_reset: false
