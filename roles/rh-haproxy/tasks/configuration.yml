@@ -35,7 +35,7 @@
   tags: haproxy
 
 - name: configure rsyslog to haproxy
-  file:
+  copy:
     src=haproxy-rsyslog.conf
     dest=/etc/rsyslog.d/haproxy.conf
   notify: restart rsyslog
