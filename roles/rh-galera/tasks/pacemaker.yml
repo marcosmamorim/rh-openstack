@@ -1,39 +1,18 @@
 ---
-- name: create galera cluster resource
-  when: ansible_hostname == pacemaker_dc.stdout
-  pcs_resource: command=create resource_id=galera type=heartbeat:galera
+- name: stop mariadb before add to pacemaker
+  service: name=mariadb state=stopped enabled=no
+
+- name: Get Current DC
+  shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
+  register: pacemaker_dc
   tags:
     - pacemaker
     - pacemaker-galera
-  args:
-    options:
-    operations:
-      - action: start
-        options:
-          timeout: 120s
-      - action: stop
-        options:
-          timeout: 120s
-      - action: monitor
-        options:
-          interval: 20
-          timeout: 30
-      - action: monitor
-        options:
-          interval: 10
-          timeout: 30
-          role: "Master"
-      - action: monitor
-        options:
-          interval: 30
-          timeout: 30
-          role: "Slave"
-      - action: demote
-        options:
-          interval: 0s
-          timeout: 120
-      - action: promote
-        options:
-          interval: 0s
-          timeout: 300s
-          on-fail: "block"
+
+- name: create galera cluster resource
+  command:
+    pcs resource create galera galera enable_creation=true wsrep_cluster_address="gcomm://{{ galera_node_names|join(',')}}" check_passwd="{{ mariadb_root_password }}" meta master-max=3 ordered=true op promote timeout=60s on-fail=block --master
+  when: ansible_hostname == pacemaker_dc.stdout
+  tags:
+    - pacemaker
+    - pacemaker-galera

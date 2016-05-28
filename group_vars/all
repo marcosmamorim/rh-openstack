@@ -19,6 +19,16 @@ controller_nodes:
   - name: "controller03"
     addr_int: "192.168.122.115"
 
+controller_node_names:
+  - controller01
+  - controller02
+  - controller03
+
+galera_node_names:
+  - controller01
+  - controller02
+  - controller03
+
 # RabbitMQ Users 
 rabbitmq_admin_user: admin
 rabbitmq_keystone_user: keystone
@@ -326,7 +336,7 @@ rabbitmq_users_list:
 # Galera - MariaDB
 
 # WARNING This flag remove current cluster configuration
-galera_reset_cluster: False
+galera_reset_cluster: True
 
 ### GALERA
 galera_selinux: True
@@ -1254,6 +1264,12 @@ pacemaker_resources:
           interval: 5s
 
 ################################################
+## HAProxy
+haproxy_reset: True
+haproxy_stats_admin_user: admin
+haproxy_stats_admin_pass: 123@Mudar
+
+################################################
 ## Red Hat Subscribe
 
 # Use red hat subscribe
@@ -1275,4 +1291,3 @@ rhel_repos:
   - rhel-7-server-rpms
   - rhel-7-server-optional-rpms
   - rhel-7-server-openstack-8-rpms
-

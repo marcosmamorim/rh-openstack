@@ -15,11 +15,6 @@
     path=/etc/mysql_clustered
   register: galera_clustered
 
-- name: Checking if a RabbitMQ cluster already exists
-  stat:
-    path=/etc/mysql_clustered
-  register: galera_clustered
-
 - name: Include galera packages
   include: packages.yml
   tags:
@@ -55,7 +50,7 @@
     - galera-firewall
 
 - name: Stop firewalld
-  command: systemctl stop firewalld
+  service: name=firewalld state=stopped
   when: not galera_firewalld
 
 - name: include galera configuration
@@ -63,6 +58,7 @@
   tags:
     - galera
     - galera-config
+    - galera-bind
   when: galera_clustered.stat.exists != True
 
 - name: include galera secure
@@ -104,5 +100,5 @@
   include: pacemaker.yml
   tags:
     - galera
-    - galera-databases
-  when: galera_clustered.stat.exists != True
+    - galera-pacemaker
+

@@ -4,19 +4,25 @@
     path=/etc/my.cnf.d/galera.cnf
     state=absent
 
-- name: Starting MariaDB service
-  command: systemctl restart mariadb
-  when: inventory_hostname == galera_master
-
-- name: Enable MariaDB service
-  command: systemctl enable mariadb
-
 - include: selinux.yml
   when: galera_selinux is defined and
         galera_selinux == true
   tags:
     - galera
     - galera-selinux
+
+- name: set bind address to local ip
+  ini_file: >
+    dest=/etc/my.cnf
+    section=mysqld
+    option=bind-address
+    value={{ mariadb_bind_address }}
+    state=present
+
+- name: Starting MariaDB service
+  command: systemctl restart mariadb
+  when: inventory_hostname == galera_master
+
 
 - name: Set root password for localhost
   mysql_user:
@@ -85,8 +91,8 @@
     value="gcomm://{{ ','.join(galera_hosts) }}"
   when: inventory_hostname != galera_master
 
-- name: Enabling MariaDB service
-  command: systemctl enable mariadb
+#- name: Enabling MariaDB service
+#  command: systemctl enable mariadb
 #
 #
 #
@@ -96,7 +102,7 @@
 
 - name: Finalize the setup by creating file /etc/mysql_clustered
   copy:
-    content="Cluster created:{{ ansible_date_time.time }}"
+    content="Cluster created:{{ ansible_date_time.date }}"
     dest=/etc/mysql_clustered
     owner=mysql
     group=mysql
