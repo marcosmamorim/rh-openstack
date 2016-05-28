@@ -42,6 +42,7 @@ def main():
     # TODO check pcs command is available.
     # TODO check pacemaker/corosync is running.
 
+    changed=True
     # Check if resource already exists.
     cmd = "pcs resource show %(name)s"  % module.params
     rc, out, err = module.run_command(cmd)
@@ -77,7 +78,6 @@ def main():
 
     # Process options.
     if module.params.has_key('options') and module.params['options'] is not None:
-        print "Module params options: %s"
         options = module.params['options']
         options = ' '.join(['%s="%s"' % (key, value) for (key, value) in options.items()])
         module.params['options'] = options
