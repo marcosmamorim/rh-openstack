@@ -83,6 +83,7 @@ db_nova_user: nova
 db_neutron_user: neutron
 db_heat_user: heat
 db_ceilometer_user: ceilometer
+db_clustercheck_user: clustercheck
 
 # MariaDB users password
 db_root_password: c012893471fasfe54e409cc742a2RedHat
@@ -93,6 +94,7 @@ db_nova_password: 7e7e7c946602O3I4723894b7aafRedHat
 db_neutron_password: 96739fa29977P238942938Rb0abRedHat
 db_heat_password: ba6b2304bc324PO82F907Fc3b9ddRedHat
 db_ceilometer_pasword: c2342GFPAWJGeilometdfasdassRedHat
+db_clustercheck_password: Y3aH1l0ved2CH3CK
 
 # OpenStack Keystone password
 keystone_admin_password: 123@mudar
@@ -438,6 +440,10 @@ mariadb_users:
     pass: "{{ db_neutron_password }}"
     priv: "{{ db_neutron_name}}.*:ALL"
     host: "%"
+  - name: "{{ db_clustercheck_user }}"
+    pass: "{{ db_clustercheck_password }}"
+    priv: "*.*:ALL"
+    host: "%"
 
 ###############################################
 # Memcache
@@ -457,7 +463,7 @@ keystone_default_region: RegionOne
 keystone_reset: False
 keystone_disable_auth_token: False
 keystone_master: controller01
-
+keystone_bind_host: "{{ internal_ip }}"
 #keystone_hostname: controller01
 keystone_protocol: http
 keystone_admin_port: 35357

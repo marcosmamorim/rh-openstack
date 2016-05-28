@@ -50,18 +50,6 @@
     src=etc/my.cnf.d/server.cnf.j2
     dest=/etc/my.cnf.d/server.cnf
 
-#- name: Configuring Galera cluster (RedHat family)
-#  ini_file: >
-#    dest=/etc/my.cnf.d/server.cnf
-#    section={{ item.section }}
-#    option={{ item.option }}
-#    value={{ item.value }}
-#    state={{item.state| default('present')}}
-#    group=root
-#    owner=root
-#    mode=0644
-#  with_items: "{{ galera_config_options }}"
-
 - name: Removing wap-wsp* services from /etc/services
   lineinfile:
     dest=/etc/services
@@ -74,13 +62,29 @@
     state=present
     regexp="^mysqlchk"
     insertafter="sun-as-jpda     9191/udp"
-    line="mysqlchk        {{ galera_xinet_port }}/tcp                \# Galera Clustercheck"
+    line="mysqlchk        {{ galera_xinet_port }}/tcp                # Galera Clustercheck"
 
 - name: Adding galera-status script in /usr/bin/
   copy:
     src=usr/bin/galera-status
     dest=/usr/bin/galera-status
     mode=0755
+
+- name: create clustercheck
+  copy:
+    src=usr/bin/clustercheck
+    dest=/usr/bin/clustercheck
+    mode=0755
+
+- name: create xinetd clustercheck
+  template:
+    src=etc/xinetd.d/galera-stream.j2
+    dest=/etc/xinetd.d/galera-stream
+
+- name: create default clustercheck
+  template:
+    src=etc/sysconfig/clustercke.j2
+    dest=/etc/sysconfig/clustercheck
 
 
 - name: Fix correct wrep cluster address
