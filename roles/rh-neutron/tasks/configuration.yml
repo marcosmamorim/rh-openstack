@@ -229,27 +229,6 @@
   command: neutron-db-manage upgrade heads
   when: inventory_hostname == neutron_master
 
-# TODO: Sent do rh-network tasks
-- name: configure nf_conntrack_pptp
-  template:
-    src: nf_conntrack_pptp.conf.j2
-    dest: /etc/sysconfig/modules/pptp_conntrack.modules
-    group: root
-    owner: root
-    mode: 0755
-  tags:
-    - nova-modprobe
-    - nova
-    - nova-deploy
-
-- name: modprobe nf_conntrack_pptp
-  modprobe: name=nf_conntrack_pptp state=present
-  tags:
-    - nova-modprobe
-    - nova
-    - nova-deploy
-
-
 #- name: deploy l3_hamode py
 #  copy: src={{ item.src }} dest={{ item.dest }} owner=root group=neutron
 #  with_items:

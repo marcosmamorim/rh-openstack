@@ -7,7 +7,7 @@
   ignore_errors: true
 
 - name: register node with subscription-manager
-  redhat_subscription: state=present username={{ rhel_subscription_user }} password={{ rhel_subscription_pass }} autosubscribe=False
+  redhat_subscription: state=present username="{{ rhel_subscription_user }}" password="{{ rhel_subscription_pass }}" autosubscribe=False
   when: use_rhel
   register: subscription
   changed_when: false
@@ -24,7 +24,7 @@
     - subscribe-attach
 
 - name: enable repos for rhel
-  command:   {{ item }}
+  command: subscription-manager repos --enable  {{ item }}
   with_items: rhel_repos
   when: use_rhel
   changed_when: false

@@ -1,13 +1,21 @@
 ---
 #TODO: Create reset rabbitmq
 
-- include: install.yml
-- include: erlang.yml
-- include: configuration.yml
-- include: limits.yml
+- name: include rabbitmq install packages
+  include: install.yml
+
+- name: include erlang
+  include: erlang.yml
+
+- name: include rabbitmq configuration
+  include: configuration.yml
+
+- name: include rabbitmq limits
+  include: limits.yml
 
 
-- include: firewall.yml
+- name: include rabbitmq firewall
+  include: firewall.yml
   when: rabbitmq_firewalld is defined and rabbitmq_firewalld == true
 
 # clustered variable is exported and will be used as a condition
@@ -16,21 +24,38 @@
     path=/etc/rabbitmq/clustered
   register: clustered
 
-- include: clustering.yml
+- name: include rabbitmq clustering configuration
+  include: clustering.yml
   when: rabbitmq_reset_cluster is defined and
         rabbitmq_reset_cluster == 'true' and
         rabbitmq_clustering or (clustered.stat.exists != True) and
         rabbitmq_clustering
 
+- name: force rabbitmq stop
+  command: pkill -u rabbitmq
+  ignore_errors: True
+  no_log: True
+
 - name: restart all rabbimq servers
   command: systemctl restart rabbitmq-server
+  ignore_errors: True
+  no_log: True
 
-- include: plugins.yml
-- include: vhosts.yml
-- include: policies.yml
-- include: users.yml
+- name: include rabbitmq plugins
+  include: plugins.yml
 
-- include: sanitycheck.yml
+- name: include rabbitmq vhost
+  include: vhosts.yml
+
+- name: include rabbitmq policies
+  include: policies.yml
+
+- name: include rabbitmq users
+  include: users.yml
+
+
+- name: include rabbitmq sanity check
+  include: sanitycheck.yml
   when: rabbitmq_sanitycheck and
         rabbitmq_clustering or (clustered.stat.exists != True)
 

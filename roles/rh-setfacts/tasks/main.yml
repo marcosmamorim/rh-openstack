@@ -11,17 +11,10 @@
 
 - name: debug interface ip address
   debug: var=primary_ipaddr
-#
-#- name: set fact about private ip address
-#  set_fact: private_ipaddr={{ internal_ipaddr }}
-#  tags: setfacts
-#  always_run: yes
+
 - name: Get Current DC
   shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
   register: pacemaker_dc
-  ignore_errors: True
-  no_log: True
-  when: cluster_configured is defined
   tags:
     - pacemaker
     - pacemaker-haproxy
