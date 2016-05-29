@@ -1,4 +1,7 @@
 ---
+- name: Remove galera from pacemaker
+  command: pcs resource delete galera
+
 - name: Stopping/killing MariaDB service
   shell: pkill -9 -u mysql || true
   ignore_errors: True

@@ -1,34 +1,52 @@
 ---
+TODO: Fix cluster_user to check cluster instead of root
+
 - name: Creating clustercheck SQL user (ready for Pacemaker)
   mysql_user:
     name={{ galera_clustercheck_user }}
     password={{ galera_clustercheck_password }}
+    host={{ inventory_hostname }}
     priv=*.*:USAGE
     state=present
-  when: inventory_hostname == galera_master
+#  when: inventory_hostname == galera_master
+  tags:
+    - galera
+    - galera-clustercheck
 
 - name: Creating /etc/sysconfig/clustercheck file (ready for Pacemaker)
   template:
     src=etc/sysconfig/clustercheck.j2
     dest=/etc/sysconfig/clustercheck
+  tags:
+    - galera
+    - galera-clustercheck
 
 - name: Creating /usr/bin/clustercheck file (ready for Pacemaker)
   copy:
     src=usr/bin/clustercheck
     dest=/usr/bin/clustercheck
     mode=0755
+  tags:
+    - galera
+    - galera-clustercheck
 
 - name: Creating /etc/xinet.d/galera-stream file (ready for Pacemaker)
   template:
     src=etc/xinetd.d/galera-stream.j2
     dest=/etc/xinetd.d/galera-stream
     mode=0600
+  tags:
+    - galera
+    - galera-clustercheck
 
 - name: Enabling and starting xinetd service (ready for Pacemaker)
   service:
     name=xinetd
     state=started
     enabled=yes
+  tags:
+    - galera
+    - galera-clustercheck
 
 - name: stop mariadb before add to pacemaker
   service: name=mariadb state=stopped enabled=no

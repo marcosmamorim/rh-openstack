@@ -1,7 +1,7 @@
 ---
 
 - name: SANITY CHECK Galera cluster status
-  shell:  galera-status
+  shell:  galera-status --batch
   register: cluster_status
   changed_when: cluster_status.rc != 0
 - debug: var=cluster_status.stdout_lines
