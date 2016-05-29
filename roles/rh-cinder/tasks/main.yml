@@ -2,25 +2,33 @@
 
 - meta: flush_handlers
 
-- include: facts.yml
+- name: include cinder facts
+  include: facts.yml
 
-- include: packages.yml
 
-- include: reset.yml
+- name: include cinder packages
+  include: packages.yml
+
+- name: include cinder reset
+  include: reset.yml
   when: cinder_reset
 
-- include: configuration.yml
+- name: include cinder configuration
+  include: configuration.yml
 
 - name: Sync Cinder database
   cinder_manage: action=db_sync
   sudo: no
   sudo_user: cinder
-  notify:
-    - restart cinder
   when: cinder_bootstrap and
         inventory_hostname == cinder_master
   tags:
     - cinder-sync-db
 
-- include: storage.yml
+- name: include cinder storage
+  include: storage.yml
   when: cinder_storage_backend |length > 0
+
+- name: include cinder pacemaker
+  include: pacemaker.yml
+

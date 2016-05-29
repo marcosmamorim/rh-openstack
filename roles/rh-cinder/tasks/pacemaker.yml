@@ -1,0 +1,70 @@
+---
+
+- name: Get Current DC
+  shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
+  register: pacemaker_dc
+  ignore_errors: True
+  no_log: True
+  tags:
+    - pacemaker
+
+- name: stop and disable cinder services
+  service: name={{ item }} state=stopped enabled=no
+  with_items:
+    - openstack-cinder-api
+    - openstack-cinder-scheduler
+    - openstack-cinder-volume
+  tags:
+    - cinder
+
+- name: create cinder-api cluster resource
+  pcs_resource: command=create resource_id={{ item }} type=systemd:openstakc-{{ item }}
+  tags:
+    - pacemaker
+    - pacemaker-haproxy
+  args:
+    options:
+    operations:
+      - action: monitor
+        options:
+          interval: 10s
+      - action: start
+        options:
+          timeout: 100s
+  when: ansible_hostname == pacemaker_dc.stdout
+  with_items:
+    - cinder-scheduler
+    - cinder-api
+    - cinder-volume
+
+- name: clone cinder services
+  command: pcs resource clone {{ item }}
+  when: ansible_hostname == pacemaker_dc.stdout
+  with_items:
+    - cinder-scheduler
+    - cinder-api
+    - cinder-volume
+  tags:
+    - pacemaker
+
+# Constraints
+- name: create cinder-api constraint to keystone
+  command: pcs constraint order keystone-clone then cinder-api-clone kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: create cinder-api constraint to rabbitmq
+  command: pcs constraint order rabbitmq-clone then cinder-api kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: create cinder-api constraint to memcached
+  command: pcs constraint order memcached-clone then cinder-api kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: create cinder-api constraint to cinder-scheduler
+  command: pcs constraint order cinder-api-clone then cinder-scheduler-clone kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: create cinder-scheduler constraint to cinder-volume
+  command: pcs constraint order cinder-scheduler-clone then cinder-volume-clone kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+
