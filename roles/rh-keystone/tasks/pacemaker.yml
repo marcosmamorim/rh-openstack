@@ -4,15 +4,12 @@
   register: pacemaker_dc
   ignore_errors: True
   no_log: True
-  tags:
-    - pacemaker
-    - pacemaker-haproxy
 
 - name: remove httpd from boot
   service: name=httpd state=stopped enabled=no
 
 - name: create httpd pacemaker
-  pcs_resource: command=create resource_id=keystone type=ocf:heartbeat:httpd
+  pcs_resource: command=create resource_id=keystone type=systemd:httpd
   when: ansible_hostname == pacemaker_dc.stdout
 
 - name: clone httpd pacemaker
