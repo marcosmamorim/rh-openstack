@@ -1,101 +1,86 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-#
-# Copyright (c) 2015 Davide Guerri <davide.guerri@gmail.com>
-#
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-# implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-
-# Based on Lorin Hochstein keystone_user module
-# keystone_user module is based on Jimmy Tang's implementation
-
 
 DOCUMENTATION = '''
 ---
 module: keystone_service
-short_description: Manage OpenStack Identity (keystone) services
-description:
-   - Manage OpenStack services.
+short_description: Manage OpenStack Identity (keystone) service endpoints
 options:
-   login_user:
-     description:
-        - login username to authenticate to keystone
-     required: false
-     default: None
-   login_password:
-     description:
-        - Password of login user
-     required: false
-     default: None
-   login_tenant_name:
-     description:
-        - The tenant login_user belongs to
-     required: false
-     default: None
-   name:
-     description:
-        - OpenStack service name (e.g. keystone)
-     required: true
-   service_type:
-     description:
-        - OpenStack service type (e.g. identity)
-     required: true
-   description:
-     description:
-        - Service description
-     required: false
-     default: Not provided
-   token:
-     description:
-        - The token to be uses in case the password is not specified
-     required: false
-     default: None
-   endpoint:
-     description:
-        - The keystone url for authentication
-     required: false
-     default: 'http://127.0.0.1:35357/v2.0/'
-   state:
+  name:
+    description:
+        - name of service (e.g., keystone)
+    required: yes
+  type:
+    description:
+        - type of service (e.g., identity)
+    required: yes
+  description:
+    description:
+        - description of service (e.g., Identity Service)
+    required: yes
+  public_url:
+    description:
+        - public url of service.
+        - 'Alias: I(url)'
+        - 'Alias: I(publicurl)'
+    required: yes
+  internal_url:
+    description:
+        - internal url of service.
+        - 'Alias: I(internalurl)'
+    required: no
+    default: value of public_url
+  admin_url:
+    description:
+        - admin url of service.
+        - 'Alias: I(adminurl)'
+    required: no
+    default: value of public_url
+  insecure:
+    description:
+        - allow use of self-signed SSL certificates
+    required: no
+    choices: [ "yes", "no" ]
+    default: no
+  region:
+    description:
+        - region of service
+    required: no
+    default: RegionOne
+  ignore_other_regions:
+    description:
+        - allow endpoint to exist in other regions
+    required: no
+    choices: [ "yes", "no" ]
+    default: no
+  state:
      description:
         - Indicate desired state of the resource
      choices: ['present', 'absent']
      default: present
+
+
+
 requirements: [ python-keystoneclient ]
-author: Davide Guerri
+author: Lorin Hochstein
 '''
 
 EXAMPLES = '''
-# Add Glance service
-- name: Create Glance service
-  keystone_service: >
-    name=glance
-    service_type=image
-    description="Glance image service"
-    endpoint="http://keystone-aw1.internal.com:35357/v2.0"
-    token="my secret token"
-    state=present
+examples:
+keystone_service: >
+    name=keystone
+    type=identity
+    description="Keystone Identity Service"
+    publicurl=http://192.168.206.130:5000/v2.0
+    internalurl=http://192.168.206.130:5000/v2.0
+    adminurl=http://192.168.206.130:35357/v2.0
 
-# Delete Glance service
-- name: Delete Glance service
-  keystone_service: >
+keystone_service: >
     name=glance
-    service_type=image
-    description="Glance image service"
-    endpoint="http://keystone-aw1.internal.com:35357/v2.0"
-    token="my secret token"
-    state=absent
+    type=image
+    description="Glance Identity Service"
+    url=http://192.168.206.130:9292
+
 '''
 
 try:
@@ -105,158 +90,254 @@ except ImportError:
 else:
     keystoneclient_found = True
 
+import traceback
 
-def authenticate(endpoint, token, login_user, login_password,
-                 login_tenant_name):
+
+def authenticate(endpoint, token, login_user, login_password, tenant_name,
+                 insecure):
     """Return a keystone client object"""
 
     if token:
-        return client.Client(endpoint=endpoint, token=token)
+        return client.Client(endpoint=endpoint, token=token, insecure=insecure)
     else:
         return client.Client(auth_url=endpoint, username=login_user,
-                             password=login_password,
-                             tenant_name=login_tenant_name)
+                             password=login_password, tenant_name=tenant_name,
+                             insecure=insecure)
 
 
-def service_exists(keystone, service_name):
-    """ Return True if service already exists"""
-    return service_name in [x.name for x in keystone.services.list()]
-
-
-def get_service(keystone, service_name):
-    """ Retrieve a service by name"""
-    services = [x for x in keystone.services.list() if x.name == service_name]
+def get_service(keystone, name):
+    """ Retrieve a service by name """
+    services = [x for x in keystone.services.list() if x.name == name]
     count = len(services)
     if count == 0:
-        raise KeyError("No keystone services with name %s" % service_name)
+        raise KeyError("No keystone services with name %s" % name)
     elif count > 1:
-        # Should never be reached as Keystone ensure service names to be unique
-        raise ValueError("%d services with name %s" % (count, service_name))
+        raise ValueError("%d services with name %s" % (count, name))
     else:
         return services[0]
 
 
-def get_service_id(keystone, service_name):
-    return get_service(keystone, service_name).id
+def get_endpoint(keystone, name, region, ignore_other_regions):
+    """ Retrieve a service endpoint by name """
+    service = get_service(keystone, name)
+    endpoints = [x for x in keystone.endpoints.list()
+                   if x.service_id == service.id]
 
+    # If this is a multi-region cloud only look at this region's endpoints
+    if ignore_other_regions:
+        endpoints = [x for x in endpoints if x.region == region]
 
-def ensure_service_exists(keystone, service_name, service_type,
-                          service_description, check_mode):
-    """ Ensure that a service exists.
-
-        Return (True, id) if a new service was created, (False, None) if it
-        already existed.
-    """
-
-    # Check if service already exists
-    try:
-        service = get_service(keystone=keystone, service_name=service_name)
-    except KeyError:
-        # Service doesn't exist yet
-        pass
+    count = len(endpoints)
+    if count == 0:
+        raise KeyError("No keystone endpoints with service name %s" % name)
+    elif count > 1:
+        raise ValueError("%d endpoints with service name %s" % (count, name))
     else:
-        return False, service.id
+        return endpoints[0]
 
-    # We now know we will have to create a new service
+
+def ensure_present(keystone, name, service_type, description, public_url,
+                   internal_url, admin_url, region, ignore_other_regions,
+                   check_mode):
+    """ Ensure the service and its endpoint are present and have the right values.
+
+        Returns a tuple, where the first element is a boolean that indicates
+        a state change, the second element is the service uuid (or None in
+        check mode), and the third element is the endpoint uuid (or None in
+        check mode)."""
+    # Fetch service and endpoint, if they exist.
+    service = None
+    endpoint = None
+    try: service = get_service(keystone, name)
+    except KeyError: pass
+    try: endpoint = get_endpoint(keystone, name, region, ignore_other_regions)
+    except KeyError: pass
+
+    changed = False
+
+    # Delete endpoint if it exists and doesn't match.
+    if endpoint is not None:
+        identical = endpoint.publicurl == public_url and \
+                    endpoint.adminurl == admin_url and \
+                    endpoint.internalurl == internal_url and \
+                    endpoint.region == region
+        if not identical:
+            changed = True
+            ensure_endpoint_absent(keystone, name, check_mode, region,
+                                   ignore_other_regions)
+            endpoint = None
+
+    # Delete service and its endpoint if the service exists and doesn't match.
+    if service is not None:
+        identical = service.name == name and \
+                    service.type == service_type and \
+                    service.description == description
+        if not identical:
+            changed = True
+            ensure_endpoint_absent(keystone, name, check_mode, region,
+                                   ignore_other_regions)
+            endpoint = None
+            ensure_service_absent(keystone, name, check_mode)
+            service = None
+
+    # Recreate service, if necessary.
+    if service is None:
+        if not check_mode:
+            service = keystone.services.create(
+                name=name,
+                service_type=service_type,
+                description=description,
+            )
+        changed = True
+
+    # Recreate endpoint, if necessary.
+    if endpoint is None:
+        if not check_mode:
+            endpoint = keystone.endpoints.create(
+                region=region,
+                service_id=service.id,
+                publicurl=public_url,
+                adminurl=admin_url,
+                internalurl=internal_url,
+            )
+        changed = True
+
     if check_mode:
-        return True, None
-
-    ks_service = keystone.services.create(name=service_name,
-                                          service_type=service_type,
-                                          description=service_description)
-    return True, ks_service.id
+        # In check mode, the service/endpoint uuids will be the old uuids,
+        # so omit them.
+        return changed, None, None
+    return changed, service.id, endpoint.id
 
 
-def ensure_service_absent(keystone, service_name, check_mode):
-    """ Ensure that a service does not exist
+def ensure_service_absent(keystone, name, check_mode):
+    """ Ensure the service is absent"""
+    try:
+        service = get_service(keystone, name)
+        endpoints = [x for x in keystone.endpoints.list()
+                       if x.service_id == service.id]
 
-         Return True if the service was removed, False if it didn't exist
-         in the first place
-    """
-    if not service_exists(keystone=keystone, service_name=service_name):
+        # Don't delete the service if it still has endpoints
+        if endpoints:
+            return False
+
+        if not check_mode:
+            keystone.services.delete(service.id)
+        return True
+    except KeyError:
+        # Service doesn't exist, so we're done.
         return False
 
-    # We now know we will have to delete the service
-    if check_mode:
-        return True
 
-    service = get_service(keystone=keystone, service_name=service_name)
-    keystone.services.delete(service.id)
+def ensure_endpoint_absent(keystone, name, check_mode, region,
+                           ignore_other_regions):
+    """ Ensure the service endpoint """
+    try:
+        endpoint = get_endpoint(keystone, name, region, ignore_other_regions)
+        if not check_mode:
+            keystone.endpoints.delete(endpoint.id)
+        return True
+    except KeyError:
+        # Endpoint doesn't exist, so we're done.
+        return False
+
+
+def dispatch(keystone, name, service_type, description, public_url,
+             internal_url, admin_url, region, ignore_other_regions, state,
+             check_mode):
+
+    if state == 'present':
+        (changed, service_id, endpoint_id) = ensure_present(
+            keystone,
+            name,
+            service_type,
+            description,
+            public_url,
+            internal_url,
+            admin_url,
+            region,
+            ignore_other_regions,
+            check_mode,
+        )
+        return dict(changed=changed, service_id=service_id, endpoint_id=endpoint_id)
+    elif state == 'absent':
+        endpoint_changed = ensure_endpoint_absent(keystone, name, check_mode,
+                                                  region, ignore_other_regions)
+        service_changed = ensure_service_absent(keystone, name, check_mode)
+        return dict(changed=service_changed or endpoint_changed)
+    else:
+        raise ValueError("Code should never reach here")
+
 
 
 def main():
-    argument_spec = openstack_argument_spec()
-    argument_spec.update(dict(
-        name=dict(required=True),
-        service_type=dict(required=True),
-        description=dict(required=False, default="Not provided"),
-        state=dict(default='present', choices=['present', 'absent']),
-        endpoint=dict(required=False, default="http://127.0.0.1:35357/v2.0"),
-        token=dict(required=False),
-        login_user=dict(required=False),
-        login_password=dict(required=False),
-        login_tenant_name=dict(required=False)
-    ))
-    # keystone operations themselves take an endpoint, not a keystone auth_url
-    del (argument_spec['auth_url'])
+
     module = AnsibleModule(
-        argument_spec=argument_spec,
+        argument_spec=dict(
+            name=dict(required=True),
+            type=dict(required=True),
+            description=dict(required=False),
+            public_url=dict(required=True, aliases=['url', 'publicurl']),
+            internal_url=dict(required=False, aliases=['internalurl']),
+            admin_url=dict(required=False, aliases=['adminurl']),
+            region=dict(required=False, default='RegionOne'),
+            ignore_other_regions=dict(required=False, default=False, choices=BOOLEANS),
+            state=dict(default='present', choices=['present', 'absent']),
+            endpoint=dict(required=False,
+                          default="http://127.0.0.1:35357/v2.0",
+                          aliases=['auth_url']),
+            token=dict(required=False),
+            insecure=dict(required=False, default=False, choices=BOOLEANS),
+
+            login_user=dict(required=False),
+            login_password=dict(required=False),
+            tenant_name=dict(required=False, aliases=['tenant'])
+        ),
         supports_check_mode=True,
         mutually_exclusive=[['token', 'login_user'],
                             ['token', 'login_password'],
-                            ['token', 'login_tenant_name']]
+                            ['token', 'tenant_name']]
     )
 
-    if not keystoneclient_found:
-        module.fail_json(msg="the python-keystoneclient module is required")
-
-    service_name = module.params['name']
-    service_type = module.params['service_type']
-    service_description = module.params['description']
-    state = module.params['state']
     endpoint = module.params['endpoint']
     token = module.params['token']
     login_user = module.params['login_user']
     login_password = module.params['login_password']
-    login_tenant_name = module.params['login_tenant_name']
+    tenant_name = module.params['tenant_name']
+    insecure = module.boolean(module.params['insecure'])
+    name = module.params['name']
+    service_type = module.params['type']
+    description = module.params['description']
+    public_url = module.params['public_url']
+    internal_url = module.params['internal_url']
+    if internal_url is None:
+        internal_url = public_url
+    admin_url = module.params['admin_url']
+    if admin_url is None:
+        admin_url = public_url
+    region = module.params['region']
+    ignore_other_regions = module.boolean(module.params['ignore_other_regions'])
+    state = module.params['state']
 
-    keystone = authenticate(endpoint=endpoint, token=token,
-                            login_user=login_user,
-                            login_password=login_password,
-                            login_tenant_name=login_tenant_name)
-
+    keystone = authenticate(endpoint, token, login_user, login_password,
+                            tenant_name, insecure)
     check_mode = module.check_mode
 
-    id = None
     try:
-        if state == "present":
-            changed, id = ensure_service_exists(
-                keystone=keystone,
-                service_name=service_name,
-                service_type=service_type,
-                service_description=service_description,
-                check_mode=check_mode)
-        elif state == "absent":
-            changed = ensure_service_absent(keystone=keystone,
-                                            service_name=service_name,
-                                            check_mode=check_mode)
-        else:
-            # Invalid state
-            raise ValueError("Invalid state %s" % state)
-    except Exception, e:
+        d = dispatch(keystone, name, service_type, description,
+                     public_url, internal_url, admin_url, region,
+                     ignore_other_regions, state, check_mode)
+    except Exception:
         if check_mode:
             # If we have a failure in check mode
             module.exit_json(changed=True,
-                             msg="exception: %s" % e)
+                             msg="exception: %s" % traceback.format_exc())
         else:
-            module.fail_json(msg="exception: %s" % e)
+            module.fail_json(msg=traceback.format_exc())
     else:
-        module.exit_json(changed=changed, id=id)
+        module.exit_json(**d)
 
 
-# import module snippets
-from ansible.module_utils.basic import *
-from ansible.module_utils.openstack import *
-
+# this is magic, see lib/ansible/module_common.py
+#<<INCLUDE_ANSIBLE_MODULE_COMMON>>
 if __name__ == '__main__':
     main()

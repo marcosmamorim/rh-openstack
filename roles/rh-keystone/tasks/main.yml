@@ -1,23 +1,5 @@
 ---
 
-#
-# Copyright (c) 2015 Davide Guerri <davide.guerri@gmail.com>
-#
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-# implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-
 - meta: flush_handlers
 
 - include: facts.yml
@@ -40,25 +22,38 @@
 - name: Restart httpd
   service: name=httpd state=restarted enabled=no
 
-- name: pause 20s to restart httpd and keystone going up
-  pause: seconds=20
+- name: Fix permission to keystone.log
+  file:
+    dest: /var/log/keystone/keystone.log
+    mode: 0644
+    owner: keystone
+    group: keystone
 
-- include: maintenance.yml
+- name: Include keystone maintenance
+  include: maintenance.yml
 
-
-- include: endpoints.yml
+- name: Include keystone endpoints
+  include: endpoints.yml
   tags:
     - endpoints
     - keystone
     - endpoints2
-- include: tenants.yml
-- include: users.yml
-- include: roles.yml
 
-- include: cleanup.yml
+- name: Include keystone tenants
+  include: tenants.yml
+
+- name: Include keystone users
+  include: users.yml
+
+- name: Include keystone roles
+  include: roles.yml
+
+- name: Include keystone cleanup
+  include: cleanup.yml
   when: keystone_disable_auth_token
 
-- include: sanitycheck.yml
+- name: Include keystone sanity check
+  include: sanitycheck.yml
   when: keystone_run_sanity_check
   tags:
     - sanity-check

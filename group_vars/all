@@ -498,58 +498,74 @@ keystone_roles:
   - { name: admin, user: "{{ keystone_heat_user }}", tenant: services }
   - { name: admin, user: "{{ keystone_ceilometer_user }}", tenant: services }
 
-keystone_services:
-  - { name: keystone, service_type: identity, state: present, description: "Idendity Services" }
-  - { name: glance, service_type: image, state: present, description: "Glance Image Services" }
-  - { name: cinder, service_type: volume, state: present, description: "Cinder Volume Services" }
-  - { name: cinderV2, service_type: volumev2, state: present, description: "Cinder Volume Services V2" }
-  - { name: neutron, service_type: network, state: present, description: "OpenStack Networking Services" }
-  - { name: compute, service_type: compute, state: present, description: "OpenStack Compute Services" }
-  - { name: heat, service_type: orchestration, state: present, description: "OpenStack Orchestration Services" }
-  - { name: heat-cfn, service_type: cloudformation, state: present, description: "OpenStack CloudFormation Services" }
-  - { name: ceilometer, service_type: metering, state: present, description: "OpenStack Telemetry Service" }
-
 keystone_endpoints:
   - service_name: keystone
     public_url: "http://{{keystone_public_vip}}:5000/v2.0"
     internal_url: "http://{{keystone_internal_vip}}:5000/v2.0"
     admin_url: "http://{{keystone_admin_vip}}:35357/v2.0"
+    service_type: identity
+    description: "Idendity Services"
+
   - service_name: glance
     public_url: "http://{{ glance_public_vip }}:9292"
     internal_url: "http://{{glance_internal_vip}}:9292"
     admin_url: "http://{{ glance_admin_vip }}:9292"
+    service_type: image
+    description: "Glance Image Services"
+
   - service_name: cinder
     public_url: "http://{{ cinder_public_vip }}:8776/v1/%(tenant_id)s"
     internal_url: "http://{{ cinder_internal_vip }}:8776/v1/%(tenant_id)s"
     admin_url: "http://{{ cinder_admin_vip }}:8776/v1/%(tenant_id)s"
+    service_type: volume
+    description: "Cinder Volume Services"
+
   - service_name: cinderV2
     public_url: "http://{{ cinder_public_vip }}:8776/v2/%(tenant_id)s"
     internal_url: "http://{{ cinder_internal_vip }}:8776/v2/%(tenant_id)s"
     admin_url: "http://{{ cinder_admin_vip }}:8776/v2/%(tenant_id)s"
+    service_type: volumev2
+    description: "Cinder Volume Services V2"
+
   - service_name: neutron
     public_url: "http://{{ neutron_public_vip }}:9696"
     internal_url: "http://{{ neutron_internal_vip }}:9696"
     admin_url: "http://{{ neutron_admin_vip }}:9696"
+    service_type: network
+    description: "OpenStack Networking Services"
+
   - service_name: compute
     public_url: "http://{{ nova_public_vip }}:8774/v2/$(tenant_id)s"
     internal_url: "http://{{ nova_internal_vip }}:8774/v2/$(tenant_id)s"
     admin_url: "http://{{ nova_admin_vip }}:8774/v2/$(tenant_id)s"
+    service_type: compute
+    description: "OpenStack Compute Services"
+
   - service_name: heat
     public_url: "http://{{ heat_public_vip }}:8004/v1/%(tenant_id)s"
     internal_url: "http://{{ heat_internal_vip }}:8004/v1/%(tenant_id)s"
     admin_url: "http://{{ heat_admin_vip }}:8004/v1/%(tenant_id)s"
+    service_type: orchestration
+    description: "OpenStack Orchestration Services"
+
   - service_name: heat-cfn
     public_url: "http://{{ heat_public_vip }}:8000/v1"
     internal_url: "http://{{ heat_internal_vip }}:8000/v1"
     admin_url: "http://{{ heat_admin_vip }}:8000/v1"
+    service_type: cloudformation
+    description: "OpenStack CloudFormation Services"
+
   - service_name: ceilometer
     public_url: "http://{{ ceilometer_public_vip }}:8777"
     internal_url: "http://{{ ceilometer_internal_vip }}:8777"
     admin_url: "http://{{ ceilometer_admin_vip }}:8777"
+    service_type: metering
+    description: "OpenStack Telemetry Service"
+
 
 keystone_options:
   - { section: DEFAULT, option: debug, value: "{{ keystone_debug |default('False') }}"}
-  - { section: DEFAULT, option: verbose, value: "{{ keystone_verbose |default('False') }}"}
+  - { section: DEFAULT, option: verbose, value: "{{ keystone_verbose |default('False') }}", state: absent}
   - { section: DEFAULT, option: publish_errors, value: "{{ keystone_verbose |default('False') }}"}
   - { section: DEFAULT, option: admin_token, value: "{{ keystone_admin_token }}"}
   - { section: database, option: connection, value: "{{ keystone_database_url }}"}
