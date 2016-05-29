@@ -1,5 +1,45 @@
 ---
+- name: Get Current DC
+  shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
+  register: pacemaker_dc
+  ignore_errors: True
+  no_log: True
+  tags:
+    - pacemaker
+    - pacemaker-haproxy
 
-- name: Disable httpd from boot
+- name: remove httpd from boot
   service: name=httpd state=stopped enabled=no
+
+- name: create httpd pacemaker
+  pcs_resource: command=create resource_id=keystone type=ocf:heartbeat:httpd
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: clone httpd pacemaker
+  command: pcs resource clone keystone
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: create galera-master constraint to keystone
+  command: pcs constraint order promote galera-master then keystone-clone kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: create memcached constraint to keystone
+  command: pcs constraint order memcached-clone then keystone-clone kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: create rabbitmq constraint to keystone
+  command: pcs constraint order rabbitmq-clone then keystone-clone kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: create vip-pub-keystone constraint to keystone
+  command: pcs constraint order vip-pub-keystone then keystone-clone kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: create vip-int-keystone constraint to keystone
+  command: pcs constraint order vip-pub-keystone then keystone-clone kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: create haproxy constraint to keystone
+  command: pcs constraint order haproxy-clone then keystone-clone kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
 

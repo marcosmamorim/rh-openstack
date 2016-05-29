@@ -17,8 +17,12 @@
     state: absent
   run_once: True
 
-#- name: Restart httpd
-#  command: systemctl restart httpd
+- name: remove keystone from pacemaker
+  command: pcs resource delete keystone
+  ignore_errors: True
+
+- name: Restart httpd
+  command: systemctl restart httpd
 
 - name: Removing keystone database
   mysql_db:

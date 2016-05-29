@@ -57,3 +57,8 @@
   when: keystone_run_sanity_check
   tags:
     - sanity-check
+
+- name: Include keystone pacemaker
+  include: pacemaker.yml
+  tags:
+    - pacemaker-keystone
