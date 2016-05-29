@@ -1,4 +1,4 @@
-# This file managed by Puppet
+# {{ ansible_managed }}
 global
   daemon  
   group haproxy
@@ -168,14 +168,12 @@ listen keystone_public
 
 listen mysql
   bind {{ db_vip }}:3306
+  mode tcp
+  balance roundrobin
   option tcpka
   option httpchk
-  stick on dst
-  stick-table type ip size 1000
-  timeout client 10
-  timeout server 10
 {% for node in controller_nodes %}
-  server {{ node.name }} {{ node.addr_int }}:3306 backup check fall 5 inter 2000 on-marked-down shutdown-sessions port 9200 rise 2
+  server {{ node.name }} {{ node.addr_int }}:3306 check port 9200 inter 5s rise 2 fall 2
 {% endfor %}
 
 listen neutron
