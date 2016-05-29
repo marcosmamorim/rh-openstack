@@ -17,8 +17,8 @@
     state: absent
   run_once: True
 
-- name: Restart httpd
-  command: systemctl restart httpd
+#- name: Restart httpd
+#  command: systemctl restart httpd
 
 - name: Removing keystone database
   mysql_db:

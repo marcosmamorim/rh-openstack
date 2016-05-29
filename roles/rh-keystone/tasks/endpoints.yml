@@ -28,6 +28,7 @@
     state="{{ item.state|default('present') }}"
   with_items: "{{ keystone_services }}"
   when: inventory_hostname == keystone_master
+  ignore_errors: True
   tags:
     - keystone
     - keystone-services
@@ -44,5 +45,6 @@
     state="{{ item.state|default('present') }}"
   with_items: "{{ keystone_endpoints }}"
   when: inventory_hostname == keystone_master
+  ignore_errors: True
   tags: endpoints2
 

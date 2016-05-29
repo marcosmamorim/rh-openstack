@@ -40,7 +40,12 @@
 - name: Restart httpd
   service: name=httpd state=restarted enabled=no
 
+- name: pause 20s to restart httpd and keystone going up
+  pause: seconds=20
+
 - include: maintenance.yml
+
+
 - include: endpoints.yml
   tags:
     - endpoints

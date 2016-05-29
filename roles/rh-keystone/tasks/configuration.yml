@@ -18,6 +18,27 @@
 # limitations under the License.
 #
 
+- name: copy default keystone.conf
+  copy:
+    src=keystone.conf
+    dest=/etc/keystone/keystone.conf
+    mode=644
+    owner=keystone
+    group=keystone
+
+
+- name: disable httpd listen 80
+  lineinfile:
+    dest=/etc/httpd/conf/httpd.conf
+    regexp="^Listen 80"
+    line="#Listen 80"
+
+- name: set ServerName directive
+  lineinfile:
+    dest=/etc/httpd/conf/httpd.conf
+    regexp="^#ServerName www.example.com:80"
+    line="ServerName {{ inventory_hostname}}"
+
 - name: Configure keystone
   ini_file: >
     dest=/etc/keystone/keystone.conf
@@ -29,6 +50,7 @@
     owner=keystone
     mode=0644
   with_items: "{{ keystone_options }}"
+  no_log: True
   tags:
     - keystone
     - keystone-config
@@ -51,6 +73,7 @@
     owner=keystone
     group=keystone
     mode=0640
+  no_log: True
   tags:
     - keystone
     - keystone-config
@@ -62,6 +85,7 @@
     owner=keystone
     group=keystone
     mode=0640
+  no_log: True
   tags:
     - keystone
     - keystone-config
@@ -74,6 +98,7 @@
     owner=root
     group=root
   when: openstack_version == 8
+  no_log: True
 
 - name: Sync Keystone database
   command: keystone-manage db_sync
@@ -81,26 +106,26 @@
   sudo_user: keystone
   when: inventory_hostname == keystone_master
 
-- name: Configure keystone to be verbose
-  when: keystone_verbose
-  ini_file:
-    dest=/etc/keystone/keystone.conf
-    section=DEFAULT
-    option=verbose
-    value=True
-  notify:
-#    - Sync Keystone database
-    - Restart Apache
+#- name: Configure keystone to be verbose
+#  when: keystone_verbose
+#  ini_file:
+#    dest=/etc/keystone/keystone.conf
+#    section=DEFAULT
+#    option=verbose
+#    value=True
+#  notify:
+##    - Sync Keystone database
+#    - Restart Apache
 
-- name: Configure keystone to be debug
-  ini_file:
-    dest=/etc/keystone/keystone.conf
-    section=DEFAULT
-    option=debug
-    value=True
-  notify:
-#    - Sync Keystone database
-    - Restart Apache
-
-- name: Restart apache
-  command: systemctl restart httpd
+#- name: Configure keystone to be debug
+#  ini_file:
+#    dest=/etc/keystone/keystone.conf
+#    section=DEFAULT
+#    option=debug
+#    value=True
+#  notify:
+##    - Sync Keystone database
+#    - Restart Apache
+#
+#- name: Restart apache
+#  command: systemctl restart httpd

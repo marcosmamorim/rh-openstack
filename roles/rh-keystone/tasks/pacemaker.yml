@@ -1,0 +1,5 @@
+---
+
+- name: Disable httpd from boot
+  service: name=httpd state=stopped enabled=no
+

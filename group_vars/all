@@ -550,9 +550,16 @@ keystone_endpoints:
 keystone_options:
   - { section: DEFAULT, option: debug, value: "{{ keystone_debug |default('False') }}"}
   - { section: DEFAULT, option: verbose, value: "{{ keystone_verbose |default('False') }}"}
+  - { section: DEFAULT, option: publish_errors, value: "{{ keystone_verbose |default('False') }}"}
   - { section: DEFAULT, option: admin_token, value: "{{ keystone_admin_token }}"}
   - { section: database, option: connection, value: "{{ keystone_database_url }}"}
+
+  - { section: cache, option: backend, value: "keystone.cache.memcache_pool"}
+  - { section: cache, option: memcache_servers, value: "{{ memcached_hosts | shuffle | join(',') |default('localhost') }}"}
+  - { section: cache, option: memcache_pool_maxsize, value: "50"}
+
   - { section: memcache, option: servers, value: "{{ memcached_hosts | shuffle | join(',') |default('localhost') }}"}
+
   - { section: oslo_messaging_rabbit, option: rabbit_hosts, value: "{{ rabbitmq_hosts | shuffle | join(',') }}"}
   - { section: oslo_messaging_rabbit, option: rabbit_ha_queues, value: "{{ rabbitmq_clustering | default('True') }}"}
   - { section: oslo_messaging_rabbit, option: rabbit_port, value: "{{ rabbitmq_port| default('5671') }}"}
