@@ -20,13 +20,18 @@
 
 - meta: flush_handlers
 
-- include: facts.yml
-- include: packages.yml
+- name: includer glance facts
+  include: facts.yml
 
-- include: reset.yml
+- name: include glance packages
+  include: packages.yml
+
+- name: include glance reset
+  include: reset.yml
   when: glance_reset
 
-- include: configuration.yml
+- name: include glance configuration
+  include: configuration.yml
 
 - meta: flush_handlers
 
@@ -37,17 +42,9 @@
     - restart glance registry
   when: glance_bootstrap
 
-- name: Make sure Glance registry is started
-  command: systemctl start {{ glance_registry_service }}
 
-- name: Make sure Glance registry is enable on startup
-  command: systemctl enable {{ glance_registry_service }}
+- name: include glance pacemaker
+  include: pacemaker.yml
 
-- name: Make sure Glance API is started
-  command: systemctl start {{ glance_api_service }}
-
-- name: Make sure Glance API is enable on startup
-  command: systemctl enable {{ glance_api_service }}
-
-- name: Wait Glance
-  wait_for: host="{{ inventory_hostname }}" port="{{ glance_port }}"
+#- name: Wait Glance
+#  wait_for: host="{{ inventory_hostname }}" port="{{ glance_port }}"

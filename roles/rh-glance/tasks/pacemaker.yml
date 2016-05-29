@@ -1,0 +1,41 @@
+---
+
+- name: disable glance services
+  service: name={{ item }} state=stopped enabled=no
+  with_items:
+    - "{{ glance_registry_service }}"
+    - "{{ glance_api_service }}"
+
+- name: Get Current DC
+  shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
+  register: pacemaker_dc
+  ignore_errors: True
+  no_log: True
+
+- name: create glance-api resource
+  pcs_resource: command=create resource_id=glance-api type=systemd:openstack-glance-api
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: clone glance-api pacemaker
+  command: pcs resource clone glance-api
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: create glance-regitry resource
+  pcs_resource: command=create resource_id=glance-api type=systemd:openstack-glance-registry
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: clone glance-registry pacemaker
+  command: pcs resource clone glance-registry
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: create glance-api constraint to keystone
+  command: pcs constraint order keystone then glance-api kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: create glance-api constraint to rabbitmq
+  command: pcs constraint order rabbitmq then glance-api kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: create glance-api constraint to glance-registry
+  command: pcs constraint order glance-api then glance-registry kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
