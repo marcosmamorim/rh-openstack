@@ -1,5 +1,8 @@
 ---
- 
+
+- name: disable mariadb from boot
+  service: name=mariadb enabled=no state=stopped
+
 - name: Creating /etc/sysconfig/clustercheck file (ready for Pacemaker)
   template:
     src=etc/sysconfig/clustercheck.j2
@@ -53,7 +56,7 @@
 
 - name: create galera cluster resource
   command:
-    pcs resource create galera galera enable_creation=true wsrep_cluster_address="gcomm://{{ galera_node_names|join(',')}}" check_passwd="{{ mariadb_root_password }}" meta master-max=3 ordered=true op promote timeout=60s on-fail=block --master
+    pcs resource create galera galera enable_creation=true wsrep_cluster_address="gcomm://{{ galera_node_names|join(',')}}" meta master-max=3 ordered=true op promote timeout=300s on-fail=block --master
   when: ansible_hostname == pacemaker_dc.stdout
   tags:
     - pacemaker
