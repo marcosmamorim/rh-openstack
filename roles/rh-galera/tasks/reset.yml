@@ -1,6 +1,8 @@
 ---
 - name: Remove galera from pacemaker
   command: pcs resource delete galera
+  ignore_errors: True
+  no_log: True
 
 - name: Stopping/killing MariaDB service
   shell: pkill -9 -u mysql || true
@@ -57,3 +59,19 @@
     state=absent
   ignore_errors: True
   no_log: True
+
+- name: delete /etc/sysconfig/clustercheck file (ready for Pacemaker)
+  file:
+    dest=/etc/sysconfig/clustercheck
+    state=absent
+  tags:
+    - galera
+    - galera-clustercheck
+
+- name: delete /usr/bin/clustercheck file (ready for Pacemaker)
+  file:
+    dest=/usr/bin/clustercheck
+    state=absent
+  tags:
+    - galera
+    - galera-clustercheck

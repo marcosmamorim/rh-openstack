@@ -7,3 +7,4 @@
     priv=*.*:ALL,GRANT
     state=present
   when: inventory_hostname == galera_master
+  no_log: True

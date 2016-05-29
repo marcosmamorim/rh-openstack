@@ -1,18 +1,5 @@
 ---
-TODO: Fix cluster_user to check cluster instead of root
-
-- name: Creating clustercheck SQL user (ready for Pacemaker)
-  mysql_user:
-    name={{ galera_clustercheck_user }}
-    password={{ galera_clustercheck_password }}
-    host={{ inventory_hostname }}
-    priv=*.*:USAGE
-    state=present
-#  when: inventory_hostname == galera_master
-  tags:
-    - galera
-    - galera-clustercheck
-
+ 
 - name: Creating /etc/sysconfig/clustercheck file (ready for Pacemaker)
   template:
     src=etc/sysconfig/clustercheck.j2
