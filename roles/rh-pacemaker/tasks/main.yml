@@ -1,4 +1,5 @@
 ---
+# TODO: Add ip and hostname to /etc/hosts before continue
 
 - name: Ensure cluster group membership
   fail: msg="Cluster hosts must be members of a group"
@@ -125,3 +126,7 @@
 
 - name: Enable cluster
   command: pcs cluster enable --all
+  register: cluster_configured
+
+- name: Pause to sync cluster before continue
+  pause: seconds=20
