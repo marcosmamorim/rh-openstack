@@ -616,7 +616,7 @@ glance_api_options:
   - { section: DEFAULT, option: bind_host, value: "{{ glance_bind_host |default('0.0.0.0')}}"}
   - { section: DEFAULT, option: bind_port, value: "{{ glance_port |default('9292') }}" }
   - { section: DEFAULT, option: log_file, value: "{{ glance_log_dir }}/api.log"}
-  - { section: DEFAULT, option: registry_host, value: "{{ glance_internal_vip }}"}
+  - { section: DEFAULT, option: registry_host, value: "{{ glance_bind_host }}"}
   - { section: DEFAULT, option: registry_port, value: "{{ glance_registry_port }}"}
   - { section: DEFAULT, option: registry_client_protocol, value: http}
   - { section: DEFAULT, option: notification_driver, value: messaging}
@@ -656,6 +656,7 @@ glance_registry_options:
   - { section: DEFAULT, option: log_file, value: "{{ glance_log_dir |default('/var/log/glance') }}/registry.log"}
   - { section: DEFAULT, option: log_dir, value: "{{ glance_log_dir |default('/var/log/glance') }}"}
   - { section: DEFAULT, option: bind_port, value: "{{ glance_registry_port |default('9191') }}"}
+  - { section: DEFAULT, option: bind_host, value: "{{ glance_bind_host }}"}
   - { section: database, option: connection, value: "{{ glance_database_url }}"}
   - { section: keystone_authtoken, option: auth_host, value: "{{ keystone_internal_vip }}"}
   - { section: keystone_authtoken, option: auth_port, value: "{{ keystone_admin_port }}"}
