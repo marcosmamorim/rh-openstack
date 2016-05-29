@@ -61,9 +61,6 @@ rabbitmq_neutron_vhost: neutron
 
 # MariaDB users password
 mariadb_root_password: vW3Ap9-Y5?fLk9Y=
-mariadb_maintenance_password: 9&CB8$5?FSzN6uHf
-galera_clustercheck_user: clustercheck
-galera_clustercheck_password: K8+jgGBPPK!p-4LE
 galera_sst_password: gr34tp4ss0rd
 
 # MariaDB databases
@@ -442,8 +439,8 @@ mariadb_users:
     host: "%"
   - name: "{{ db_clustercheck_user }}"
     pass: "{{ db_clustercheck_password }}"
-    priv: "*.*:ALL"
-    host: "%"
+    priv: "*.*:USAGE"
+    host: "localhost"
 
 ###############################################
 # Memcache
