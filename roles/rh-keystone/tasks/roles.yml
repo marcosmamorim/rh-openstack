@@ -14,3 +14,4 @@
   delay: "{{ keystone_api_retries_delay }}"
   with_items: "{{ keystone_roles }}"
   when: inventory_hostname == keystone_master
+  no_log: True

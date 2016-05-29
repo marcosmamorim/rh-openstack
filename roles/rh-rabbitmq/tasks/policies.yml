@@ -10,6 +10,7 @@
     vhost: "{{ item.vhost | default('/') }}"
   with_items: "{{ rabbitmq_policies_list }}"
   run_once: true
+  no_log: True
   tags:
     - rabbitmq
     - rabbitmq-policies

@@ -32,10 +32,6 @@
   command: pcs constraint order vip-pub-keystone then keystone-clone kind=Optional
   when: ansible_hostname == pacemaker_dc.stdout
 
-- name: create vip-int-keystone constraint to keystone
-  command: pcs constraint order vip-pub-keystone then keystone-clone kind=Optional
-  when: ansible_hostname == pacemaker_dc.stdout
-
 - name: create haproxy constraint to keystone
   command: pcs constraint order haproxy-clone then keystone-clone kind=Optional
   when: ansible_hostname == pacemaker_dc.stdout

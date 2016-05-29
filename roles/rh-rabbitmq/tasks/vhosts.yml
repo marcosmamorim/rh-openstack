@@ -6,6 +6,7 @@
     state=present
   with_items: "{{ rabbitmq_vhost_list }}"
   run_once: true
+  no_log: True
   tags:
     - rabbitmq
     - rabbitmq-vhosts

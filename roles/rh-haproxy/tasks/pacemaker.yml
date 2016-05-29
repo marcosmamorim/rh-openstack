@@ -8,8 +8,6 @@
     - pacemaker
     - pacemaker-haproxy
 
-- debug: var=pacemaker_dc.stdout
-
 - name: create haproxy cluster resource
   when: ansible_hostname == pacemaker_dc.stdout
   pcs_resource: command=create resource_id=haproxy type=systemd:haproxy
