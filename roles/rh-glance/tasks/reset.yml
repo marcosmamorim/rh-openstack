@@ -10,14 +10,15 @@
   mysql_db:
     name: "{{ db_glance_name }}"
     state: absent
-  run_once: True
+  when: inventory_hostname == glance_master
 
-- name: Make sure the keystone database is present
+- name: Make sure the glance database is present
   mysql_db:
     name: "{{ db_glance_name }}"
     collation: 'utf8_general_ci'
     encoding: "utf8"
     state: present
+  when: inventory_hostname == glance_master
 
 - name: remove glance configuration
   file: state=absent path=/etc/glance/{{ item }}
@@ -37,3 +38,4 @@
     - glance-api
     - glance-registry
   when: ansible_hostname == pacemaker_dc.stdout
+  ignore_errors: True

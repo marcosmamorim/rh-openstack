@@ -167,7 +167,7 @@ global_verbose: True
 glance_use_nfs: True
 glance_image_dir: /var/lib/glance/images/
 glance_mount_image:
-- { server_address: 172.18.0.1, export_mount: /home/glance, fstype: nfs, mount_options: "_netdev,rw", mount_point: "{{ glance_image_dir }}" }
+- { server_address: 172.19.0.1, export_mount: /home/glance, fstype: nfs, mount_options: "_netdev,rw", mount_point: "{{ glance_image_dir }}" }
 
 # Cinder Settings
 cinder_default_volume_type: lvm
@@ -612,7 +612,7 @@ glance_master: "{{ keystone_master }}"
 
 glance_api_options:
   - { section: DEFAULT, option: debug, value: "{{ glance_debug |default('False') }}"}
-  - { section: DEFAULT, option: verbose, value: "{{ glance_verbose |default('False') }}"}
+  - { section: DEFAULT, option: verbose, value: "{{ glance_verbose |default('False') }}", state: absent}
   - { section: DEFAULT, option: bind_host, value: "{{ glance_bind_host |default('0.0.0.0')}}"}
   - { section: DEFAULT, option: bind_port, value: "{{ glance_port |default('9292') }}" }
   - { section: DEFAULT, option: log_file, value: "{{ glance_log_dir }}/api.log"}

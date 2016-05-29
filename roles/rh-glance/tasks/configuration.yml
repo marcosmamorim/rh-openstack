@@ -20,6 +20,7 @@
      group=glance
      mode=0640
   with_items: "{{ glance_api_options }}"
+  no_log: True
   tags:
     - glance
     - glance-config
@@ -36,6 +37,7 @@
      group=glance
      mode=0640
   with_items: "{{ glance_registry_options }}"
+  no_log: True
   tags:
     - glance
     - glance-config

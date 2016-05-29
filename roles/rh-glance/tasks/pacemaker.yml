@@ -21,21 +21,22 @@
   when: ansible_hostname == pacemaker_dc.stdout
 
 - name: create glance-regitry resource
-  pcs_resource: command=create resource_id=glance-api type=systemd:openstack-glance-registry
+  pcs_resource: command=create resource_id=glance-registry type=systemd:openstack-glance-registry
   when: ansible_hostname == pacemaker_dc.stdout
 
 - name: clone glance-registry pacemaker
   command: pcs resource clone glance-registry
   when: ansible_hostname == pacemaker_dc.stdout
 
+# Constraints
 - name: create glance-api constraint to keystone
-  command: pcs constraint order keystone then glance-api kind=Optional
+  command: pcs constraint order keystone-clone then glance-api-clone kind=Optional
   when: ansible_hostname == pacemaker_dc.stdout
 
 - name: create glance-api constraint to rabbitmq
-  command: pcs constraint order rabbitmq then glance-api kind=Optional
+  command: pcs constraint order rabbitmq-clone then glance-api-clone kind=Optional
   when: ansible_hostname == pacemaker_dc.stdout
 
 - name: create glance-api constraint to glance-registry
-  command: pcs constraint order glance-api then glance-registry kind=Optional
+  command: pcs constraint order glance-api-clone then glance-registry-clone kind=Optional
   when: ansible_hostname == pacemaker_dc.stdout

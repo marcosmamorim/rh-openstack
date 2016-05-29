@@ -36,11 +36,12 @@
 - meta: flush_handlers
 
 - name: Sync Glance database
-  command: glance-manage db sync
-  notify:
-    - restart glance api
-    - restart glance registry
-  when: glance_bootstrap
+  shell: glance-manage db sync 2>/dev/null
+#  notify:
+#    - restart glance api
+#    - restart glance registry
+  when: glance_bootstrap and inventory_hostname == glance_master
+
 
 
 - name: include glance pacemaker
