@@ -8,7 +8,7 @@
     - rh-galera
     - rh-rabbitmq
     - rh-memcached
-#    - rh-keystone
+    - rh-keystone
 #    - rh-glance
 #    - rh-cinder
 #    - rh-nova-control
