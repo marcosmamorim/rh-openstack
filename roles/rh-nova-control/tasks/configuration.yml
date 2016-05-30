@@ -1,0 +1,50 @@
+---
+
+- name: Configure nova
+  ini_file: >
+    dest=/etc/nova/nova.conf
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=nova
+    owner=root
+    mode=0640
+  with_items: "{{ nova_options }}"
+  no_log: True
+  tags:
+    - nova
+    - nova-config
+
+- name: Configure nova api paste
+  ini_file: >
+    dest=/etc/nova/api-paste.ini
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=nova
+    owner=root
+    mode=0640
+  with_items: "{{ nova_api_options }}"
+  no_log: True
+  tags:
+    - nova
+    - nova-config
+
+- name: sync nova database
+  command: nova-manage db sync
+  sudo: no
+  sudo_user: nova
+  when: inventory_hostname == keystone_master
+
+
+- name: Start nova services
+  command: systemctl start {{ item }}
+  with_items:
+    - openstack-nova-api
+    - openstack-nova-scheduler
+    - openstack-nova-conductor
+    - openstack-nova-consoleauth
+    - openstack-nova-novncproxy
+  no_log: True
