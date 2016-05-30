@@ -52,6 +52,7 @@
     state={{ item.state |default('mounted')}}
   with_items: "{{ glance_mount_image }}"
   when: glance_use_nfs
+  no_log: True
   tags:
     - glance
     - glance_nfs

@@ -11,6 +11,7 @@
     name: "{{ db_glance_name }}"
     state: absent
   when: inventory_hostname == glance_master
+  ignore_errors: True
 
 - name: Make sure the glance database is present
   mysql_db:
@@ -19,6 +20,7 @@
     encoding: "utf8"
     state: present
   when: inventory_hostname == glance_master
+  ignore_errors: True
 
 - name: remove glance configuration
   file: state=absent path=/etc/glance/{{ item }}
