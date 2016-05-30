@@ -4,19 +4,18 @@
   roles:
     - rh-network # OK
     - rh-pacemaker # OK
-    - rh-haproxy
-    - rh-galera
-    - rh-rabbitmq
-    - rh-memcached
-    - rh-keystone
-#    - rh-glance
-#    - rh-cinder
-#    - rh-nova-control
+    - rh-galera # OK
+    - rh-rabbitmq # OK
+    - rh-memcached # OK
+    - rh-haproxy # OK
+    - rh-keystone # OK
+    - rh-glance # OK
+    - rh-cinder # OK
+    - rh-nova-control
 #    - rh-neutron
-#    - rh-horizon
-#    - rh-nova-common
 #    - rh-heat
 #    - rh-horizon
 #    - rh-mongodb
+#    - rh-redis
 #    - rh-ceilometer
 #    - rh-controller
