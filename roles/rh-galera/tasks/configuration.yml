@@ -94,14 +94,18 @@
     value="gcomm://{{ ','.join(galera_hosts) }}"
   when: inventory_hostname != galera_master
 
+- name: create services.d directory to mariadb
+  file:
+    dest=/etc/systemd/system/mariadb.service.d
+    state=directory
+
 - name: set limits to mariadb
   ini_file:
     dest=/etc/systemd/system/mariadb.service.d/limits.conf
     section=Service
     option=LimitNOFILE
     value=16384
-  nofify:
-    - systemctl daemon reload
+  notify: systemctl daemon reload
 
 - name: Finalize the setup by creating file /etc/mysql_clustered
   copy:
