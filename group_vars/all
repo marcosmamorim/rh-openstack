@@ -761,7 +761,7 @@ nova_debug: "{{ global_debug}}"
 nova_verbose: "{{ global_verbose }}"
 nova_bind_host: "{{ internal_ip }}"
 nova_master: "{{ keystone_master }}"
-
+nova_reset: "{{ global_reset }}"
 keystone_ec2_url: "{{ keystone_protocol | default('http') }}://{{ keystone_internal_vip }}:{{ keystone_port }}/v2.0/ec2tokens"
 
 nova_database_url: "mysql://{{ db_nova_user }}:{{ db_nova_password }}@{{ db_vip }}/{{ db_nova_name }}"
@@ -904,7 +904,6 @@ nova_api_options:
   - { section: "filter:authtoken", option: admin_tenant_name, value: services}
   - { section: "filter:authtoken", option: admin_user, value: "{{ keystone_nova_user }}"}
   - { section: "filter:authtoken", option: admin_password, value: "{{ keystone_nova_password }}"}
-
 
 
 ###############################################

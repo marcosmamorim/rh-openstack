@@ -8,6 +8,12 @@
     - nova
     - nova-config
 
+- name: include nova reset
+  include: reset.yml
+  when: nova_reset
+
 - name: include nova configuration
   include: configuration.yml
 
+- name: include nova pacemaker
+  include: pacemaker.yml
