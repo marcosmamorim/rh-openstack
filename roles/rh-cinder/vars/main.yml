@@ -4,4 +4,4 @@ openstack_service_env:
   OS_TENANT_NAME: "services"
   OS_USERNAME: "{{ keystone_cinder_user }}"
   OS_PASSWORD: "{{ keystone_cinder_password }}"
-  OS_AUTH_URL: "{{ keystone_protocol }}://{{ keystone_hostname }}:{{ keystone_admin_port }}/v2.0"
+  OS_AUTH_URL: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_admin_port }}/v2.0"

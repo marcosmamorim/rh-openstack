@@ -18,7 +18,7 @@
     - cinder
 
 - name: create cinder-api cluster resource
-  pcs_resource: command=create resource_id={{ item }} type=systemd:openstakc-{{ item }}
+  pcs_resource: command=create resource_id={{ item }} type=systemd:openstack-{{ item }}
   tags:
     - pacemaker
     - pacemaker-haproxy

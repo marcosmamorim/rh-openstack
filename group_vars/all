@@ -718,7 +718,7 @@ cinder_options:
   - { section: DEFAULT, option: auth_strategy, value: "{{ cinder_auth_strategy|default('keystone') }}"}
   - { section: DEFAULT, option: enabled_backends, value: "{{ cinder_enabled_backends }}"}
   - { section: DEFAULT, option: scheduler_driver, value: cinder.scheduler.filter_scheduler.FilterScheduler}
-  - { section: DEFAULT, option: nova_catalog_info, value: "compute:Compute Service:internalURL"}
+#  - { section: DEFAULT, option: nova_catalog_info, value: compute:Compute Service:internalURL}
 
   - { section: database, option: connection, value: "{{ cinder_database_url }}"}
 

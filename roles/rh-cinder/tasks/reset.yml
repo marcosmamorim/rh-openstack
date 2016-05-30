@@ -1,20 +1,11 @@
 ---
 
-- name: stop cinder api
-  command: systemctl stop {{ cinder_api_service }}
-
-- name: stop cinder scheduler
-  command: systemctl stop {{ cinder_scheduler_service }}
-
-- name: stop cinder volume
-  command: systemctl stop {{ cinder_volume_service }}
-
 - name: Removing cinder default database
   mysql_db:
     name: "cinder"
     state: absent
-  run_once: True
   when: inventory_hostname == cinder_master
+  ignore_errors: True
 
 - name: Make sure the cinder database is present
   mysql_db:
@@ -22,8 +13,20 @@
     collation: 'utf8_general_ci'
     encoding: "utf8"
     state: present
+  when: inventory_hostname == cinder_master
+  ignore_errors: True
 
 - name: remove cinder configuration
   file: state=absent path=/etc/cinder/{{ item }}
   with_items:
     - "cinder.conf"
+  ignore_errors: True
+
+- name: Remove cinder pacemaker resource
+  command: pcs resource delete {{ item }}
+  when: inventory_hostname == cinder_master
+  with_items:
+    - cinder-scheduler
+    - cinder-api
+    - cinder-volume
+  ignore_errors: True
