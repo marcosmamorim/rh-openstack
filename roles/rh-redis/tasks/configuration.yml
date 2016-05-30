@@ -4,13 +4,13 @@
     src=redis-sentinel.te
     dest=/tmp/
 
-- name: check SELinux module galera_cluster
+- name: check SELinux module redis-sentinel
   command: /usr/bin/checkmodule -M -m -o redis-sentinel.mod /tmp/redis-sentinel.te
 
-- name: check SELinux package galera_cluster
+- name: check SELinux package redis-sentinel
   command: /usr/bin/semodule_package -m redis-sentinel.mod -o /tmp/redis-sentinel.pp
 
-- name: activate SELinux module galera_cluster
+- name: activate SELinux module redis-sentinel
   command: /usr/sbin/semodule -i /tmp/redis-sentinel.pp
 
 - name: ensure redis is configured.
