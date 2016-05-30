@@ -5,8 +5,12 @@
   include: packages.yml
   tags: mongodb
 
+- name: include mongodb reset
+  include: reset.yml
+  when: mongodb_reset
+
 - name: include mongodb configuration
   include: configuration.yml
 
 - name: include mongodb replication
-  include: replica.yml
+  include: replication.yml

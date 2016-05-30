@@ -3,10 +3,6 @@
   wait_for: timeout=10
   tags: mongodb
 
-#- name: MongoDB replication configuration
-#  mongodb_replication: replica_set={{ mongodb_replset_name }} host_name={{ item }} host_port={{ mongodb_port }} state=present
-#  with_items: mongodb_servers
-
 - name: Replication configuration without auth
   mongodb_replication:
     replica_set: "{{ mongodb_replset_name }}"
@@ -17,3 +13,4 @@
     priority: "{{ item.priority|default(1.0) }}"
   with_items:
     - "{{ mongodb_replication_params|default([]) }}"
+  when: inventory_hostname == mongodb_master

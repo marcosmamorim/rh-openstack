@@ -1,0 +1,13 @@
+---
+
+- name: stop mongo service
+  service: name=mongod state=stopped
+
+- name: remove mongo data
+  shell: rm -rf {{mongodb_db_path}}/*
+
+- name: remove mongod.conf
+  file:
+    dest=/etc/mongod.conf
+    state=absent
+

@@ -1306,9 +1306,9 @@ haproxy_stats_admin_pass: 123@Mudar
 
 ################################################
 ## MongoDB
-mongodb_reset: "{{ global_reset}}
+mongodb_reset: "{{ global_reset}}"
 mongodb_bind_host: "{{ internal_ip }}"
-mongodb_db_path: /var/lib/mongodbdb
+mongodb_db_path: /var/lib/mongodb/data
 mongodb_replset_name: ceilometer
 mongodb_master: "{{ keystone_master }}"
 mongodb_port: 27017
@@ -1317,7 +1317,7 @@ mongodb_replication_params:
   - host_name: controller01
     host_port: "{{ mongodb_port }}"
     host_type: replica
-    priority: 1.0
+    priority: 3.0
   - host_name: controller02
     host_port: "{{ mongodb_port }}"
     host_type: replica
@@ -1325,7 +1325,7 @@ mongodb_replication_params:
   - host_name: controller03
     host_port: "{{ mongodb_port }}"
     host_type: replica
-    priority: 3.0
+    priority: 1.0
 
 # Use openssl rand -base64 741 to create secret
 mongodb_secrets: |

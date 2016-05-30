@@ -3,7 +3,7 @@
 - name: create the keyfile for authentication
   copy:
     dest=/var/lib/mongodb/secret
-    content="{{ mongodb_secret }}"
+    content="{{ mongodb_secrets }}"
     owner=mongodb
     group=mongodb
     mode=0600
@@ -16,6 +16,8 @@
     owner: mongodb
     recurse: yes
 
+- name: restore file(s) default SELinux security contexts
+  command: restorecon {{ mongodb_db_path }}
 
 - name: create the mongodb configuration file
   template: src=mongodb.conf.j2 dest=/etc/mongod.conf
