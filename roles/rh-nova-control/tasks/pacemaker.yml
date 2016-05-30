@@ -7,6 +7,19 @@
   no_log: True
   tags:
     - pacemaker
+    - pacemaker-nova
+
+- name: stop and disable nova services
+  service: name={{ item }} state=stopped enabled=no
+  with_items:
+    - nova-scheduler
+    - nova-api
+    - nova-conductor
+    - nova-consoleauth
+    - nova-novncproxy
+  tags:
+    - pacemaker
+    - pacemaker-nova
 
 - name: create nova cluster resources
   pcs_resource: command=create resource_id={{ item }} type=systemd:openstack-{{ item }}
@@ -30,19 +43,61 @@
     - pacemaker
     - pacemaker-nova
 
+- name: clone nova resources
+  command: pcs resource clone {{ item }}
+  when: ansible_hostname == pacemaker_dc.stdout
+  with_items:
+    - nova-scheduler
+    - nova-api
+    - nova-conductor
+    - nova-consoleauth
+    - nova-novncproxy
+  tags:
+    - pacemaker
+    - pacemaker-nova
 
 # Colocation
 #<rsc_order first="openstack-nova-scheduler-clone" first-action="start" id="order-openstack-nova-scheduler-clone-openstack-nova-conductor-clone-mandatory" then="openstack-nova-conductor-clone" then-action="start"/>
+- name: create nova-scheduler constraint
+  command: pcs constraint order nova-scheduler-clone then nova-conductor-clone kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+  tags:
+    - pacemaker
+    - pacemaker-nova
+
 #<rsc_order first="openstack-nova-consoleauth-clone" first-action="start" id="order-openstack-nova-consoleauth-clone-openstack-nova-novncproxy-clone-mandatory" then="openstack-nova-novncproxy-clone" then-action="start"/>
+- name: create nova-consoleauth constraint
+  command: pcs constraint order nova-consoleauth-clone then nova-novncproxy-clone kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+  tags:
+    - pacemaker
+    - pacemaker-nova
+
 #<rsc_order first="openstack-nova-novncproxy-clone" first-action="start" id="order-openstack-nova-novncproxy-clone-openstack-nova-api-clone-mandatory" then="openstack-nova-api-clone" then-action="start"/>
+- name: create nova-novncproxy-clone constraint
+  command: pcs constraint order nova-novncproxy-clone then nova-api-clone kind=Optional
+  when: ansible_hostname == pacemaker_dc.stdout
+  tags:
+    - pacemaker
+    - pacemaker-nova
 
 #<rsc_colocation id="colocation-openstack-nova-scheduler-clone-openstack-nova-api-clone-INFINITY" rsc="openstack-nova-scheduler-clone" score="INFINITY" with-rsc="openstack-nova-api-clone"/>
+- name: create constraint colocation nova-scheduler
+  command: pcs constraint colocation add nova-scheduler-clone nova-api-clone INFINITY
+  ignore_errors: True
+  register: command_result
+  when: ansible_hostname == pacemaker_dc.stdout
+  failed_when: "'FAILED' in command_result.stderr"
+  tags:
+    - pacemaker
 
-#- name: create constraint
-#  command: pcs constraint colocation add vip-db haproxy-clone INFINITY
-#  ignore_errors: True
-#  register: command_result
-#  when: ansible_hostname == pacemaker_dc.stdout
-#  failed_when: "'FAILED' in command_result.stderr"
-#  tags:
-#    - pacemaker
+#<rsc_colocation id="colocation-openstack-nova-api-clone-openstack-nova-novncproxy-clone-INFINITY" rsc="openstack-nova-api-clone" score="INFINITY" with-rsc="openstack-nova-novncproxy-clone"/>
+- name: create constraint colocation nova-api
+  command: pcs constraint colocation add nova-api-clone nova-novncproxy-clone INFINITY
+  ignore_errors: True
+  register: command_result
+  when: ansible_hostname == pacemaker_dc.stdout
+  failed_when: "'FAILED' in command_result.stderr"
+  tags:
+    - pacemaker
+    - pacemaker-nova
