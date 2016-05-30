@@ -6,7 +6,6 @@
   no_log: True
   tags:
     - pacemaker
-    - pacemaker-haproxy
 
 - name: create haproxy cluster resource
   when: ansible_hostname == pacemaker_dc.stdout
@@ -28,7 +27,7 @@
   command: pcs resource clone haproxy
   tags:
     - pacemaker
-    - pacemaker-haproxy
+  when: ansible_hostname == pacemaker_dc.stdout
 
 - name: create constraint
   command: pcs constraint colocation add vip-db haproxy-clone INFINITY
@@ -38,7 +37,6 @@
   failed_when: "'FAILED' in command_result.stderr"
   tags:
     - pacemaker
-    - pacemaker-haproxy
 
 - name: create order constraint
   command: pcs constraint order vip-db then haproxy-clone kind=Optional
@@ -47,5 +45,4 @@
   failed_when: "'FAILED' in command_result.stderr"
   tags:
     - pacemaker
-    - pacemaker-haproxy
 
