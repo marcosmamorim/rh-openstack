@@ -2,3 +2,6 @@
 # file: roles/galera/handlers/main.yml
 - name: restart mariadb
   command: systemctl restart mariadb
+
+- name: systemctl daemon reload
+  command: systemctl daemon-reload
