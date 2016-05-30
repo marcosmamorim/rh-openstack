@@ -56,12 +56,18 @@
 
 - name: include rabbitmq vhost
   include: vhosts.yml
+  tags:
+    - rabbitmq-users
 
 - name: include rabbitmq policies
   include: policies.yml
+  tags:
+    - rabbitmq-users
 
 - name: include rabbitmq users
   include: users.yml
+  tags:
+    - rabbitmq-users
 
 - name: include rabbitmq sanity check
   include: sanitycheck.yml
