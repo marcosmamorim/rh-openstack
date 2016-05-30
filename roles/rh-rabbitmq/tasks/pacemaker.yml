@@ -8,12 +8,14 @@
   tags:
     - pacemaker
     - pacemaker-galera
+    - pacemaker-rabbitmq
 
 - name: create rabbitmq cluster resource
   when: ansible_hostname == pacemaker_dc.stdout
   pcs_resource: command=create resource_id=rabbitmq type=ocf:heartbeat:rabbitmq-cluster
   args:
     options:
+      set_policy: ha-all "^(?!amq\.).*" '{"ha-mode":"all", "ha-sync-mode":"automatic"}'
     operations:
       - action: monitor
         options:
@@ -27,6 +29,15 @@
 
 - name: clone rabbitmq pacemaker
   command: pcs resource clone rabbitmq
+  tags:
+    - pacemaker
+    - pacemaker-rabbitmq
+
+- name: pause to start services
+  pause: seconds=10
+
+- name: create policy to ha
+  command:  rabbitmqctl set_policy ha-all "^ha\." '{"ha-mode":"all"}'
   tags:
     - pacemaker
     - pacemaker-rabbitmq

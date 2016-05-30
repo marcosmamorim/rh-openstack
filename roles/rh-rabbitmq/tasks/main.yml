@@ -4,6 +4,10 @@
 - name: include rabbitmq install packages
   include: install.yml
 
+- name: include reset
+  include: reset.yml
+  when: rabbit_reset
+
 - name: include erlang
   include: erlang.yml
 
@@ -44,6 +48,12 @@
 - name: include rabbitmq plugins
   include: plugins.yml
 
+- name: include rabbitmq-server to pacemaker
+  include: pacemaker.yml
+  tags:
+    - rabbitmq
+    - rabbitmq-pacemaker
+
 - name: include rabbitmq vhost
   include: vhosts.yml
 
@@ -53,14 +63,7 @@
 - name: include rabbitmq users
   include: users.yml
 
-
 - name: include rabbitmq sanity check
   include: sanitycheck.yml
   when: rabbitmq_sanitycheck and
         rabbitmq_clustering or (clustered.stat.exists != True)
-
-- name: include rabbitmq-server to pacemaker
-  include: pacemaker.yml
-  tags:
-    - rabbitmq
-    - rabbitmq-pacemaker
