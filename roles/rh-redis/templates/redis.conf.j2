@@ -1,7 +1,7 @@
 daemonize yes
 pidfile /var/run/redis/redis.pid
 port {{ redis_port }}
-bind {{ redis_bind_host }}
+bind 127.0.0.1 {{ redis_bind_host }}
 
 {% if redis_unixsocket %}
 unixsocket {{ redis_unixsocket }}

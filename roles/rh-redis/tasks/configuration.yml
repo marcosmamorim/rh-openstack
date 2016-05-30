@@ -1,4 +1,17 @@
 ---
+- name: building and installing SELinux module
+  copy:
+    src=redis-sentinel.te
+    dest=/tmp/
+
+- name: check SELinux module galera_cluster
+  command: /usr/bin/checkmodule -M -m -o redis-sentinel.mod /tmp/redis-sentinel.te
+
+- name: check SELinux package galera_cluster
+  command: /usr/bin/semodule_package -m redis-sentinel.mod -o /tmp/redis-sentinel.pp
+
+- name: activate SELinux module galera_cluster
+  command: /usr/sbin/semodule -i /tmp/redis-sentinel.pp
 
 - name: ensure redis is configured.
   template:
@@ -11,3 +24,16 @@
     src=redis-sentinel.conf.j2
     dest=/etc/redis-sentinel.conf
     mode=0644
+
+- name: create services.d directory to redis-sentinel
+  file:
+    dest=/etc/systemd/system/redis-sentinel.service.d
+    state=directory
+
+- name: set limits to redis-sentinel
+  ini_file:
+    dest=/etc/systemd/system/redis-sentinel.service.d/limits.conf
+    section=Service
+    option=LimitNOFILE
+    value=10032
+  notify: systemctl daemon reload

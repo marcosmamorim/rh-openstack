@@ -5,3 +5,4 @@ sentinel parallel-syncs mymaster 1
 min-slaves-to-write 1
 min-slaves-max-lag 10
 logfile /var/log/redis/sentinel.log
+bind 127.0.0.1 {{ redis_bind_host }}

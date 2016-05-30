@@ -1,0 +1,24 @@
+module redis-sentinel 1.0;
+
+require {
+	type unlabeled_t;
+	type etc_t;
+	type unreserved_port_t;
+	type mongod_t;
+	type redis_t;
+	class tcp_socket { name_bind name_connect };
+	class file { write getattr };
+	class dir write;
+}
+
+#============= mongod_t ==============
+allow mongod_t unlabeled_t:dir write;
+allow mongod_t unlabeled_t:file getattr;
+
+#============= redis_t ==============
+
+#!!!! This avc is allowed in the current policy
+allow redis_t etc_t:file write;
+
+#!!!! This avc is allowed in the current policy
+allow redis_t unreserved_port_t:tcp_socket { name_bind name_connect };

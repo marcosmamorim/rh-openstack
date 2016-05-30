@@ -34,6 +34,7 @@
 
 - name: create redis-sentinel cluster resource
   pcs_resource: command=create resource_id=redis-sentinel type=systemd:redis-sentinel
+  args:
     options:
     operations:
       - action: start
