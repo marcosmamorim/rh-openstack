@@ -15,7 +15,6 @@
   pcs_resource: command=create resource_id=rabbitmq type=ocf:heartbeat:rabbitmq-cluster
   args:
     options:
-      set_policy: ha-all "^(?!amq\.).*" '{"ha-mode":"all", "ha-sync-mode":"automatic"}'
     operations:
       - action: monitor
         options:
@@ -33,8 +32,8 @@
     - pacemaker
     - pacemaker-rabbitmq
 
-- name: pause to start services
-  pause: seconds=10
+- name: pause to start rabbitmq services
+  pause: seconds=30
 
 - name: create policy to ha
   command:  rabbitmqctl set_policy ha-all "^ha\." '{"ha-mode":"all"}'

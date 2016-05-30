@@ -14,3 +14,4 @@
   tags:
     - pacemaker
     - pacemaker-rabbitmq
+  ignore_errors: True
