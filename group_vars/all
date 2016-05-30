@@ -1346,15 +1346,35 @@ mongodb_secrets: |
   1M9RVtR5rOCpUQ4CDo2JCO2dKjeKvLwLO7E/Qw++/UgNjJgNFNedrLBYOA7suN8/
   QVqE+fwfFvg/Q3ZBJvb0J2OaxmZf
 
+################################################
+## Redis
+redis_reset: "{{ global_reset }}"
+redis_master: "{{ keystone_master }}"
+redis_bind_host: "{{ internal_ip }}"
+redis_unixsocket: ''
+redis_port: 6379
+redis_unixsocket: ''
+redis_timeout: 300
+redis_loglevel: "notice"
+redis_logfile: /var/log/redis/redis-server.log
 
-#mongodb_limits:
-#  - { type: soft, item: nofile, value: 65536 }
-#  - { type: soft, item: nofile, value: 65536 }
-#  - { type: hard, item: nofile, value: 65536 }
-#  - { type: soft, item: nproc, value: 16384 }
-#  - { type: hard, item: nproc, value: 16384 }
-#  - { type: soft, item: memlock, value: 31457280 }
-#  - { type: hard, item: memlock, value: 31457280 }
+redis_databases: 16
+# Set to an empty set to disable persistence (saving the DB to disk).
+redis_save:
+  - 900 1
+  - 300 10
+  - 60 10000
+
+redis_rdbcompression: "yes"
+redis_dbfilename: dump.rdb
+redis_dbdir: /var/lib/redis
+
+redis_maxmemory: 0
+redis_maxmemory_policy: "noeviction"
+redis_maxmemory_samples: 5
+
+redis_appendonly: "no"
+redis_appendfsync: "everysec"
 
 
 ################################################

@@ -1,0 +1,4 @@
+- hosts: controller
+  gather_facts: True
+  roles:
+    - rh-redis

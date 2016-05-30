@@ -1,0 +1,40 @@
+---
+- name: stop redis before add to pacemaker
+  service: name=redis state=stopped enabled=no
+
+- name: Get Current DC
+  shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
+  register: pacemaker_dc
+  tags:
+    - pacemaker
+    - pacemaker-redis
+
+- name: create redis cluster resource
+  when: ansible_hostname == pacemaker_dc.stdout
+  pcs_resource: command=create resource_id=redis type=ocf:heartbeat:redis
+  args:
+    options:
+      wait_last_known_master: true
+    operations:
+      - action: start
+        options:
+          timeout: 120s
+      - action: stop
+        options:
+          timeout: 120s
+      - action: monitor
+        options:
+          interval: 60s
+  tags:
+    - pacemaker
+    - pacemaker-rabbit
+
+
+
+#<op id="redis-start-interval-0s" interval="0s" name="start" timeout="120"/>
+#<op id="redis-stop-interval-0s" interval="0s" name="stop" timeout="120"/>
+#<op id="redis-monitor-interval-45" interval="45" name="monitor" timeout="60"/>
+#<op id="redis-monitor-interval-20" interval="20" name="monitor" role="Master" timeout="60"/>
+#<op id="redis-monitor-interval-60" interval="60" name="monitor" role="Slave" timeout="60"/>
+#<op id="redis-promote-interval-0s" interval="0s" name="promote" timeout="120"/>
+#<op id="redis-demote-interval-0s" interval="0s" name="demote" timeout="120"/>
