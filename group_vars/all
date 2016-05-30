@@ -161,7 +161,7 @@ horizon_public_vip: "{{ public_network_prefix }}.28"
 
 global_debug: True
 global_verbose: True
-
+global_reset: True
 
 # Glance Settings
 glance_use_nfs: True
@@ -171,7 +171,7 @@ glance_mount_image:
 
 # Cinder Settings
 cinder_default_volume_type: lvm
-cinder_enabled_backends: lvm,lvm2
+cinder_enabled_backends: []
 
 ###############################################
 # Group of Servers short hostname
@@ -210,7 +210,7 @@ rabbitmq_key_file: etc/rabbitmq/ssl/key.pem
 rabbitmq_ssl_bind_address: "{{ hostvars[inventory_hostname][ 'ansible_' + mgmt_interface ].ipv4.address }}"
 rabbitmq_ssl_port: 5672
 
-
+rabbit_reset: "{{ global_reset }}"
 rabbitmq_sanitycheck: True
 
 rabbitmq_bind_address: "{{ internal_ip }}"
@@ -457,7 +457,7 @@ memcached_log_verbosity: ""
 # Keystone
 keystone_default_region: RegionOne
 
-keystone_reset: False
+keystone_reset: "{{ global_reset }}"
 keystone_disable_auth_token: False
 keystone_master: controller01
 keystone_bind_host: "{{ internal_ip }}"
@@ -587,7 +587,7 @@ keystone_options:
 
 ###############################################
 # Glance
-glance_reset: False
+glance_reset: "{{ global_reset }}"
 glance_bind_host: "{{ internal_ip }}"
 glance_port: 9292
 glance_registry_port: 9191
@@ -670,7 +670,7 @@ glance_registry_options:
 
 ###############################################
 # Cinder
-cinder_reset: True
+cinder_reset: "{{ global_reset }}"
 cinder_bind_host: "{{ internal_ip }}"
 cinder_port: 9292
 cinder_log_dir: /var/log/cinder
@@ -696,8 +696,8 @@ cinder_bootstrap: true
 cinder_options:
   - { section: DEFAULT, option: debug, value: "{{ cinder_debug |default('False') }}"}
   - { section: DEFAULT, option: verbose, value: "{{ cinder_verbose |default('False') }}"}
-  # This option is a workarond to make cinde-volume work in A/C
-  - { section: DEFAULT, option: host, value: "{{ cinder_master }}"}
+#  This option is a workarond to make cinde-volume work in A/C
+#  - { section: DEFAULT, option: host, value: "{{ cinder_master }}"}
 
   - { section: DEFAULT, option: notification_driver, value: "{{ notification_driver |default('messagingv2') }}"}
   - { section: DEFAULT, option: rpc_backend, value: "{{ rpc_backend |default('rabbit')}}"}
