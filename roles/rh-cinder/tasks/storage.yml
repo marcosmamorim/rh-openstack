@@ -24,6 +24,7 @@
     - cinder
 
 # TODO: create new method to deploy this
+# TODO: I don't know why get errors in this command, but type was created.
 - name: Create Storage type
   shell: cinder type-create {{ item.name }}
   run_once: true

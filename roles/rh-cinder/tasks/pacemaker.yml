@@ -57,7 +57,7 @@
   when: ansible_hostname == pacemaker_dc.stdout
 
 - name: create cinder-api constraint to memcached
-  command: pcs constraint order memcached-clone then cinder-api kind=Optional
+  command: pcs constraint order memcached-clone then cinder-api-clone kind=Optional
   when: ansible_hostname == pacemaker_dc.stdout
 
 - name: create cinder-api constraint to cinder-scheduler
@@ -68,3 +68,6 @@
   command: pcs constraint order cinder-scheduler-clone then cinder-volume-clone kind=Optional
   when: ansible_hostname == pacemaker_dc.stdout
 
+# Colocation
+# TODO: Fix cinder-scheduler and cinder-volume colocation
+#      <rsc_colocation id="colocation-openstack-cinder-volume-openstack-cinder-scheduler-clone-INFINITY" rsc="openstack-cinder-volume" score="INFINITY" with-rsc="openstack-cinder-scheduler-clone"/>
