@@ -1,0 +1,26 @@
+---
+- name: Get Current DC
+  shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
+  register: pacemaker_dc
+  ignore_errors: True
+  no_log: True
+  tags:
+    - pacemaker
+    - pacemaker-neutron
+
+
+- name: remove neutron services from pacemaker
+  command: pcs resource delete {{ item }}
+  with_items:
+    - neutron-server
+    - neutron-metadata-agent
+    - neutron-dhcp-agent
+    - neutron-openvswitch-agent
+    - neutron-l3-agent
+    - neutron-metering-agent
+    - neutron-lbaas-agent
+  ignore_errors: True
+  tags:
+    - pacemaker
+    - pacemaker-neutron
+

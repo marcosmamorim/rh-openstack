@@ -1,0 +1,22 @@
+---
+
+- name: Get Current DC
+  shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
+  register: pacemaker_dc
+  ignore_errors: True
+  no_log: True
+  tags:
+    - pacemaker
+    - pacemaker-neutron
+
+- name: Make sure Neutron server is disabled and stopped
+  service: name={{ item }} state=stopped enabled=no
+  with_items:
+    - neutron-server
+    - neutron-metadata-agent
+    - neutron-dhcp-agent
+    - neutron-openvswitch-agent
+    - neutron-l3-agent
+    - neutron-metering-agent
+    - neutron-lbaas-agent
+

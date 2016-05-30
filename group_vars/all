@@ -908,7 +908,7 @@ nova_api_options:
 
 ###############################################
 # Neutron
-network_reset: False
+network_reset: "{{ global_reset }}"
 neutron_master: "{{ keystone_master }}"
 neutron_debug: "{{ global_debug }}"
 neutron_verbose: "{{ global_verbose }}"
