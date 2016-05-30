@@ -53,7 +53,7 @@
   when: ansible_hostname == pacemaker_dc.stdout
 
 - name: create cinder-api constraint to rabbitmq
-  command: pcs constraint order rabbitmq-clone then cinder-api kind=Optional
+  command: pcs constraint order rabbitmq-clone then cinder-api-clone kind=Optional
   when: ansible_hostname == pacemaker_dc.stdout
 
 - name: create cinder-api constraint to memcached
