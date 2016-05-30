@@ -10,7 +10,7 @@
     mode: 0644
 
 - name: include redis reset
-  include: reset
+  include: reset.yml
   when: redis_reset
 
 #- name: Ensure redis is running and enabled on boot.

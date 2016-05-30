@@ -1,4 +1,4 @@
 ---
 
 - name: Ensure redis is installed.
-  yum: name=redis state=installed enablerepo=epel
+  yum: name=redis state=present

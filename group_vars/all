@@ -1357,6 +1357,7 @@ redis_unixsocket: ''
 redis_timeout: 300
 redis_loglevel: "notice"
 redis_logfile: /var/log/redis/redis-server.log
+redis_conf_path: /etc/redis.conf
 
 redis_databases: 16
 # Set to an empty set to disable persistence (saving the DB to disk).
