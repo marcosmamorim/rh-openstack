@@ -1,0 +1,36 @@
+---
+
+- name: Get Current DC
+  shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
+  register: pacemaker_dc
+  ignore_errors: True
+  no_log: True
+  tags:
+    - pacemaker
+    - pacemaker-mongodb
+
+- name: stop the mongodb service
+  service: name=mongod state=stopped enabled=no
+  tags:
+    - pacemaker
+    - pacemaker-mongodb
+
+- name: create mongod cluster resource
+  when: ansible_hostname == pacemaker_dc.stdout
+  pcs_resource: command=create resource_id=mongodb type=systemd:mongod
+  args:
+    options:
+    operations:
+      - action: monitor
+        options:
+          interval: 10s
+      - action: start
+        options:
+          timeout: 60s
+  tags:
+    - pacemaker
+    - pacemaker-mongodb
+
+- name: clone mongodb pacemaker
+  command: pcs resource clone mongodb
+  when: ansible_hostname == pacemaker_dc.stdout

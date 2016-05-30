@@ -14,3 +14,6 @@
 
 - name: include mongodb replication
   include: replication.yml
+
+- name: include mongodb pacemaker
+  include: pacemaker.yml
