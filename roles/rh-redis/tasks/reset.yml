@@ -8,8 +8,11 @@
     - pacemaker-redis
 
 - name: remove redis from pacemaker
-  command: pcs resource delete redis
+  command: pcs resource delete {{ item }}
   when: ansible_hostname == pacemaker_dc.stdout
+  with_items:
+    - redis
+    - redis-sentinel
   ignore_errors: True
   tags:
     - pacemaker
