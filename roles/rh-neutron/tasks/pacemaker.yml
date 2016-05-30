@@ -19,4 +19,44 @@
     - neutron-l3-agent
     - neutron-metering-agent
     - neutron-lbaas-agent
+  tags:
+    - pacemaker
+    - pacemaker-neutron
 
+- name: create neutron cluster resource
+  when: ansible_hostname == pacemaker_dc.stdout
+  pcs_resource: command=create resource_id={{ item }} type=systemd:{{ item }}
+  args:
+    options:
+    operations:
+      - action: monitor
+        options:
+          interval: 10s
+      - action: start
+        options:
+          timeout: 60s
+  with_items:
+    - neutron-server
+    - neutron-metadata-agent
+    - neutron-dhcp-agent
+    - neutron-openvswitch-agent
+    - neutron-l3-agent
+    - neutron-metering-agent
+    - neutron-lbaas-agent
+  tags:
+    - pacemaker
+    - pacemaker-neutron
+
+- name: clone neutron pacemaker
+  command: pcs resource clone {{ item }}
+  when: ansible_hostname == pacemaker_dc.stdout
+  with_items:
+    - neutron-server
+    - neutron-metadata-agent
+    - neutron-dhcp-agent
+    - neutron-openvswitch-agent
+    - neutron-l3-agent
+    - neutron-metering-agent
+  tags:
+    - pacemaker
+    - pacemaker-neutron
