@@ -2,7 +2,6 @@ daemonize yes
 pidfile /var/run/redis/redis.pid
 port {{ redis_port }}
 bind 127.0.0.1 {{ redis_bind_host }}
-
 {% if redis_unixsocket %}
 unixsocket {{ redis_unixsocket }}
 {% endif %}
@@ -43,3 +42,7 @@ no-appendfsync-on-rewrite no
 {% for include in redis_includes %}
 include {{ include }}
 {% endfor %}
+
+{% if inventory_hostname != redis_master %}
+slaveof {{ redis_master }} {{ redis_port }}
+{% endif %}
