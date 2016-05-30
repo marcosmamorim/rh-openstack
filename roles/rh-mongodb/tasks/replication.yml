@@ -1,0 +1,19 @@
+---
+- name: pause for a while
+  wait_for: timeout=10
+  tags: mongodb
+
+#- name: MongoDB replication configuration
+#  mongodb_replication: replica_set={{ mongodb_replset_name }} host_name={{ item }} host_port={{ mongodb_port }} state=present
+#  with_items: mongodb_servers
+
+- name: Replication configuration without auth
+  mongodb_replication:
+    replica_set: "{{ mongodb_replset_name }}"
+    host_name: "{{ item.host_name }}"
+    host_port: "{{ item.host_port|default(27017) }}"
+    host_type: "{{ item.host_type|default('replica') }}"
+    hidden: "{{ item.hidden|default(false) }}"
+    priority: "{{ item.priority|default(1.0) }}"
+  with_items:
+    - "{{ mongodb_replication_params|default([]) }}"

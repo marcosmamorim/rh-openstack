@@ -623,6 +623,7 @@ glance_api_options:
   - { section: DEFAULT, option: image_cache_dir, value: /var/lib/glance/image-cache}
 
   - { section: database, option: connection, value: "{{ glance_database_url }}"}
+  - { section: database, option: max_retries, value: -1}
 
   - { section: keystone_authtoken, option: auth_host, value: "{{ keystone_internal_vip }}"}
   - { section: keystone_authtoken, option: auth_port, value: "{{ keystone_admin_port }}"}
@@ -631,6 +632,7 @@ glance_api_options:
   - { section: keystone_authtoken, option: admin_user, value: "{{ keystone_glance_user }}"}
   - { section: keystone_authtoken, option: admin_password, value: "{{ keystone_glance_password }}"}
   - { section: keystone_authtoken, option: auth_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}"}
+  - { section: keystone_authtoken, option: identity_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_admin_port }}"}
 
   - { section: glance_store, option: stores, value: "glance.store.http.Store,glance.store.filesystem.Store"}
   - { section: glance_store, option: default_store, value: file}
@@ -665,6 +667,7 @@ glance_registry_options:
   - { section: keystone_authtoken, option: admin_user, value: "{{ keystone_glance_user }}"}
   - { section: keystone_authtoken, option: admin_password, value: "\"{{ keystone_glance_password }}\""}
   - { section: keystone_authtoken, option: auth_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}"}
+  - { section: keystone_authtoken, option: identity_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_admin_port }}"}
   - { section: paste_deploy, option: flavor, value: keystone}
 
 
@@ -721,6 +724,7 @@ cinder_options:
 #  - { section: DEFAULT, option: nova_catalog_info, value: compute:Compute Service:internalURL}
 
   - { section: database, option: connection, value: "{{ cinder_database_url }}"}
+  - { section: database, option: max_retries, value: -1}
 
   - { section: keystone_authtoken, option: admin_tenant_name, value: services}
   - { section: keystone_authtoken, option: auth_host, value: "{{ keystone_internal_vip }}"}
@@ -730,6 +734,7 @@ cinder_options:
   - { section: keystone_authtoken, option: admin_user, value: "{{ keystone_cinder_user }}"}
   - { section: keystone_authtoken, option: admin_password, value: "{{ keystone_cinder_password }}"}
   - { section: keystone_authtoken, option: auth_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}"}
+  - { section: keystone_authtoken, option: identity_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_admin_port }}"}
 
   - { section: keystone_authtoken, option: memcached_servers, value: "{{ memcached_hosts | shuffle | join(',') |default('localhost') }}"}
 
@@ -817,7 +822,7 @@ nova_options:
   - { section: DEFAULT, option: s3_listen, value: "{{ nova_bind_host }}"}
   - { section: DEFAULT, option: log_dir, value: "/var/log/nova"}
   - { section: DEFAULT, option: scheduler_host_manager, value: "nova.scheduler.host_manager.HostManager"}
-  - { section: DEFAULT, option: scheduler_host_subset_size, value: 20}
+  - { section: DEFAULT, option: scheduler_host_subset_size, value: 30}
   - { section: DEFAULT, option: cpu_allocation_ratio, value: "{{ cpu_allocation_ratio }}"}
   - { section: DEFAULT, option: disk_allocation_ratio, value: "{{ disk_allocation_ratio }}"}
   - { section: DEFAULT, option: max_io_ops_per_host, value: 8}
@@ -857,6 +862,7 @@ nova_options:
   - { section: keystone_authtoken, option: admin_user, value: "{{ keystone_nova_user }}"}
   - { section: keystone_authtoken, option: admin_password, value: "{{ keystone_nova_password }}"}
   - { section: keystone_authtoken, option: auth_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}"}
+  - { section: keystone_authtoken, option: identity_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_admin_port }}"}
   - { section: keystone_authtoken, option: memcached_servers, value: "{{ memcached_hosts | shuffle | join(',') |default('localhost') }}"}
 
   - { section: libvirt, option: virt_type, value: "{{ virt_type |default('qemu') }}"}
@@ -1004,6 +1010,7 @@ neutron_options:
   - { section: keystone_authtoken, option: admin_user, value: "{{ keystone_neutron_user }}"}
   - { section: keystone_authtoken, option: admin_password, value: "{{ keystone_neutron_password }}"}
   - { section: keystone_authtoken, option: auth_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}"}
+  - { section: keystone_authtoken, option: identity_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}"}
 
   - { section: database, option: connection, value: "{{ neutron_database_url }}"}
 
@@ -1091,7 +1098,7 @@ neutron_ml2_plugin_options:
   - { section: ml2_type_vxlan, option: vni_ranges, value: "{{ neutron_vxlan_vni_ranges|default('1:2000') }}"}
   - { section: ml2_type_vxlan, option: vxlan_group, value: "{{ neutron_vxlan_group|default('239.1.1.1') }}"}
 
-  - { section: securitygroup, option: enable_security_group, value: "{{ neutron_enable_security_group|default('True') }}"}
+#  - { section: securitygroup, option: enable_security_group, value: "{{ neutron_enable_security_group|default('True') }}"}
   - { section: ovs, option: bridge_mappings, value: "{{ neutron_ovs_bridge_mappings }}"}
 
 neutron_lbaas_options:
@@ -1296,6 +1303,101 @@ pacemaker_resources:
 haproxy_reset: True
 haproxy_stats_admin_user: admin
 haproxy_stats_admin_pass: 123@Mudar
+
+################################################
+## MongoDB
+mongodb_reset: "{{ global_reset}}
+mongodb_bind_host: "{{ internal_ip }}"
+mongodb_db_path: /var/lib/mongodbdb
+mongodb_replset_name: ceilometer
+mongodb_master: "{{ keystone_master }}"
+mongodb_port: 27017
+
+mongodb_replication_params:
+  - host_name: controller01
+    host_port: "{{ mongodb_port }}"
+    host_type: replica
+    priority: 1.0
+  - host_name: controller02
+    host_port: "{{ mongodb_port }}"
+    host_type: replica
+    priority: 2.0
+  - host_name: controller03
+    host_port: "{{ mongodb_port }}"
+    host_type: replica
+    priority: 3.0
+
+# Use openssl rand -base64 741 to create secret
+mongodb_secrets: |
+  +oBNsx6cEimeHk/UoLo6Aq+EDe/0GfwePssGU9zB2Uk8a/8u1mlg7PlQRyGEKACk
+  PCZ+dBiKmFGW3bQEgC4EK0jpiBFXJaMeV+DAxdZddDygbTzrMqYBYr5G7HGX5oNT
+  nGks1Rxjum2aHD7veyEP2muFE+Lwb4S5glkzYco+Uo1gcXLHMP/5+AVI6YlzvP1O
+  FQmmineAegR73W2pcZsxwBTakUBSHnMFqquFk7QHMfpRWHcrC67x7QGvTljb6NVB
+  r6nDaOMP4TFWv1Hr5NQzs5Ker05AWBxnly3xYDfAxHa1KCRP43Qeb59S7pIXNVK4
+  2/Kl+7utiw55BlsSt5y/45FgC4uROW2EBU86FDX/EaBbez4zZBtscoYsXWyjz/Jn
+  uuNDgf85JX6V7ymQXIq1fFa0crcZ6SV/ZKi4hCjcRhZ6hzclft2dcRZ0dFT3ssT4
+  FtCcr3hiGH6V3jpijsm86DzvbfM+URw5zcf2m1f4ojzVzJj/ddmcQNs+BHiPTZr9
+  WRbe81zXgleySvvfkGIsIi30bxOyj2cuyuS+j+Vzm6RgpvuKjjmDqR37hJkXgSOD
+  lGQ7LZ5Fv5OWAEdsEOQmluizm2e5TJTjfjwQ2Gps6qX8xGt9Bs93/r3376Tcxlbu
+  1guL5FIp4Zy3YLZfarUZaCxD8++3F3iO5vWZDn+Qbo8T6FBQ5Wwl7zB02bRg+EuY
+  IdQEK/p/p1iNrOBbV4C0SEpECgLshtreXG9v6sw7LXmVQ9UY7gyRmQ1Txm/CA2nM
+  5aDeTJISTpmnnT77+Zqj8MIP/KMfRmsJBVJJqyCXrhqTaQqDuA2JqApEqTIcQ3ca
+  qKTZZB+De70FgGihhJzyrXsY2Qo2gpw0FFYTKxLNsxvrXKQB5RUhGssm1Jqcwqbo
+  1M9RVtR5rOCpUQ4CDo2JCO2dKjeKvLwLO7E/Qw++/UgNjJgNFNedrLBYOA7suN8/
+  QVqE+fwfFvg/Q3ZBJvb0J2OaxmZf
+
+
+#mongodb_limits:
+#  - { type: soft, item: nofile, value: 65536 }
+#  - { type: soft, item: nofile, value: 65536 }
+#  - { type: hard, item: nofile, value: 65536 }
+#  - { type: soft, item: nproc, value: 16384 }
+#  - { type: hard, item: nproc, value: 16384 }
+#  - { type: soft, item: memlock, value: 31457280 }
+#  - { type: hard, item: memlock, value: 31457280 }
+
+
+################################################
+## Ceilometer
+ceilometer_reset: "{{ global_reset }}"
+ceilometer_master: "{{ keystone_master }}"
+ceilometer_debug: "{{ global_debug }}"
+ceilometer_verbose: "{{ global_verbose }}"
+ceilometer_bind_host: "{{ internal_ip }}"
+ceilometer_metering_secret: d755f0cd352fa12490183r1db
+
+ceilometer_options:
+  - { section: DEFAULT, option: debug, value: "{{ ceilometer_debug |default('False') }}"}
+  - { section: DEFAULT, option: verbose, value: "{{ ceilometer_verbose |default('False') }}"}
+  - { section: DEFAULT, option: bind_host, value: "{{ ceilometer_bind_host }}"}
+  - { section: DEFAULT, option: bind_port, value: "{{ ceilometer_port }}"}
+  - { section: DEFAULT, option: memcached_servers, value: "{{ memcached_hosts | shuffle | join(',') |default('localhost') }}"}
+
+
+  - { section: keystone_authtoken, option: identity_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}"}
+  - { section: keystone_authtoken, option: admin_tenant_name, value: services}
+  - { section: keystone_authtoken, option: admin_user, value: "{{ keystone_ceilometer_user }}"}
+  - { section: keystone_authtoken, option: admin_password, value: "{{ keystone_ceilometer_password }}"}
+
+  - { section: DEFAULT, option: rabbit_hosts, value: "{{ rabbitmq_hosts | shuffle | join(',') }}"}
+  - { section: DEFAULT, option: rabbit_ha_queues, value: "{{ rabbitmq_clustering | default('True') }}"}
+  - { section: DETAULT, option: rabbit_userid, value: "{{ rabbitmq_nova_user| default('guest') }}"}
+  - { section: DEFAULT, option: rabbit_use_ssl, value: "{{ rabbitmq_ssl | default('False') }}"}
+  - { section: DEFAULT, option: rabbit_virtual_host, value: "{{ rabbitmq_nova_vhost| default('/') }}"}
+  - { section: DEFAULT, option: rabbit_password, value: "{{ rabbitmq_nova_password |default('guest') }}"}
+  - { section: DEFAULT, option: rabbit_port, value: "{{ rabbitmq_port| default('5671') }}"}
+
+  - { section: publisher_rpc, option: metering_secret, value: "{{ ceilometer_metering_secret }}"}
+
+  - { section: service_credentials, option: os_auth_url, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}/{{ keystone_api_version}}"}
+  - { section: service_credentials, option: os_username, value: "{{ keystone_ceilometer_user }}"}
+  - { section: service_credentials, option: os_tenant_name, value: services}
+  - { section: service_credentials, option: os_password, value: "{{ keystone_ceilometer_password }}"}
+
+  - { section: service_credentials, option: auth_host, value: "{{ keystone_internal_vip }}"}
+  - { section: keystone_authtoken, option: auth_port, value: "{{ keystone_admin_port }}"}
+  - { section: keystone_authtoken, option: auth_protocol, value: "{{ keystone_protocol }}"}
+
 
 ################################################
 ## Red Hat Subscribe
