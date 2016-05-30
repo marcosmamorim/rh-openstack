@@ -1,0 +1,9 @@
+---
+
+- name: include ceilometer packages
+  include: packages.yml
+
+
+- name: include ceilometer configuration
+  include: configuration.yml
+

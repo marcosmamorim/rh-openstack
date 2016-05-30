@@ -199,6 +199,11 @@ memcached_hosts:
   - controller02
   - controller03
 
+mongodb_hosts:
+  - controller01
+  - controller02
+  - controller03
+
 ###############################################
 # RabbitMQ
 
@@ -1098,7 +1103,8 @@ neutron_ml2_plugin_options:
   - { section: ml2_type_vxlan, option: vni_ranges, value: "{{ neutron_vxlan_vni_ranges|default('1:2000') }}"}
   - { section: ml2_type_vxlan, option: vxlan_group, value: "{{ neutron_vxlan_group|default('239.1.1.1') }}"}
 
-#  - { section: securitygroup, option: enable_security_group, value: "{{ neutron_enable_security_group|default('True') }}"}
+  - { section: securitygroup, option: enable_security_group, value: "{{ neutron_enable_security_group|default('True') }}"}
+  - { section: securitygroup, option: firewall_driver, value: "neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"}
   - { section: ovs, option: bridge_mappings, value: "{{ neutron_ovs_bridge_mappings }}"}
 
 neutron_lbaas_options:
@@ -1382,26 +1388,37 @@ ceilometer_verbose: "{{ global_verbose }}"
 ceilometer_bind_host: "{{ internal_ip }}"
 ceilometer_metering_secret: d755f0cd352fa12490183r1db
 
+mongodb_database_url: "mongodb://{{ mongodb_hosts |join(',')}}:27017/ceilometer?replicaSet=ceilometer
+
+# TODO: This is horrible, but i don't have another option. :-(
+mongodb_backend_url: "redis://controller01:26379?sentinel=mymaster&sentinel_fallback=controller02:26379&sentinel_fallback=controller03:26379"
+
+# Five days in seconds
+mongodb_time_to_live: 432000
+
 ceilometer_options:
+
   - { section: DEFAULT, option: debug, value: "{{ ceilometer_debug |default('False') }}"}
   - { section: DEFAULT, option: verbose, value: "{{ ceilometer_verbose |default('False') }}"}
   - { section: DEFAULT, option: bind_host, value: "{{ ceilometer_bind_host }}"}
   - { section: DEFAULT, option: bind_port, value: "{{ ceilometer_port }}"}
-  - { section: DEFAULT, option: memcached_servers, value: "{{ memcached_hosts | shuffle | join(',') |default('localhost') }}"}
 
-
-  - { section: keystone_authtoken, option: identity_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}"}
-  - { section: keystone_authtoken, option: admin_tenant_name, value: services}
-  - { section: keystone_authtoken, option: admin_user, value: "{{ keystone_ceilometer_user }}"}
-  - { section: keystone_authtoken, option: admin_password, value: "{{ keystone_ceilometer_password }}"}
-
-  - { section: DEFAULT, option: rabbit_hosts, value: "{{ rabbitmq_hosts | shuffle | join(',') }}"}
-  - { section: DEFAULT, option: rabbit_ha_queues, value: "{{ rabbitmq_clustering | default('True') }}"}
   - { section: DETAULT, option: rabbit_userid, value: "{{ rabbitmq_nova_user| default('guest') }}"}
   - { section: DEFAULT, option: rabbit_use_ssl, value: "{{ rabbitmq_ssl | default('False') }}"}
   - { section: DEFAULT, option: rabbit_virtual_host, value: "{{ rabbitmq_nova_vhost| default('/') }}"}
   - { section: DEFAULT, option: rabbit_password, value: "{{ rabbitmq_nova_password |default('guest') }}"}
-  - { section: DEFAULT, option: rabbit_port, value: "{{ rabbitmq_port| default('5671') }}"}
+  - { section: DEFAULT, option: rabbit_port, value: "{{ rabbitmq_port| default('5672') }}"}
+  - { section: DEFAULT, option: rabbit_hosts, value: "{{ rabbitmq_hosts | shuffle | join(',') }}"}
+  - { section: DEFAULT, option: rabbit_ha_queues, value: "{{ rabbitmq_clustering | default('True') }}"}
+
+  - { section: DEFAULT, option: memcached_servers, value: "{{ memcached_hosts | shuffle | join(',') |default('localhost') }}"}
+
+  - { section: keystone_authtoken, option: identity_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_admin_port }}"}
+  - { section: keystone_authtoken, option: admin_tenant_name, value: services}
+  - { section: keystone_authtoken, option: admin_user, value: "{{ keystone_ceilometer_user }}"}
+  - { section: keystone_authtoken, option: admin_password, value: "{{ keystone_ceilometer_password }}"}
+  - { section: keystone_authtoken, option: auth_port, value: "{{ keystone_admin_port }}"}
+  - { section: keystone_authtoken, option: auth_protocol, value: "{{ keystone_protocol }}"}
 
   - { section: publisher_rpc, option: metering_secret, value: "{{ ceilometer_metering_secret }}"}
 
@@ -1409,10 +1426,16 @@ ceilometer_options:
   - { section: service_credentials, option: os_username, value: "{{ keystone_ceilometer_user }}"}
   - { section: service_credentials, option: os_tenant_name, value: services}
   - { section: service_credentials, option: os_password, value: "{{ keystone_ceilometer_password }}"}
-
   - { section: service_credentials, option: auth_host, value: "{{ keystone_internal_vip }}"}
-  - { section: keystone_authtoken, option: auth_port, value: "{{ keystone_admin_port }}"}
-  - { section: keystone_authtoken, option: auth_protocol, value: "{{ keystone_protocol }}"}
+  - { section: service_credentials, option: os_endpoint_type, value: internalURL}
+
+  - { section: database, option: connection, value: "{{ mongodb_database_url }}"}
+  - { section: database, option: max_retries, value: -1}
+  - { section: database, option: time_to_live, value: "{{ mongodb_time_to_live }}"}
+
+  - { section: api, option: host, value: "{{ ceilometer_internal_vip }}"}
+
+  - { section: coordination, option: backend_url, value: "{{ mongodb_backend_url }}"}
 
 
 ################################################

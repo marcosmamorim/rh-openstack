@@ -1,0 +1,30 @@
+---
+- name: deploy ceilometer config file
+  file:
+    src=ceilometer.conf.j2
+    dest=/etc/ceilometer/ceilometer.conf
+    mode=0640
+    owner=root
+    group=ceilometer
+  notify: restart ceilometer
+  tags:
+    - ceilometer
+    - ceilometer-deploy
+
+#- name: disable ceilometer services in systemd
+#  service: name={{ item }} enabled=no state=restarted
+#  with_items:
+#    - openstack-ceilometer-collector
+#    - openstack-ceilometer-api
+#    - openstack-ceilometer-alarm-evaluator
+#    - openstack-ceilometer-alarm-notifier
+#    - openstack-ceilometer-notification
+#  tags:
+#    - ceilometer
+#    - ceilometer-deploy
+
+#- name: disable ceilometer central
+#  service: name=openstack-ceilometer-central enabled=no state=stopped
+#  tags:
+#    - ceilometer
+#    - ceilometer-deploy
