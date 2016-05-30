@@ -1,0 +1,13 @@
+---
+
+- name: ensure redis is configured.
+  template:
+    src: redis.conf.j2
+    dest: "{{ redis_conf_path }}"
+    mode: 0644
+
+- name: ensure redis-sentinel is configured
+  template:
+    src=redis-sentinel.conf.j2
+    dest=/etc/redis-sentinel.conf
+    mode=0644

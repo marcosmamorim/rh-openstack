@@ -1,0 +1,7 @@
+sentinel monitor mymaster {{ redis_master }} 6379 2
+sentinel down-after-milliseconds mymaster 30000
+sentinel failover-timeout mymaster 180000
+sentinel parallel-syncs mymaster 1
+min-slaves-to-write 1
+min-slaves-max-lag 10
+logfile /var/log/redis/sentinel.log

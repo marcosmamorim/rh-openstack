@@ -1,4 +1,7 @@
 ---
+
+# TODO: Create location to redis and redis-sentinel
+
 - name: stop redis before add to pacemaker
   service: name=redis state=stopped enabled=no
 
@@ -29,6 +32,27 @@
     - pacemaker
     - pacemaker-rabbit
 
+- name: create redis-sentinel cluster resource
+  pcs_resource: command=create resource_id=redis-sentinel type=systemd:redis-sentinel
+    options:
+    operations:
+      - action: start
+        options:
+          timeout: 120s
+      - action: stop
+        options:
+          timeout: 120s
+      - action: monitor
+        options:
+          interval: 60s
+  when: ansible_hostname == pacemaker_dc.stdout
+
+- name: clone redis resources
+  command: pcs resource clone {{ item }}
+  when: ansible_hostname == pacemaker_dc.stdout
+  with_items:
+    - redis
+    - redis-sentinel
 
 
 #<op id="redis-start-interval-0s" interval="0s" name="start" timeout="120"/>
