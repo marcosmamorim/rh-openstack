@@ -27,10 +27,10 @@ authoritative;
 # have to hack syslog.conf to complete the redirection).
 log-facility local7;
 
-subnet {{ network_internal_default }}.0 netmask 255.255.255.0 {
-    option routers {{ gateway_internal }};
+subnet {{ provisioning_netwwork_prefix }}.0 netmask 255.255.255.0 {
+    option routers {{ provisioning_netwwork_prefix }}.1;
     option domain-name "{{ domain }}";
-    option domain-name-servers {{ dns1_internal }} ;
+    option domain-name-servers {{ dns1 }} ;
     class "pxeclients" {
         match if substring (option vendor-class-identifier, 0, 9) = "PXEClient";
         next-server {{ internal_ipaddr }};
