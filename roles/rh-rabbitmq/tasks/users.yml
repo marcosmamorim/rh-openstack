@@ -19,13 +19,13 @@
     - rabbitmq-users
   no_log: True
 
-- name: Delete the default guest RabbitMQ user
-  rabbitmq_user:
-    user=guest
-    vhost=/
-    state=absent
-  run_once: true
-  tags:
-    - rabbitmq
-    - rabbitmq-users
-    - rabbitmq-guest-user
+#- name: Delete the default guest RabbitMQ user
+#  rabbitmq_user:
+#    user=guest
+#    vhost=/
+#    state=absent
+#  run_once: true
+#  tags:
+#    - rabbitmq
+#    - rabbitmq-users
+#    - rabbitmq-guest-user
