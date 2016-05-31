@@ -120,7 +120,7 @@ internal_netmask: 24
 
 public_network_prefix: 172.16.0
 internal_network_prefix: 172.17.0
-provisioning_netwwork_prefix: 192.168.122.
+provisioning_network_prefix: 192.168.122.
 
 domain: openstack.local
 dns1: "{{ provisioning_netwwork_prefix }}.1"
@@ -1362,7 +1362,6 @@ mongodb_secrets: |
 redis_reset: "{{ global_reset }}"
 redis_master: "{{ keystone_master }}"
 redis_bind_host: "{{ internal_ip }}"
-redis_unixsocket: ''
 redis_port: 6379
 redis_unixsocket: ''
 redis_timeout: 300
@@ -1393,16 +1392,15 @@ ceilometer_verbose: "{{ global_verbose }}"
 ceilometer_bind_host: "{{ internal_ip }}"
 ceilometer_metering_secret: d755f0cd352fa12490183r1db
 
-mongodb_database_url: "mongodb://{{ mongodb_hosts |join(',')}}:27017/ceilometer?replicaSet=ceilometer
+mongodb_database_url: "mongodb://{{ mongodb_hosts |join(',')}}:27017/ceilometer?replicaSet=ceilometer"
 
 # TODO: This is horrible, but i don't have another option. :-(
-mongodb_backend_url: "redis://controller01:26379?sentinel=mymaster&sentinel_fallback=controller02:26379&sentinel_fallback=controller03:26379"
+mongodb_backend_url: 'redis://controller01:26379?sentinel=mymaster&sentinel_fallback=controller02:26379&sentinel_fallback=controller03:26379'
 
 # Five days in seconds
 mongodb_time_to_live: 432000
 
 ceilometer_options:
-
   - { section: DEFAULT, option: debug, value: "{{ ceilometer_debug |default('False') }}"}
   - { section: DEFAULT, option: verbose, value: "{{ ceilometer_verbose |default('False') }}"}
   - { section: DEFAULT, option: host, value: "{{ ceilometer_bind_host }}"}
@@ -1469,8 +1467,8 @@ rhel_repos:
 ################################################
 ## Kickstart server
 
-rhel_prefix: rhel-server-7.2
+rhel_prefix: rhel-osp-7.2
 use_rhel_iso: false
-use_rhel_http: false
+use_rhel_http: True
 repo_address: "{{ internal_ip }}"
 kernel_boot_options: "net.ifnames=0"
