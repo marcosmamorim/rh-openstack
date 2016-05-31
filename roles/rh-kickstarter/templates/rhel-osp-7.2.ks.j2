@@ -1,6 +1,6 @@
 #version=RHEL7
 install
-url --url http://{{ internal_ipaddr }}/{{ rhel_prefix }}/
+url --url http://{{ internal_ip }}/{{ rhel_prefix }}/
 reboot
 auth --enableshadow --passalgo=sha512
 firstboot --disable
@@ -8,7 +8,7 @@ ignoredisk --only-use=sda
 keyboard --vckeymap=us --xlayouts='us'
 lang en_US.UTF-8
 
-network  --bootproto=dhcp --device={{ primary_if }} --onboot=on --ipv6=auto
+network  --bootproto=dhcp --device=eth0 --onboot=on --ipv6=auto
 network  --hostname=ansible-install-rhel-7-2
 # 123@mudar
 rootpw --iscrypted $6$yk.W0sa9$eyOZct6s3yU8jRQI3wqswtdFvYqdVRLN9CHJF.czwPd1JtzfSzqU3OK7nhaHHMb28OAMKa0y5cKMhtGb/4SDK.

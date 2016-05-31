@@ -12,7 +12,8 @@
     - httpd
     - httpd-tools
     - xinetd
-    - kickstart
-    - kickstart-server
+    - pykickstart
+#    - kickstart
+#    - kickstart-server
   tags:
     - kickstart

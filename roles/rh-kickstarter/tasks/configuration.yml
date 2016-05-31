@@ -6,7 +6,13 @@
     - kickstart
 
 - name: create dirs rhel-server
-  command: mkdir -p /var/www/html/iso /var/www/html/{{ rhel_prefix }} /var/www/html/ks
+  file:
+    dest={{ item }}
+    state=directory
+  with_items:
+    - /var/www/html/iso
+    - "/var/www/html/{{ rhel_prefix }}"
+    - /var/www/html/ks
   tags:
     - kickstart
 
@@ -17,13 +23,16 @@
 #    - kickstart
 
 - name: Copy over tftpboot configuration
-  copy: src=tftpboot dest=/var/lib/
+  copy:
+    src=tftpboot
+    dest=/var/lib/
   when: use_rhel_iso or use_rhel_http
   tags:
     - kickstart
 
 - name: configure pxe
   template: src=default.j2 dest=/var/lib/tftpboot/pxelinux/pxelinux.cfg/default mode=0644
+  when: use_rhel_iso or use_rhel_http
   tags:
     - kickstart
 
