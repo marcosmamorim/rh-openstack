@@ -12,10 +12,10 @@
     - rh-glance # OK
     - rh-cinder # OK
     - rh-nova-control
-#    - rh-neutron
+    - rh-neutron
+    - rh-mongodb
+    - rh-redis
+    - rh-ceilometer
 #    - rh-heat
 #    - rh-horizon
-#    - rh-mongodb
-#    - rh-redis
-#    - rh-ceilometer
 #    - rh-controller

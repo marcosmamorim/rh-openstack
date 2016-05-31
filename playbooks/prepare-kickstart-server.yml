@@ -1,0 +1,4 @@
+---
+- hosts: kickstarter
+  roles:
+    - rh-kickstarter
