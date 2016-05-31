@@ -54,11 +54,11 @@ controller02 ansible_ssh_host=192.168.122.116
 controller03 ansible_ssh_host=192.168.122.115
 
 
-[tftpserver]
-172.17.0.70
+[kickstarter]
+192.168.122.1
 
 [rh-full:children]
 rabbitmq
 mariadb
 controller
-tftpserver
+kickstarter

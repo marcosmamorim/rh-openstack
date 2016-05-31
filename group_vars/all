@@ -120,6 +120,11 @@ internal_netmask: 24
 
 public_network_prefix: 172.16.0
 internal_network_prefix: 172.17.0
+provisioning_netwwork_prefix: 192.168.122.
+
+domain: openstack.local
+dns1: "{{ provisioning_netwwork_prefix }}.1"
+timezone: "America/Sao_Paulo"
 
 # IF false use diferent IPs for each services
 vips_all_in_one: False
@@ -1460,3 +1465,12 @@ rhel_repos:
   - rhel-7-server-rpms
   - rhel-7-server-optional-rpms
   - rhel-7-server-openstack-8-rpms
+
+################################################
+## Kickstart server
+
+rhel_prefix: rhel-server-7.2
+use_rhel_iso: false
+use_rhel_http: false
+repo_address: "{{ internal_ip }}"
+kernel_boot_options: "net.ifnames=0"
