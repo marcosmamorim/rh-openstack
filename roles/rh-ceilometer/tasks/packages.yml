@@ -12,6 +12,7 @@
     - python-ceilometer
     - python-ceilometerclient
     - python-oslo-policy
+    - python-redis
   tags:
     - ceilometer
     - ceilometer-pkg
