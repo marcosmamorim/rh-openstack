@@ -18,7 +18,7 @@ options:
     description: type of resource. Used in «create» command.
   ms_name:
     required: true
-    description: name of the resource. Used in «master» command.
+    description: name of the resource.  in «master» command.
   options:
     required: false
     description: hash of resource options.
@@ -35,6 +35,7 @@ def main():
             type       = dict(required=False),
             options    = dict(required=False),
             operations = dict(required=False),
+            ms_name    = dict(required=False),
         ),
         supports_check_mode=True,
     )
