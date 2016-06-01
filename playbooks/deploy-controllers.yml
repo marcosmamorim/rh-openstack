@@ -3,6 +3,7 @@
   gather_facts: True
   roles:
     - rh-network
+    - rh-subscribe
     - rh-pacemaker
     - rh-galera
     - rh-rabbitmq
