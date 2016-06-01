@@ -47,4 +47,3 @@
     - openstack-nova-conductor
     - openstack-nova-consoleauth
     - openstack-nova-novncproxy
-  no_log: True
