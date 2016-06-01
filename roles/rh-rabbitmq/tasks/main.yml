@@ -1,5 +1,4 @@
 ---
-#TODO: Create reset rabbitmq
 
 - name: include rabbitmq install packages
   include: install.yml
@@ -16,7 +15,6 @@
 
 - name: include rabbitmq limits
   include: limits.yml
-
 
 - name: include rabbitmq firewall
   include: firewall.yml
