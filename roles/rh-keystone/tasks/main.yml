@@ -2,17 +2,24 @@
 
 - meta: flush_handlers
 
-- include: facts.yml
-- include: packages.yml
+- name: include keystone facts
+  include: facts.yml
 
-- include: reset.yml
+- name: include keystone packages
+  include: packages.yml
+
+- name: include keystone reset
+  include: reset.yml
   when: keystone_reset and inventory_hostname == keystone_master
   tags:
     - keystone
     - keystone-reset
 
-- include: configuration.yml
-- include: wsgi.yml
+- name: include keystone configuration
+  include: configuration.yml
+
+- name: include keystone wsgi
+  include: wsgi.yml
 
 - meta: flush_handlers
 
@@ -28,6 +35,7 @@
     mode: 0644
     owner: keystone
     group: keystone
+  ignore_errors: True
 
 - name: Include keystone maintenance
   include: maintenance.yml

@@ -18,7 +18,7 @@
 #
 
 - name: Install keystone
-  yum: name="{{ item }}" state=present
+  yum: name={{ item }} state=present
   with_items:
     - httpd
     - mod_wsgi
@@ -29,11 +29,11 @@
     - openstack-selinux
     - openstack-keystone
     - python-openstackclient
-  notify:
-    - Stop Keystone
-    - Enable Memcached
-    - Start Memcached
-    - Enable Apache
-    - Start Apache
+#  notify:
+#    - Stop Keystone
+#    - Enable Memcached
+#    - Start Memcached
+#    - Enable Apache
+#    - Start Apache
 
 - meta: flush_handlers
