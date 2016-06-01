@@ -14,15 +14,6 @@
   include: reset.yml
   when: neutron_reset
 
-#- name: include neutron pacemaker
+- name: include neutron pacemaker
+  include: pacemaker.yml
 
-- name: Make sure Neutron server is started
-  command: systemctl start {{ item }}
-  with_items:
-    - neutron-server
-    - neutron-metadata-agent
-    - neutron-dhcp-agent
-    - neutron-openvswitch-agent
-    - neutron-l3-agent
-    - neutron-metering-agent
-    - neutron-lbaas-agent
