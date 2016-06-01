@@ -122,9 +122,12 @@ public_network_prefix: 172.16.0
 internal_network_prefix: 172.17.0
 provisioning_network_prefix: 192.168.122
 
-domain: openstack.local
-dns1: "{{ provisioning_network_prefix }}.1"
+dns_domain: openstack.local
 timezone: "America/Sao_Paulo"
+dns_nameservers:
+  - 192.168.122.1
+  - 8.8.8.8
+dns_searchs: openstack.local
 
 # IF false use diferent IPs for each services
 vips_all_in_one: False

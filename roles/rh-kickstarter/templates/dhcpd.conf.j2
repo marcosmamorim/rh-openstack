@@ -29,8 +29,8 @@ log-facility local7;
 
 subnet {{ provisioning_network_prefix }}.0 netmask 255.255.255.0 {
     option routers {{ provisioning_network_prefix }}.1;
-    option domain-name "{{ domain }}";
-    option domain-name-servers {{ dns1 }} ;
+    option domain-name "{{ dns_domain }}";
+    option domain-name-servers {{ dns_nameservers|join(',') }} ;
     class "pxeclients" {
         match if substring (option vendor-class-identifier, 0, 9) = "PXEClient";
         next-server {{ internal_ip }};
