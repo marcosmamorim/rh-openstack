@@ -21,6 +21,11 @@ network_ether_interfaces:
     bootproto: static
     address: 172.17.0.118
     netmask: 255.255.255.0
+  # TenantNetwork
+  - device: eth3
+    onboot: yes
+    type: Ethernet
+    bootproto: none
   # Storage
   - device: eth4
     onboot: yes
