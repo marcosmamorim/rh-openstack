@@ -40,9 +40,6 @@ def main():
         supports_check_mode=True,
     )
 
-    # TODO check pcs command is available.
-    # TODO check pacemaker/corosync is running.
-
     changed=True
     # Check if resource already exists.
     cmd = "pcs resource show %(name)s"  % module.params

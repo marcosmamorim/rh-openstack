@@ -444,7 +444,6 @@ def main():
     state = module.params['state']
     need_commit = module.params['commit']
     args = splitter(module.params['args'])
-    changed = False
 
     if len(args) == 0:
         module.fail_json(rc=256, msg="no command given")
@@ -500,7 +499,6 @@ def main():
         rc, out, err = module.run_command(["crm", "-F"] + command)
         if rc:
             module.fail_json(rc=256, msg="crm command failed")
-            #FIXME: Re-enable error messages.
             #module.fail_json(rc=256, msg="crm command failed \n%s"%err)
 
     module.exit_json(args=args, changed=True)
