@@ -1,4 +1,8 @@
 ---
+# TODO: Create purge database var
+# TODO: move default configuration vars to roles
+# TODO: controller_nodes used by haproxy, i need refactory to be better
+
 ###############################################
 # Users and Passwords
 keystone_admin_token: 88f2fb012387912987d16a129038938b
@@ -10,7 +14,6 @@ openstack_version: 8
 mgmt_interface: eth0
 internal_ip: "{{ hostvars[inventory_hostname][ 'ansible_' + mgmt_interface ].ipv4.address }}"
 
-# TODO: Usado no haproxy, tem que melhorar isso
 controller_nodes:
   - name: "controller01"
     addr_int: "192.168.122.118"
@@ -127,7 +130,6 @@ timezone: "America/Sao_Paulo"
 dns_nameservers:
   - 192.168.122.1
   - 8.8.8.8
-dns_searchs: openstack.local
 
 # IF false use diferent IPs for each services
 vips_all_in_one: False
