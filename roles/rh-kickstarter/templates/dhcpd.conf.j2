@@ -28,7 +28,7 @@ authoritative;
 log-facility local7;
 
 subnet {{ provisioning_network_prefix }}.0 netmask 255.255.255.0 {
-    option routers {{ provisioning_netwwork_prefix }}.1;
+    option routers {{ provisioning_network_prefix }}.1;
     option domain-name "{{ domain }}";
     option domain-name-servers {{ dns1 }} ;
     class "pxeclients" {
@@ -45,5 +45,5 @@ subnet {{ provisioning_network_prefix }}.0 netmask 255.255.255.0 {
 
 #host rh-compute-01 {
 #  hardware ethernet 00:50:56:89:20:7a;
-#  fixed-address {{ network_internal_default }}.123;
+#  fixed-address {{ provisioning_network_prefix }}.123;
 #}

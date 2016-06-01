@@ -13,6 +13,7 @@
     - httpd-tools
     - xinetd
     - pykickstart
+    - tftp-server
 #    - kickstart
 #    - kickstart-server
   tags:

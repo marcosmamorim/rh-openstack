@@ -37,7 +37,11 @@
     - kickstart
 
 - name: template ks rhel
-  template: src={{rhel_prefix}}.ks.j2 dest=/var/www/html/ks/{{rhel_prefix}}.ks mode=0644
+  template: src={{item}}.ks.j2 dest=/var/www/html/ks/{{item}}.ks mode=0644
+  with_items:
+    - "{{rhel_prefix}}"
+    - "{{rhel_prefix}}-compute"
+
   tags:
     - kickstart
 

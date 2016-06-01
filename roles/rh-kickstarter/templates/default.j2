@@ -11,9 +11,14 @@ localboot 0
 menu separator
 
 label install-rhel-osp-7.2
-menu label install rhel 7-2
+menu label install rhel 7-2 controller
 kernel rhel-7.2/vmlinuz
 append initrd=rhel-7.2/initrd.img ip=dhcp inst.repo=http://{{ repo_address }}/{{ rhel_prefix }}/ inst.ks=http://{{ repo_address }}/ks/{{rhel_prefix}}.ks  {{ kernel_boot_options }}
+
+label install-rhel-osp-7.2
+menu label install rhel 7-2 controller
+kernel rhel-7.2/vmlinuz
+append initrd=rhel-7.2/initrd.img ip=dhcp inst.repo=http://{{ repo_address }}/{{ rhel_prefix }}/ inst.ks=http://{{ repo_address }}/ks/{{rhel_prefix}}-compute.ks  {{ kernel_boot_options }}
 
 menu separator
 # Local command - reboot

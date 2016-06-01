@@ -120,10 +120,10 @@ internal_netmask: 24
 
 public_network_prefix: 172.16.0
 internal_network_prefix: 172.17.0
-provisioning_network_prefix: 192.168.122.
+provisioning_network_prefix: 192.168.122
 
 domain: openstack.local
-dns1: "{{ provisioning_netwwork_prefix }}.1"
+dns1: "{{ provisioning_network_prefix }}.1"
 timezone: "America/Sao_Paulo"
 
 # IF false use diferent IPs for each services
