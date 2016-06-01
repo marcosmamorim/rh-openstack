@@ -1,5 +1,5 @@
 ---
--
+
 - name: set haproxy sysctl parameters
   sysctl: name=net.ipv4.ip_nonlocal_bind value=1 state=present sysctl_set=yes reload=yes
 

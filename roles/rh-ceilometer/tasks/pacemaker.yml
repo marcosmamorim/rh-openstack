@@ -1,62 +1,38 @@
 ---
-- name: create pacemaker resource for ceilometer-central
-  pcs_resource: command=create name=ceilometer-central type=systemd:openstack-ceilometer-central
-  args:
-    operations:
-      - action: monitor
-        options:
-          start-delay: 10s
-  run_once: true
-  tags:
-    - ceilometer
-    - ceilometer-cluster
 
-- name: create pacemaker resources for ceilometer-collector
-  pcs_resource: command=create name=ceilometer-collector type=systemd:openstack-ceilometer-collector clone=yes
-  args:
-    operations:
-      - action: monitor
-        options:
-          start-delay: 10s
-  run_once: true
+- name: Get Current DC
+  shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
+  register: pacemaker_dc
+  ignore_errors: True
+  no_log: True
   tags:
-    - ceilometer
-    - ceilometer-cluster
+    - pacemaker
 
-- name: create pacemaker resources for ceilometer-api
-  pcs_resource: command=create name=ceilometer-api type=systemd:openstack-ceilometer-api clone=yes
-  args:
-    operations:
-      - action: monitor
-        options:
-          start-delay: 10s
-  run_once: true
-  tags:
-    - ceilometer
-    - ceilometer-cluster
+- name: stop and disable ceilometer services
+  service: name=openstack-{{ item }} state=stopped enabled=no
+  with_items:
+    - ceilometer-central
+    - ceilometer-collector
+    - ceilometer-api
+    - ceilometer-alarm-evaluator
+    - ceilometer-alarm-notifier
+    - ceilometer-notification
+    - ceilometer-polling
+  ignore_errors: True
 
-- name: create ceilometer-delay resource
-  pcs_resource: command=create name=ceilometer-delay type=Delay clone=yes
-  args:
-    options:
-      startdelay: 10
-  run_once: true
-  tags:
-    - ceilometer
-    - ceilometer-cluster
-
-- name: create pacemaker resources for ceilometer notification system
+- name: create pacemaker resource for ceilometer
   pcs_resource: command=create name={{ item }} type=systemd:openstack-{{ item }} clone=yes
   args:
     operations:
       - action: monitor
         options:
           start-delay: 10s
-  run_once: true
+  when: ansible_hostname == pacemaker_dc.stdout
   with_items:
+    - ceilometer-central
+    - ceilometer-collector
+    - ceilometer-api
     - ceilometer-alarm-evaluator
     - ceilometer-alarm-notifier
     - ceilometer-notification
-  tags:
-    - ceilometer
-    - ceilometer-cluster
+    - ceilometer-polling

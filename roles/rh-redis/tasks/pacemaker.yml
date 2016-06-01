@@ -14,7 +14,7 @@
 
 - name: create redis cluster resource
   when: ansible_hostname == pacemaker_dc.stdout
-  pcs_resource: command=create resource_id=redis type=ocf:heartbeat:redis
+  pcs_resource: command=create resource_id=redis type=ocf:heartbeat:redis clone=yes
   args:
     options:
       wait_last_known_master: true
@@ -33,7 +33,7 @@
     - pacemaker-rabbit
 
 - name: create redis-sentinel cluster resource
-  pcs_resource: command=create resource_id=redis-sentinel type=systemd:redis-sentinel
+  pcs_resource: command=create resource_id=redis-sentinel type=systemd:redis-sentinel clone=yes
   args:
     options:
     operations:
@@ -48,18 +48,3 @@
           interval: 60s
   when: ansible_hostname == pacemaker_dc.stdout
 
-- name: clone redis resources
-  command: pcs resource clone {{ item }}
-  when: ansible_hostname == pacemaker_dc.stdout
-  with_items:
-    - redis
-    - redis-sentinel
-
-
-#<op id="redis-start-interval-0s" interval="0s" name="start" timeout="120"/>
-#<op id="redis-stop-interval-0s" interval="0s" name="stop" timeout="120"/>
-#<op id="redis-monitor-interval-45" interval="45" name="monitor" timeout="60"/>
-#<op id="redis-monitor-interval-20" interval="20" name="monitor" role="Master" timeout="60"/>
-#<op id="redis-monitor-interval-60" interval="60" name="monitor" role="Slave" timeout="60"/>
-#<op id="redis-promote-interval-0s" interval="0s" name="promote" timeout="120"/>
-#<op id="redis-demote-interval-0s" interval="0s" name="demote" timeout="120"/>

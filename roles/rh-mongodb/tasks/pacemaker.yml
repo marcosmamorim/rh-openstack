@@ -17,7 +17,7 @@
 
 - name: create mongod cluster resource
   when: ansible_hostname == pacemaker_dc.stdout
-  pcs_resource: command=create resource_id=mongodb type=systemd:mongod
+  pcs_resource: command=create resource_id=mongodb type=systemd:mongod clone=yes
   args:
     options:
     operations:
@@ -30,7 +30,3 @@
   tags:
     - pacemaker
     - pacemaker-mongodb
-
-- name: clone mongodb pacemaker
-  command: pcs resource clone mongodb
-  when: ansible_hostname == pacemaker_dc.stdout

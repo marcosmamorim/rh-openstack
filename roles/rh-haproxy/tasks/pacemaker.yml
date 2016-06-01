@@ -9,7 +9,7 @@
 
 - name: create haproxy cluster resource
   when: ansible_hostname == pacemaker_dc.stdout
-  pcs_resource: command=create resource_id=haproxy type=systemd:haproxy
+  pcs_resource: command=create resource_id=haproxy type=systemd:haproxy clone=yes
   tags:
     - pacemaker
     - pacemaker-haproxy
@@ -22,12 +22,6 @@
       - action: start
         options:
           timeout: 60s
-
-- name: clone haproxy pacemaker
-  command: pcs resource clone haproxy
-  tags:
-    - pacemaker
-  when: ansible_hostname == pacemaker_dc.stdout
 
 - name: create constraint
   command: pcs constraint colocation add vip-db haproxy-clone INFINITY

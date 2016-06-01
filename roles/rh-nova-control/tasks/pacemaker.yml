@@ -23,7 +23,7 @@
     - pacemaker-nova
 
 - name: create nova cluster resources
-  pcs_resource: command=create resource_id={{ item }} type=systemd:openstack-{{ item }}
+  pcs_resource: command=create resource_id={{ item }} type=systemd:openstack-{{ item }} clone=yes
   args:
     options:
     operations:
@@ -33,19 +33,6 @@
       - action: start
         options:
           timeout: 100s
-  when: ansible_hostname == pacemaker_dc.stdout
-  with_items:
-    - nova-scheduler
-    - nova-api
-    - nova-conductor
-    - nova-consoleauth
-    - nova-novncproxy
-  tags:
-    - pacemaker
-    - pacemaker-nova
-
-- name: clone nova resources
-  command: pcs resource clone {{ item }}
   when: ansible_hostname == pacemaker_dc.stdout
   with_items:
     - nova-scheduler

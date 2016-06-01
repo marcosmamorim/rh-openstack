@@ -37,7 +37,7 @@
 
 - name: Restart httpd
   command: systemctl restart httpd
-  ignore_erros: True
+  ignore_errors: True
 
 - name: Removing keystone database
   mysql_db:

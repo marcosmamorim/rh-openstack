@@ -9,11 +9,7 @@
   service: name=httpd state=stopped enabled=no
 
 - name: create httpd pacemaker
-  pcs_resource: command=create resource_id=keystone type=systemd:httpd
-  when: ansible_hostname == pacemaker_dc.stdout
-
-- name: clone httpd pacemaker
-  command: pcs resource clone keystone
+  pcs_resource: command=create resource_id=keystone type=systemd:httpd clone=yes
   when: ansible_hostname == pacemaker_dc.stdout
 
 - name: create galera-master constraint to keystone

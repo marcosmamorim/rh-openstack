@@ -13,20 +13,11 @@
   no_log: True
 
 - name: create glance-api resource
-  pcs_resource: command=create resource_id=glance-api type=systemd:openstack-glance-api
+  pcs_resource: command=create resource_id={{item }} type=systemd:openstack-{{item}} clone=yes
   when: ansible_hostname == pacemaker_dc.stdout
-
-- name: clone glance-api pacemaker
-  command: pcs resource clone glance-api
-  when: ansible_hostname == pacemaker_dc.stdout
-
-- name: create glance-regitry resource
-  pcs_resource: command=create resource_id=glance-registry type=systemd:openstack-glance-registry
-  when: ansible_hostname == pacemaker_dc.stdout
-
-- name: clone glance-registry pacemaker
-  command: pcs resource clone glance-registry
-  when: ansible_hostname == pacemaker_dc.stdout
+  with_items:
+    - glance-api
+    - glance-registry
 
 # Constraints
 - name: create glance-api constraint to keystone

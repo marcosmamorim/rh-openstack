@@ -12,7 +12,7 @@
 
 - name: create rabbitmq cluster resource
   when: ansible_hostname == pacemaker_dc.stdout
-  pcs_resource: command=create resource_id=rabbitmq type=ocf:heartbeat:rabbitmq-cluster
+  pcs_resource: command=create resource_id=rabbitmq type=systemd:rabbitmq-server clone=yes
   args:
     options:
     operations:
@@ -25,12 +25,6 @@
   tags:
     - pacemaker
     - pacemaker-rabbit
-
-- name: clone rabbitmq pacemaker
-  command: pcs resource clone rabbitmq
-  tags:
-    - pacemaker
-    - pacemaker-rabbitmq
 
 - name: pause to start rabbitmq services
   pause: seconds=30

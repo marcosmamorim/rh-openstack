@@ -1,10 +1,13 @@
 ---
-# TODO: Create pacemaker configuration
 
 - name: include ceilometer packages
   include: packages.yml
 
+- name: includer ceilometer reset
+  include: reset.yml
 
 - name: include ceilometer configuration
   include: configuration.yml
 
+- name: include ceilometer pacemaker
+  include: pacemaker.yml

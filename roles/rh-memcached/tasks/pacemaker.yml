@@ -8,11 +8,11 @@
   register: pacemaker_dc
   tags:
     - pacemaker
-    - pacemaker-galera
+    - pacemaker-memcache
 
 - name: create memcached cluster resource
   when: ansible_hostname == pacemaker_dc.stdout
-  pcs_resource: command=create resource_id=memcached type=systemd:memcached
+  pcs_resource: command=create resource_id=memcached type=systemd:memcached clone=yes
   args:
     options:
       interleave: true
@@ -25,10 +25,4 @@
           timeout: 30s
   tags:
     - pacemaker
-    - pacemaker-rabbit
-
-- name: clone memcached pacemaker
-  command: pcs resource clone memcached
-  tags:
-    - pacemaker
-    - pacemaker-memcached
+    - pacemaker-memcache
