@@ -55,7 +55,7 @@ controller03 ansible_ssh_host=192.168.122.115
 
 
 [kickstarter]
-192.168.122.1
+kickstarter ansible_ssh_host=192.168.122.1
 
 [rh-full:children]
 rabbitmq
