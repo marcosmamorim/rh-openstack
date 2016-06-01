@@ -131,11 +131,7 @@ dns_nameservers:
   - 192.168.122.1
   - 8.8.8.8
 
-# IF false use diferent IPs for each services
-vips_all_in_one: False
-
 db_vip: "{{ internal_network_prefix }}.20"
-#db_vip: "{{ internal_ip }}"
 redis_vip: "{{ internal_network_prefix }}.29"
 
 keystone_internal_vip: "{{ internal_network_prefix }}.21"
@@ -171,7 +167,9 @@ horizon_public_vip: "{{ public_network_prefix }}.28"
 
 global_debug: True
 global_verbose: True
+# WARNING; This variable control if pacemaker resource and database will be removed on re-deploy
 global_reset: True
+global_purge_db: True
 
 # Glance Settings
 glance_use_nfs: True
@@ -707,7 +705,7 @@ cinder_options:
   - { section: DEFAULT, option: debug, value: "{{ cinder_debug |default('False') }}"}
   - { section: DEFAULT, option: verbose, value: "{{ cinder_verbose |default('False') }}"}
 #  This option is a workarond to make cinde-volume work in A/C
-#  - { section: DEFAULT, option: host, value: "{{ cinder_master }}"}
+  - { section: DEFAULT, option: host, value: "{{ cinder_master }}"}
 
   - { section: DEFAULT, option: notification_driver, value: "{{ notification_driver |default('messagingv2') }}"}
   - { section: DEFAULT, option: rpc_backend, value: "{{ rpc_backend |default('rabbit')}}"}
@@ -1396,7 +1394,7 @@ mongodb_database_url: "mongodb://{{ mongodb_hosts |join(',')}}:27017/ceilometer?
 mongodb_backend_url: 'redis://controller01:26379?sentinel=mymaster&sentinel_fallback=controller02:26379&sentinel_fallback=controller03:26379'
 
 # Five days in seconds
-mongodb_time_to_live: 432000
+ceilometer_time_to_live: 432000
 
 ceilometer_options:
   - { section: DEFAULT, option: debug, value: "{{ ceilometer_debug |default('False') }}"}
@@ -1436,7 +1434,7 @@ ceilometer_options:
 
   - { section: api, option: host, value: "{{ ceilometer_bind_host }}"}
 
-  - { section: coordination, option: backend_url, value: "{{ mongodb_backend_url }}"}
+  - { section: coordination, option: backend_url, value: "{{ ceilometer_backend_url }}"}
 
 
 ################################################
