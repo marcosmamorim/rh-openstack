@@ -15,7 +15,16 @@
     priv: "{{item.priv | default('*.*:ALL')}}"
     state: present
     host: "{{item.host | default('localhost')}}"
-  with_items: "{{ mariadb_users }}"
+  with_items: mariadb_users
   when: mariadb_users|length > 0 and inventory_hostname == galera_master
   no_log: True
 
+- name: MySQL | Make sure the MySQL users are present
+  mysql_user:
+    name: "{{ item.name }}"
+    password: "{{item.pass | default('pass')}}"
+    priv:  "{{item.priv | default('*.*:ALL')}}"
+    state: present
+    host: "{{ inventory_hostname }}"
+  with_items: mariadb_users
+  when: mariadb_users|length > 0
