@@ -359,14 +359,6 @@ galera_node_address: "{{ internal_ip }}"
 
 galera_firewalld: False
 
-# This is a best way to configure dynamic ini files and we can add more options without change roles
-# section: [section_on_file]
-# option: option_name =
-# value: option_name = value
-
-# if you want comment or remove an option add option state: absent to your var
-# - { section: server, option: debug, value: false, state=absent }
-
 galera_config_options:
   - { section: server, option: debug, value: false, state: absent }
   - { section: mysqld, option: datadir, value: "{{ mariadb_datadir |default('/var/lib/mysql')}}" }
@@ -580,7 +572,7 @@ keystone_endpoints:
 
 keystone_options:
   - { section: DEFAULT, option: debug, value: "{{ keystone_debug |default('False') }}"}
-  - { section: DEFAULT, option: verbose, value: "{{ keystone_verbose |default('False') }}", state: absent}
+#  - { section: DEFAULT, option: verbose, value: "{{ keystone_verbose |default('False') }}", state: absent}
   - { section: DEFAULT, option: publish_errors, value: "{{ keystone_verbose |default('False') }}"}
   - { section: DEFAULT, option: admin_token, value: "{{ keystone_admin_token }}"}
   - { section: database, option: connection, value: "{{ keystone_database_url }}"}
@@ -930,6 +922,7 @@ nova_api_options:
 ###############################################
 # Neutron
 network_reset: "{{ global_reset }}"
+neutron_reset: "{{ global_reset }}"
 neutron_master: "{{ keystone_master }}"
 neutron_debug: "{{ global_debug }}"
 neutron_verbose: "{{ global_verbose }}"
@@ -1014,7 +1007,7 @@ neutron_options:
   - { section: DEFAULT, option: rpc_backend, value: "neutron.openstack.common.rpc.impl_kombu"}
   - { section: DEFAULT, option: control_exchange, value: "neutron"}
 
-  - { section: agent, option: root_helper, value: "sudo neutron-rootwrap /etc/neutron/rootwrap.conf"}
+#  - { section: agent, option: root_helper, value: "sudo neutron-rootwrap /etc/neutron/rootwrap.conf"}
   - { section: agent, option: report_interval, value: 30}
 
   - { section: keystone_authtoken, option: admin_tenant_name, value: services}
