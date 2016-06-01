@@ -37,13 +37,3 @@
   sudo: no
   sudo_user: nova
   when: inventory_hostname == keystone_master
-
-
-- name: Start nova services
-  command: systemctl start {{ item }}
-  with_items:
-    - openstack-nova-api
-    - openstack-nova-scheduler
-    - openstack-nova-conductor
-    - openstack-nova-consoleauth
-    - openstack-nova-novncproxy

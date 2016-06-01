@@ -17,6 +17,7 @@
     - nova-conductor
     - nova-consoleauth
     - nova-novncproxy
+  ignore_errors: True
   tags:
     - pacemaker
     - pacemaker-nova
