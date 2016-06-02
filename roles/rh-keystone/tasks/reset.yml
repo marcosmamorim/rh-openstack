@@ -1,15 +1,11 @@
 ---
+# TODO: Remove keystone from pacemaker
+
 - name: remove WSGI keystone configuration
   file: state=absent path=/etc/http/conf.d/wsgi-keystone.conf
 
 - name: remove WSGI configuration dir
   file: state=absent path={{ keystone_cgibin_dir }}
-
-#- name: Remove keystone configuration file
-#  file: state=absent path={{ item }}
-#  with_items:
-#    - "/etc/keystone/keystone.conf"
-#    - "policy.json"
 
 - name: Removing keystone default database
   mysql_db:

@@ -1,77 +1,46 @@
 ---
 - name: Remove galera from pacemaker
   command: pcs resource delete galera
+  when: inventory_hostname == master_server
   ignore_errors: True
-  #no_log: True
 
 - name: Stopping/killing MariaDB service
   shell: pkill -9 -u mysql || true
   ignore_errors: True
-  #no_log: True
 
+# TODO: Create flag to destroy database
 - name: Purging MariaDB data directory
   file:
-    path={{ mariadb_datadir }}
-    state=absent
-    force=yes
+    path: "{{ mariadb_datadir }}"
+    state: absent
+    force: yes
   ignore_errors: True
-  #no_log: True
 
 - name: Rebuilding MariaDB data
   command: /usr/bin/mysql_install_db
   when: ansible_os_family == 'RedHat'
   ignore_errors: True
-  #no_log: True
 
 - name: Restoring permissions on MariaDB data directory
   file:
-    path={{ mariadb_datadir }}
-    owner=mysql
-    group=mysql
-    recurse=yes
-  when: ansible_os_family == 'RedHat'
+    path: "{{ mariadb_datadir }}"
+    owner: mysql
+    group: mysql
+    recurse: yes
   ignore_errors: True
-  #no_log: True
 
 - name: Relabeling MariaDB data directory
   command: /usr/sbin/restorecon -R {{ mariadb_datadir }}
-  when: ansible_os_family == 'RedHat'
   ignore_errors: True
-  #no_log: True
 
-- name: Deleting MariaDB config file
+- name: Deleting MariaDB configs files
   file:
-    path=/etc/{{ mariadb_config }}
-    state=absent
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/etc/{{ mariadb_config }}"
+    - /root/.my.cnf
+    - /etc/my.cnf.d/server.cnf
+    - /etc/sysconfig/clustercheck
+    - /usr/bin/clustercheck
   ignore_errors: True
-  #no_log: True
-
-- name: Deleting /root/.my.cnf file
-  file:
-    path=/root/.my.cnf
-    state=absent
-  ignore_errors: True
-  #no_log: True
-
-- name: Deleting Cluster MariaDB
-  file:
-    path=/etc/my.cnf.d/server.cnf
-    state=absent
-  ignore_errors: True
-  #no_log: True
-
-- name: delete /etc/sysconfig/clustercheck file (ready for Pacemaker)
-  file:
-    dest=/etc/sysconfig/clustercheck
-    state=absent
-  tags:
-    - galera
-    - galera-clustercheck
-
-- name: delete /usr/bin/clustercheck file (ready for Pacemaker)
-  file:
-    dest=/usr/bin/clustercheck
-    state=absent
-  tags:
-    - galera
-    - galera-clustercheck

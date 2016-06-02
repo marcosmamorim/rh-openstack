@@ -20,4 +20,4 @@ galaxy_info:
     - database
     - database:sql
     - web
-dependencies: [role: rh-setfacts ]
+dependencies: []

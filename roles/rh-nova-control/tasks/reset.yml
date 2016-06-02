@@ -1,14 +1,5 @@
 ---
-
-- name: Get Current DC
-  shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
-  register: pacemaker_dc
-  ignore_errors: True
-  #no_log: True
-  tags:
-    - pacemaker
-
-
+# TODO: Remove configuration files from nova-control
 - name: remove nova services from pacemaker
   command: pcs resource delete {{ item }}
   ignore_errors: True
@@ -18,6 +9,4 @@
     - nova-conductor
     - nova-consoleauth
     - nova-novncproxy
-  tags:
-    - pacemaker
-    - pacemaker-nova
+  when: inventory_hostname == master_server

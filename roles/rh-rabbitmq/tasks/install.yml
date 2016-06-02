@@ -4,7 +4,3 @@
   with_items:
     - rabbitmq-server
     - openstack-selinux
-  notify: systemctl reload
-  tags:
-    - rabbitmq
-    - rabbitmq-package

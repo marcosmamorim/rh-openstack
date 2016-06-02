@@ -3,7 +3,7 @@
 - name: remove mongodb from pacemaker
   command: pcs resource delete mongodb
   ignore_errors: True
-  when: inventory_hostname == mongodb_master
+  when: inventory_hostname == master_server
 
 - name: stop the mongodb service
   service: name=mongod state=stopped enabled=no

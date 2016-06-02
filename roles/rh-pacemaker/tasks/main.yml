@@ -3,7 +3,7 @@
 
 - name: Ensure cluster group membership
   fail: msg="Cluster hosts must be members of a group"
-  when: pacemaker_ansible_group is not iterable
+  when: controller_group_name is not iterable
 
 - name: Install Pacemaker Configuration System package
   yum: name={{ item }} state=installed
@@ -12,9 +12,6 @@
 - name: include cluster reset
   include: reset.yml
   when: pacemaker_reset
-  tags:
-    - pacemaker
-    - pacemaker-reset
 
 - name: Start PCS daemon
   service: name=pcsd state=restarted enabled=yes
@@ -28,39 +25,35 @@
 - name: Authenticate all nodes when pacemaker reset is true
   command: >
     pcs cluster auth
-    {% for host in groups[pacemaker_ansible_group] %}
+    {% for host in groups[controller_group_name] %}
     {{ hostvars[host]['ansible_hostname'] }}
     {% endfor %}
     -u {{ pacemaker_user }} -p {{ pacemaker_password }}
-  run_once: true
   args:
     creates: /var/lib/pcsd/tokens
-  when: pacemaker_reset
+  when: pacemaker_reset and inventory_hostname == master_server
   ignore_errors: True
-  #no_log: True
 
 - name: Authenticate all nodes
   command: >
     pcs cluster auth
-    {% for host in groups[pacemaker_ansible_group] %}
+    {% for host in groups[controller_group_name] %}
     {{ hostvars[host]['ansible_hostname'] }}
     {% endfor %}
     -u {{ pacemaker_user }} -p {{ pacemaker_password }}
-  run_once: true
   args:
     creates: /var/lib/pcsd/tokens
+  when: inventory_hostname == master_server
 
 - name: Setup cluster message bus
-  run_once: true
   command: >
     pcs cluster setup --name {{ pacemaker_cluster_name }} --force --enable
-    {% for host in groups[pacemaker_ansible_group] %}
+    {% for host in groups[controller_group_name] %}
     {{ hostvars[host]['ansible_hostname'] }}
     {% endfor %}
   args:
     creates: /etc/corosync/corosync.conf
-  tags:
-    - pcs-cluster
+  when: inventory_hostname == master_server
 
 - name: Start all cluster nodes
   service: name={{ item }} enabled=yes state=started
@@ -69,16 +62,13 @@
     - pacemaker
 
 - name: Set cluster properties
-  run_once: true
   command: pcs property set {{ item.key | replace('_', '-') }}={{ item.value }}
   with_dict: "{{ pacemaker_properties }}"
-  when: pacemaker_properties is defined
+  when: pacemaker_properties is defined and inventory_hostname == master_server
 
 - name: Create resources
-  run_once: true
-  when: pacemaker_resources is defined
   with_items: "{{ pacemaker_resources }}"
-  #no_log: True
+  when: pacemaker_resources is defined and inventory_hostname == master_server
   command: >
     pcs resource create {{ item.id }} {{ item.type }}
     {% if item.options is defined %}

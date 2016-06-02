@@ -2,16 +2,8 @@
 - name: stop rabbitmq before add to pacemaker
   service: name=rabbitmq-server state=stopped enabled=no
 
-- name: Get Current DC
-  shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
-  register: pacemaker_dc
-  tags:
-    - pacemaker
-    - pacemaker-galera
-    - pacemaker-rabbitmq
-
 - name: create rabbitmq cluster resource
-  when: ansible_hostname == pacemaker_dc.stdout
+  when: ansible_hostname == master_server
   pcs_resource: command=create resource_id=rabbitmq type=systemd:rabbitmq-server clone=yes
   args:
     options:

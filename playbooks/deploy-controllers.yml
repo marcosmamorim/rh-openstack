@@ -2,6 +2,7 @@
 - hosts: controller
   gather_facts: True
   roles:
+    - rh-setfacts
     - rh-network
     - rh-subscribe
     - rh-pacemaker

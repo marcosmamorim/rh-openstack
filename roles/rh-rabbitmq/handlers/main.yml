@@ -1,6 +1,3 @@
 ---
 - name: restart rabbitmq
   command: systemctl restart rabbitmq-server
-
-- name: systemctl reload
-  command: systemctl daemon-reload
