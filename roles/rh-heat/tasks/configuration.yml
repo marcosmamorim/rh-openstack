@@ -18,5 +18,8 @@
     - glance-api-config
 
 - name: sync dbsync heat
-  heat_manage: action=dbsync
-  tags: heat
+  command: heat-manage db_sync
+  when: inventory_hostname == heat_master
+
+#  heat_manage: action=dbsync
+#  tags: heat
