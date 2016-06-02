@@ -11,7 +11,7 @@
     owner=root
     mode=0640
   with_items: "{{ nova_options }}"
-  no_log: True
+  #no_log: True
   tags:
     - nova
     - nova-config
@@ -27,7 +27,7 @@
     owner=root
     mode=0640
   with_items: "{{ nova_api_options }}"
-  no_log: True
+  #no_log: True
   tags:
     - nova
     - nova-config

@@ -50,7 +50,7 @@
     owner=keystone
     mode=0644
   with_items: "{{ keystone_options }}"
-  no_log: True
+  #no_log: True
   tags:
     - keystone
     - keystone-config
@@ -73,7 +73,7 @@
     owner=keystone
     group=keystone
     mode=0640
-  no_log: True
+  #no_log: True
   tags:
     - keystone
     - keystone-config
@@ -85,7 +85,7 @@
     owner=keystone
     group=keystone
     mode=0640
-  no_log: True
+  #no_log: True
   tags:
     - keystone
     - keystone-config
@@ -98,7 +98,7 @@
     owner=root
     group=root
   when: openstack_version == 8
-  no_log: True
+  #no_log: True
 
 - name: Sync Keystone database
   keystone_manage: action=dbsync

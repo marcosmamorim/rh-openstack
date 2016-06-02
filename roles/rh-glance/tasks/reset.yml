@@ -32,7 +32,7 @@
   shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
   register: pacemaker_dc
   ignore_errors: True
-  no_log: True
+  #no_log: True
 
 - name: remove glance from pacemaker
   command: pcs resource delete {{ item }}

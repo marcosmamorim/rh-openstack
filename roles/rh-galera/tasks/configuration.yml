@@ -30,7 +30,7 @@
     host=localhost
     state=present
   when: inventory_hostname == galera_master
-  no_log: True
+  ##no_log: True
 
 - name: Creating the /root/.my.cnf file
   ini_file: >
@@ -43,7 +43,7 @@
     owner=root
     mode=0600
   with_items: "{{ mycnf_options }}"
-  no_log: True
+  ##no_log: True
 
 - name: Configuring Galera cluster (RedHat family)
   template:

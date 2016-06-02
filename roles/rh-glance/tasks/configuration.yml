@@ -20,7 +20,7 @@
      group=glance
      mode=0640
   with_items: "{{ glance_api_options }}"
-  no_log: True
+#  #no_log: True
   tags:
     - glance
     - glance-config
@@ -37,7 +37,7 @@
      group=glance
      mode=0640
   with_items: "{{ glance_registry_options }}"
-  no_log: True
+#  #no_log: True
   tags:
     - glance
     - glance-config
@@ -52,7 +52,7 @@
     state={{ item.state |default('mounted')}}
   with_items: "{{ glance_mount_image }}"
   when: glance_use_nfs
-  no_log: True
+#  #no_log: True
   tags:
     - glance
     - glance_nfs

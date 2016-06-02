@@ -17,7 +17,7 @@
   tags:
     - rabbitmq
     - rabbitmq-users
-  no_log: True
+  #no_log: True
 
 #- name: Delete the default guest RabbitMQ user
 #  rabbitmq_user:

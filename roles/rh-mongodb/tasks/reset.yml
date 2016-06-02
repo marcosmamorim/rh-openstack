@@ -14,7 +14,7 @@
 
 - name: remove mongo data
   shell: rm -rf {{mongodb_db_path}}/*
-  no_log: True
+  #no_log: True
 
 - name: remove mongod.conf
   file:

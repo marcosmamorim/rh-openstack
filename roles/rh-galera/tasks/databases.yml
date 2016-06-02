@@ -6,7 +6,7 @@
     state: present
   with_items: "{{mariadb_databases}}"
   when: mariadb_databases|length > 0 and inventory_hostname == galera_master
-  no_log: True
+  #no_log: True
 
 - name: MySQL | Make sure the MySQL users are present
   mysql_user:
@@ -17,7 +17,7 @@
     host: "{{item.host | default('localhost')}}"
   with_items: mariadb_users
   when: mariadb_users|length > 0 and inventory_hostname == galera_master
-  no_log: True
+  #no_log: True
 
 - name: MySQL | Make sure the MySQL users are present
   mysql_user:

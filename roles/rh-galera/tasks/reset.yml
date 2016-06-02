@@ -2,12 +2,12 @@
 - name: Remove galera from pacemaker
   command: pcs resource delete galera
   ignore_errors: True
-  no_log: True
+  #no_log: True
 
 - name: Stopping/killing MariaDB service
   shell: pkill -9 -u mysql || true
   ignore_errors: True
-  no_log: True
+  #no_log: True
 
 - name: Purging MariaDB data directory
   file:
@@ -15,13 +15,13 @@
     state=absent
     force=yes
   ignore_errors: True
-  no_log: True
+  #no_log: True
 
 - name: Rebuilding MariaDB data
   command: /usr/bin/mysql_install_db
   when: ansible_os_family == 'RedHat'
   ignore_errors: True
-  no_log: True
+  #no_log: True
 
 - name: Restoring permissions on MariaDB data directory
   file:
@@ -31,34 +31,34 @@
     recurse=yes
   when: ansible_os_family == 'RedHat'
   ignore_errors: True
-  no_log: True
+  #no_log: True
 
 - name: Relabeling MariaDB data directory
   command: /usr/sbin/restorecon -R {{ mariadb_datadir }}
   when: ansible_os_family == 'RedHat'
   ignore_errors: True
-  no_log: True
+  #no_log: True
 
 - name: Deleting MariaDB config file
   file:
     path=/etc/{{ mariadb_config }}
     state=absent
   ignore_errors: True
-  no_log: True
+  #no_log: True
 
 - name: Deleting /root/.my.cnf file
   file:
     path=/root/.my.cnf
     state=absent
   ignore_errors: True
-  no_log: True
+  #no_log: True
 
 - name: Deleting Cluster MariaDB
   file:
     path=/etc/my.cnf.d/server.cnf
     state=absent
   ignore_errors: True
-  no_log: True
+  #no_log: True
 
 - name: delete /etc/sysconfig/clustercheck file (ready for Pacemaker)
   file:

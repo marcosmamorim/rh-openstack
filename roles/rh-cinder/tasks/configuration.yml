@@ -8,7 +8,7 @@
      value={{ item.value }}
      state={{item.state| default('present')}}
   with_items: "{{ cinder_options }}"
-  no_log: True
+  ##no_log: True
   tags:
     - cinder
 

@@ -4,7 +4,7 @@
   shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
   register: pacemaker_dc
   ignore_errors: True
-  no_log: True
+  ##no_log: True
   tags:
     - pacemaker
 
@@ -19,3 +19,4 @@
     - ceilometer-alarm-notifier
     - ceilometer-notification
     - ceilometer-polling
+  ignore_errors: True

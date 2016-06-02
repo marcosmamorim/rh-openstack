@@ -6,7 +6,7 @@
     state=present
   with_items: rabbitmq_vhost_list
   when: inventory_hostname == rabbitmq_cluster_name
-  no_log: True
+  #no_log: True
   tags:
     - rabbitmq
     - rabbitmq-vhosts

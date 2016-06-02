@@ -37,7 +37,7 @@
     creates: /var/lib/pcsd/tokens
   when: pacemaker_reset
   ignore_errors: True
-  no_log: True
+  #no_log: True
 
 - name: Authenticate all nodes
   command: >
@@ -78,7 +78,7 @@
   run_once: true
   when: pacemaker_resources is defined
   with_items: "{{ pacemaker_resources }}"
-  no_log: True
+  #no_log: True
   command: >
     pcs resource create {{ item.id }} {{ item.type }}
     {% if item.options is defined %}

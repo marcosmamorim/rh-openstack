@@ -31,4 +31,4 @@
   delay: "{{ keystone_api_retries_delay }}"
   with_items: "{{ keystone_tenants }}"
   when: inventory_hostname == keystone_master
-  no_log: True
+  #no_log: True

@@ -10,7 +10,7 @@
   shell: pcs status cluster | awk '/^ Current DC:/ {print $3}'
   register: pacemaker_dc
   ignore_errors: True
-  no_log: True
+  #no_log: True
 
 - name: create glance-api resource
   pcs_resource: command=create resource_id={{item }} type=systemd:openstack-{{item}} clone=yes
