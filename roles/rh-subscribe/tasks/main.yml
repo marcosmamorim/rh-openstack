@@ -2,26 +2,23 @@
 # TODO: Check if already registred
 
 - name: Force unregister before register
-  command: subscription-manager unregister
+  redhat_subscription:
+    state: absent
   when: use_rhel
   ignore_errors: true
 
 - name: register node with subscription-manager
-  redhat_subscription: state=present username={{ rhel_subscription_user }} password={{ rhel_subscription_pass }} autosubscribe=False
+  redhat_subscription:
+    state: present
+    username: "{{ rhel_subscription_user }}"
+    password: "{{ rhel_subscription_pass }}"
+    pool: "{{ rhel_pool_id }}"
   when: use_rhel
   register: subscription
   changed_when: false
   tags:
     - subscribe
     - register
-
-- name: attach to license pool
-  command: subscription-manager attach --pool {{ rhel_pool_id }}
-  when: use_rhel
-  changed_when: false
-  tags:
-    - subscribe
-    - subscribe-attach
 
 - name: disable all repos
   command: subscription-manager repos --disable=*
