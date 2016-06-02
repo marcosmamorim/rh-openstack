@@ -1,17 +1,20 @@
 ---
 
 - name: remove NetworkManager
-  yum: name=NetworkManager state=removed
+  yum:
+    name: NetworkManager
+    state: removed
 
 - name: Install the required  packages
-  yum: name={{ item }} state=installed
-  with_items: network_pkgs
+  yum:
+    name: {{ item }}
+    state: installed
+  with_items: network_packages
 
 - name: Install openvswitch if required
-  yum: name=openvswitch state=installed
+  yum:
+    name: openvswitch
+    state: installed
   when: use_openvswitch
-
-- name: enable openvswitch
-  service: name=openvswitch state=started enabled=yes
-  when: use_openvswitch
+  notify: restart openvswitch
 

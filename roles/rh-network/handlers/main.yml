@@ -1,6 +1,9 @@
 ---
 
 - name: restart openvswitch
-  command: systemctl restart openvswitch
+  service:
+    name: openvswitch
+    state: restarted
+    enabled: yes
 
 
