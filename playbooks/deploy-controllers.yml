@@ -18,5 +18,4 @@
     - rh-redis
     - rh-ceilometer
     - rh-heat
-#    - rh-horizon
-#    - rh-controller
+    - rh-horizon
