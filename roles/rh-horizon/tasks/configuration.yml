@@ -48,7 +48,7 @@
     - horizon-limits
 
 - name: Increase httpd file limit via Systemd
-  template:
+  copy:
     src: httpd-limits.conf
     dest: /etc/systemd/system/httpd.service.d/limits.conf
     owner: root
