@@ -15,3 +15,9 @@
     - pacemaker
     - pacemaker-rabbitmq
   ignore_errors: True
+
+- name: remove rabbitmq clustered file
+  file:
+    dest: /etc/rabbitmq/clustered
+    state: absent
+  ignore_errors: True
