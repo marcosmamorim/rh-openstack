@@ -2,9 +2,4 @@
 env:
  RUNLEVEL: 1
 
-network_pkgs:
-  - libselinux-python
-  - bridge-utils
-  - iputils
-
 net_path: "/etc/sysconfig/network-scripts"

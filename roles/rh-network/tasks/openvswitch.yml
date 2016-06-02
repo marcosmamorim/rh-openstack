@@ -50,7 +50,6 @@
     port: "{{ pnet_interface }}"
     state: present
   when: use_openvswitch
-#  run_once: True
   ignore_errors: True
   tags:
     - neutron
@@ -62,7 +61,6 @@
     port: "{{ ext_interface }}"
     state: present
   when: use_openvswitch
-#  run_once: True
   ignore_errors: True
   tags:
     - neutron
