@@ -11,7 +11,7 @@
   include: openvswitch.yml
   when: use_openvswitch
 
-- include network bond
+- name: include network bond
   include: bond.yml
   when: network_bond_interfaces is defined and network_bond_interfaces |length > 0
 
