@@ -1,0 +1,30 @@
+#!/bin/bash
+
+
+lb_prefix="qlbaas-"
+
+for lb in `ip netns |grep $lb_prefix`
+do 
+        lbaas_id="${lb/$lb_prefix/}"
+
+        if=`ip netns exec $lb ip a sh |grep global |awk '{ print $7 }'`
+        echo "Cleanup $lb - lbaas_id: $lbaas_id - if: $if" > /var/log/neutron/neutron-lbaas-cleanup.log 2>&1
+
+        echo "Remove namespace $lb" > /var/log/neutron/neutron-lbaas-cleanup.log 2>&1
+        ip netns del $lb > /var/log/neutron/neutron-lbaas-cleanup.log 2>&1
+
+        echo "Stop haproxy for $lbaas_id" > /var/log/neutron/neutron-lbaas-cleanup.log 2>&1
+        kill `cat /var/lib/neutron/lbaas/$lbaas_id/pid` > /var/log/neutron/neutron-lbaas-cleanup.log 2>&1
+
+        echo "Remove interface $if from br-int" > /var/log/neutron/neutron-lbaas-cleanup.log 2>&1
+        ovs-vsctl del-port br-int $if > /var/log/neutron/neutron-lbaas-cleanup.log 2>&1
+
+done
+
+func_UPDATEAGENT(){
+	HOSTAGENT=$(hostname)
+	AGENTID=$(mysql -u root -B neutron -e "select id from agents where host='$HOSTAGENT' and agent_type='Loadbalancer agent'\G;" | grep 'id:' | awk '{print $2}')
+	mysql -u root -B neutron -e "update poolloadbalanceragentbindings SET agent_id='$AGENTID';"
+}
+
+func_UPDATEAGENT
