@@ -1,0 +1,24 @@
+---
+
+- name: remove horizon local_settings
+  file:
+     dest: /etc/openstack-dashboard/local_settings
+     state: absent
+  ignore_errors: True
+
+- name: remove horizon httpd configuration
+  file:
+    dest: /etc/httpd/conf.d/openstack-dashboard.conf
+    state: absent
+  ignore_errors: True
+
+- name: remove horizon secret file
+  file:
+    dest: /var/lib/openstack-dashboard/.secret_key_store
+    state: absent
+  ignore_errors: True
+
+- name: restart httpd resource from pacemaker
+  command: pcs restart httpd
+  when: inventory_hostname == horizon_master
+  ignore_errors: True

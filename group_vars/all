@@ -1493,6 +1493,12 @@ heat_options:
   - { section: DEFAULT, option: rpc_backend, value: rabbit}
   - { section: DEFAULT, option: notification_driver, value: "heat.openstack.common.notifier.rpc_notifier"}
 
+################################################
+## Horizon
+
+horizon_secret_key: '734b164774032318a157'
+horizon_reset: "{{ global_reset }}"
+horizon_master: "{{ keystone_master }}"
 
 ################################################
 ## Red Hat Subscribe

@@ -1,0 +1,11 @@
+---
+
+- name: include horizon packages
+  include: packages.yml
+
+- name: include horizon reset
+  include: reset.yml
+  when: horizon_reset
+
+- name: include horizon configuration
+  include: configuration.yml

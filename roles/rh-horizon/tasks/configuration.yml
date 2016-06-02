@@ -1,0 +1,83 @@
+---
+
+- name: remove welcome
+  file: path=/etc/httpd/conf.d/welcome.conf state=absent
+  tags: horizon
+
+- name: remove dashboard.conf
+  file: path=/etc/httpd/conf.d/dashboard.conf state=absent
+  tags: horizon
+
+- name: listen on all interfaces
+  lineinfile:
+    dest: /etc/httpd/conf/httpd.conf
+    regexp: "^Listen "
+    insertafter: "^#Listen "
+    line: "Listen {{ internal_ip }}:80"
+  tags: horizon
+
+- name: deploy openstack-dashboard local settings
+  template:
+    src: local_settings.j2
+    dest: /etc/openstack-dashboard/local_settings
+    mode: 0640
+    owner: root
+    group: apache
+  tags: horizon
+
+- name: copy httpd openstack-dashboard.conf
+  copy:
+    src: openstack-dashboard.conf
+    dest: /etc/httpd/conf.d/openstack-dashboard.conf
+    mode: 0644
+  tags: horizon
+
+- name: copy performancetunning.conf
+  copy:
+    src: 02-performancetunning.conf
+    dest: /etc/httpd/conf.modules.d/02-performancetunning.conf
+    mode: 0644
+  tags: horizon
+
+- name: create systemd directory for httpd
+  file:
+    path: /etc/systemd/system/httpd.service.d
+    state: directory
+  tags:
+    - horizon
+    - horizon-limits
+
+- name: Increase httpd file limit via Systemd
+  template:
+    src: etc/systemd/system/httpd.service.d/limits.conf
+    dest: /etc/systemd/system/httpd.service.d/limits.conf
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - horizon
+    - horizon-limits
+
+- name: reload systemd
+  command: systemctl daemon-reload
+
+- name: create horizon secret file
+  copy:
+    dest: /var/lib/openstack-dashboard/.secret_key_store
+    content: {{ horizon_secret_key }}
+    mode: 0600
+    owner: apache
+    group: apache
+
+#- name: get a copy of the .secret_key_store file from the first controller
+#  fetch: src=/var/lib/openstack-dashboard/.secret_key_store dest=special/secret_key_store flat=yes
+#  run_once: true
+#  tags: horizon
+#
+#- name: distribute a copy of the .secret_key_store file
+#  copy: src=special/secret_key_store dest=/var/lib/openstack-dashboard/.secret_key_store mode=0600 owner=apache group=apache
+#  tags: horizon
+#
+#- name: restart httpd
+#  command: systemctl restart httpd
+#  tags: horizon
