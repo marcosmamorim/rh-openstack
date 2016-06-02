@@ -1388,10 +1388,10 @@ ceilometer_verbose: "{{ global_verbose }}"
 ceilometer_bind_host: "{{ internal_ip }}"
 ceilometer_metering_secret: d755f0cd352fa12490183r1db
 
-mongodb_database_url: "mongodb://{{ mongodb_hosts |join(',')}}:27017/ceilometer?replicaSet=ceilometer"
+ceilometer_database_url: "mongodb://{{ mongodb_hosts |join(',')}}:27017/ceilometer?replicaSet=ceilometer"
 
 # TODO: This is horrible, but i don't have another option. :-(
-mongodb_backend_url: 'redis://controller01:26379?sentinel=mymaster&sentinel_fallback=controller02:26379&sentinel_fallback=controller03:26379'
+ceilometer_backend_url: 'redis://controller01:26379?sentinel=mymaster&sentinel_fallback=controller02:26379&sentinel_fallback=controller03:26379'
 
 # Five days in seconds
 ceilometer_time_to_live: 432000
@@ -1428,9 +1428,9 @@ ceilometer_options:
   - { section: service_credentials, option: auth_host, value: "{{ keystone_internal_vip }}"}
   - { section: service_credentials, option: os_endpoint_type, value: internalURL}
 
-  - { section: database, option: connection, value: "{{ mongodb_database_url }}"}
+  - { section: database, option: connection, value: "{{ ceilometer_database_url }}"}
   - { section: database, option: max_retries, value: -1}
-  - { section: database, option: time_to_live, value: "{{ mongodb_time_to_live }}"}
+  - { section: database, option: time_to_live, value: "{{ ceilometer_time_to_live }}"}
 
   - { section: api, option: host, value: "{{ ceilometer_bind_host }}"}
 
