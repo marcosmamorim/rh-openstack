@@ -1,0 +1,14 @@
+---
+
+- name: include heat packages
+  include: packages.yml
+
+- name: include heat reset
+  include: reset.yml
+  when: heat_reset
+
+- name: include heat configuration
+  include: configuration.yml
+
+- name: include heat pacemaker
+  include: pacemaker.yml

@@ -1,0 +1,22 @@
+---
+
+- name: configure heat services
+  ini_file: >
+    dest=/etc/heat/heat.conf
+     section={{ item.section }}
+     option={{ item.option }}
+     value={{ item.value }}
+     state={{ item.state |default('present')}}
+     owner=root
+     group=heat
+     mode=0640
+  with_items: "{{ heat_options }}"
+#  #no_log: True
+  tags:
+    - glance
+    - glance-config
+    - glance-api-config
+
+- name: sync dbsync heat
+  heat_manage: action=dbsync
+  tags: heat

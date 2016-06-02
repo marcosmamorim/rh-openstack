@@ -1436,6 +1436,62 @@ ceilometer_options:
 
   - { section: coordination, option: backend_url, value: "{{ ceilometer_backend_url }}"}
 
+################################################
+## Heat
+heat_reset: "{{ global_reset }}"
+heat_master: "{{ keystone_master }}"
+heat_debug: "{{ global_debug }}"
+heat_verbose: "{{ global_verbose }}"
+heat_bind_host: "{{ internal_ip }}"
+
+heat_port: 8004
+heat_cfn_port: 8000
+heat_cloudwatch_port: 8003
+heat_backlog: 4096
+
+
+heat_metadata_server_url: "http://{{ heat_private_vip }}:8000"
+heat_waitcondition_server_url: "http://{{ heat_private_vip }}:8000/v1/waitcondition"
+heat_watch_server_url: "http://{{ heat_private_vip }}:8003"
+
+heat_options:
+  - { section: DEFAULT, option: debug, value: "{{ heat_debug |default('False') }}"}
+  - { section: DEFAULT, option: verbose, value: "{{ heat_verbose |default('False') }}"}
+
+  - { section: database, option: max_retries, value: -1}
+
+  - { section: keystone_authtoken, option: admin_tenant_name, value: services}
+  - { section: keystone_authtoken, option: admin_user, value: "{{ keystone_heat_user }}"}
+  - { section: keystone_authtoken, option: admin_password, value: "{{ keystone_heat_password }}"}
+  - { section: keystone_authtoken, option: service_host, value: "{{ ceilometer_internal_vip }}"}
+  - { section: keystone_authtoken, option: identity_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_admin_port }}"}
+  - { section: keystone_authtoken, option: auth_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_admin_port }}"}
+  - { section: keystone_authtoken, option: keystone_ec2_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_admin_port }}"}
+  - { section: keystone_authtoken, option: auth_port, value: "{{ keystone_admin_port }}"}
+  - { section: keystone_authtoken, option: auth_protocol, value: "{{ keystone_protocol }}"}
+
+  - { section: ec2authtoken, option: auth_uri, value: "{{ keystone_protocol }}://{{ keystone_internal_vip }}:{{ keystone_port }}"}
+
+  - { section: DEFAULT, option: memcached_servers, value: "{{ memcached_hosts | shuffle | join(',') |default('localhost') }}"}
+
+  - { section: heat_api, option: bind_host, value: "{{ heat_bind_host }}"}
+  - { section: heat_api_cfn, option: bind_host, value: "{{ heat_bind_host }}"}
+  - { section: heat_api_cloudwatch, option: bind_host, value: "{{ heat_bind_host }}"}
+
+  - { section: DEFAULT, option: heat_metadata_server_url, value: "{{ heat_metadata_server_url }}"}
+  - { section: DEFAULT, option: heat_waitcondition_server_url, value: "{{ heat_waitcondition_server_url }}"}
+  - { section: DEFAULT, option: heat_watch_server_url, value: "{{ heat_watch_server_url }}"}
+
+  - { section: DEFAULT, option: rabbit_userid, value: "{{ rabbitmq_heat_user| default('guest') }}"}
+  - { section: DEFAULT, option: rabbit_use_ssl, value: "{{ rabbitmq_ssl | default('False') }}"}
+  - { section: DEFAULT, option: rabbit_ha_queues, value: "{{ rabbitmq_clustering | default('True') }}"}
+  - { section: DEFAULT, option: rabbit_virtual_host, value: "{{ rabbitmq_heat_vhost| default('/') }}"}
+  - { section: DEFAULT, option: rabbit_password, value: "{{ rabbitmq_heat_password |default('guest') }}"}
+  - { section: DEFAULT, option: rabbit_hosts, value: "{{ rabbitmq_hosts | shuffle | join(',') }}"}
+  - { section: DEFAULT, option: rabbit_port, value: "{{ rabbitmq_port| default('5671') }}"}
+  - { section: DEFAULT, option: rpc_backend, value: rabbit}
+  - { section: DEFAULT, option: notification_driver, value: "heat.openstack.common.notifier.rpc_notifier"}
+
 
 ################################################
 ## Red Hat Subscribe

@@ -1,0 +1,16 @@
+---
+
+- name: install heat packages
+  yum: pkg={{ item }} state=present
+  with_items:
+    - openstack-heat-common
+    - openstack-heat-api
+    - openstack-heat-api-cfn
+    - openstack-heat-api-cloudwatch
+    - openstack-heat-engine
+    - python-heatclient
+    - python-glanceclient
+    - openstack-utils
+    - openstack-selinux
+  tags: heat
+

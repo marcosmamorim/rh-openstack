@@ -1,0 +1,21 @@
+---
+
+- name: disable heat services in systemd
+  service: name={{ item }} state=stopped enabled=yes
+  with_items:
+    - openstack-heat-api
+    - openstack-heat-api-cfn
+    - openstack-heat-api-cloudwatch
+    - openstack-heat-engine
+  tags: heat
+
+- name: create heat resource
+  pcs_resource: command=create name={{ item }} type=systemd:openstack-{{ item }} clone=yes
+  with_items:
+    - heat-api
+    - heat-api-cfn
+    - heat-api-cloudwatch
+    - heat-engine
+  tags: heat
+
+
