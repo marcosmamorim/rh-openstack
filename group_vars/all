@@ -753,16 +753,16 @@ cinder_options:
 
 cinder_storage_types:
   - { name: lvm, volume_backend_name: LVM }
-  - { name: lvm2, volume_backend_name: LVM2 }
+#  - { name: lvm2, volume_backend_name: LVM2 }
 
 cinder_storage_backend:
   - { section: lvm, option: volume_group, value: cinder-volumes}
   - { section: lvm, option: volume_driver, value: cinder.volume.drivers.lvm.LVMISCSIDriver}
   - { section: lvm, option: volume_backend_name, value: LVM}
 
-  - { section: lvm2, option: volume_group, value: cinder-volumes2}
-  - { section: lvm2, option: volume_driver, value: cinder.volume.drivers.lvm.LVMISCSIDriver}
-  - { section: lvm2, option: volume_backend_name, value: LVM2}
+#  - { section: lvm2, option: volume_group, value: cinder-volumes2}
+#  - { section: lvm2, option: volume_driver, value: cinder.volume.drivers.lvm.LVMISCSIDriver}
+#  - { section: lvm2, option: volume_backend_name, value: LVM2}
 
 
 ###############################################
