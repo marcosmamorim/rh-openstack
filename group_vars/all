@@ -171,6 +171,8 @@ global_verbose: True
 global_reset: True
 global_purge_db: True
 
+controller_group_name: controller
+
 # Glance Settings
 glance_use_nfs: True
 glance_image_dir: /var/lib/glance/images/
@@ -1155,7 +1157,7 @@ neutron_metering_agent_options:
 # Pacemaker
 
 pacemaker_reset: True
-pacemaker_ansible_group: controller
+
 # python -c "from passlib.hash import sha512_crypt; import getpass; print sha512_crypt.encrypt(getpass.getpass())"
 pacemaker_password: '123@mudar'
 pacemaker_user: hacluster
