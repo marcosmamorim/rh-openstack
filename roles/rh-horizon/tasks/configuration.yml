@@ -49,7 +49,7 @@
 
 - name: Increase httpd file limit via Systemd
   template:
-    src: etc/systemd/system/httpd.service.d/limits.conf
+    src: httpd-limits.conf
     dest: /etc/systemd/system/httpd.service.d/limits.conf
     owner: root
     group: root
@@ -64,7 +64,7 @@
 - name: create horizon secret file
   copy:
     dest: /var/lib/openstack-dashboard/.secret_key_store
-    content: {{ horizon_secret_key }}
+    content: "{{ horizon_secret_key }}"
     mode: 0600
     owner: apache
     group: apache
