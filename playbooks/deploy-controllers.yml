@@ -17,6 +17,6 @@
     - rh-mongodb
     - rh-redis
     - rh-ceilometer
-#    - rh-heat
+    - rh-heat
 #    - rh-horizon
 #    - rh-controller
