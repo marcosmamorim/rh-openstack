@@ -2,5 +2,7 @@
 - hosts: compute
   gather_facts: True
   roles:
+    - rh-subscribe
     - rh-setfacts
+    - rh-network
     - rh-compute

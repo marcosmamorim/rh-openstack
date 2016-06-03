@@ -1,4 +1,5 @@
 # Public interface
+ext_interface: eth1
 pnet_interface: eth2
 mgmt_interface: eth0
 

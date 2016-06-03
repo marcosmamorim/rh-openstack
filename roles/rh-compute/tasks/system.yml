@@ -33,7 +33,7 @@
   notify: restart ksmtuned and ksm
 
 - name: Configure LVM
-  template:
+  copy:
     src: lvm.conf
     dest: /etc/lvm/lvm.conf
     mode: 0644
