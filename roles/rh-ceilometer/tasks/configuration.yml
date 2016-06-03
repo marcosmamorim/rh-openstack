@@ -21,8 +21,3 @@
      group=ceilometer
      mode=0640
   with_items: "{{ ceilometer_options }}"
-  ##no_log: True
-  tags:
-    - ceilometer
-    - ceilometer-config
-    - ceilometer-api-config
