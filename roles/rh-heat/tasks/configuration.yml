@@ -11,15 +11,7 @@
      group=heat
      mode=0640
   with_items: "{{ heat_options }}"
-#  #no_log: True
-  tags:
-    - glance
-    - glance-config
-    - glance-api-config
 
 - name: sync dbsync heat
   command: heat-manage db_sync
   when: inventory_hostname == heat_master
-
-#  heat_manage: action=dbsync
-#  tags: heat

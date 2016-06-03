@@ -7,7 +7,6 @@
     owner=glance
     group=glance
     recurse=yes
-  tags: glance
 
 - name: Configure Glance API
   ini_file: >
@@ -20,11 +19,6 @@
      group=glance
      mode=0640
   with_items: "{{ glance_api_options }}"
-#  #no_log: True
-  tags:
-    - glance
-    - glance-config
-    - glance-api-config
 
 - name: Configure Glance Registry
   ini_file: >
@@ -37,11 +31,6 @@
      group=glance
      mode=0640
   with_items: "{{ glance_registry_options }}"
-#  #no_log: True
-  tags:
-    - glance
-    - glance-config
-    - glance-api-config
 
 - name: Mount NFS server to glance images
   mount:
@@ -52,10 +41,6 @@
     state={{ item.state |default('mounted')}}
   with_items: "{{ glance_mount_image }}"
   when: glance_use_nfs
-#  #no_log: True
-  tags:
-    - glance
-    - glance_nfs
 
 - name: Fix permissions to mount point
   file:
@@ -65,6 +50,3 @@
     group=glance
     recurse=yes
   when: glance_use_nfs
-  tags:
-    - glance
-    - glance_nfs

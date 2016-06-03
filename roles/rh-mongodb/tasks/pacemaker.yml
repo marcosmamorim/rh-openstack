@@ -2,9 +2,6 @@
 
 - name: stop the mongodb service
   service: name=mongod state=stopped enabled=no
-  tags:
-    - pacemaker
-    - pacemaker-mongodb
 
 - name: create mongod cluster resource
   when: ansible_hostname == master_server

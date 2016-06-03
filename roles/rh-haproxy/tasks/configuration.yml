@@ -11,28 +11,23 @@
      dest=/etc/haproxy/haproxy.cfg
      src=haproxy.cfg.j2
   notify: restart haproxy
-  tags: haproxy
 
 - name: create pki directory for haproxy ssl termination
   file: path=/etc/pki/haproxy state=directory owner=root group=root mode=0755
   when: use_haproxy_ssl_termination
-  tags: haproxy
 
 - name: deploy certificate file for ssl termination
   copy: src=credentials/haproxy/cert.pem dest=/etc/pki/haproxy/cert.pem mode=0600
   when: use_haproxy_ssl_termination
   notify: restart haproxy
-  tags: haproxy
 
 - name: deploy certificate file for ssl termination
   copy: src=credentials/haproxy/cert.pem-lab dest=/etc/pki/haproxy/cert.pem mode=0600
   when: use_haproxy_ssl_termination
   notify: restart haproxy
-  tags: haproxy
 
 - name: disable haproxy service
   service: name=haproxy enabled=no
-  tags: haproxy
 
 - name: configure rsyslog to haproxy
   copy:

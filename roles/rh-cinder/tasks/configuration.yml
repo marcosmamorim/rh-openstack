@@ -8,9 +8,6 @@
      value={{ item.value }}
      state={{item.state| default('present')}}
   with_items: "{{ cinder_options }}"
-  ##no_log: True
-  tags:
-    - cinder
 
 - name: start cinder services
   service: name={{ item }} state=started enabled=no
@@ -18,8 +15,6 @@
     - openstack-cinder-api
     - openstack-cinder-scheduler
     - openstack-cinder-volume
-  tags:
-    - cinder
 
 - name: audit volume usage crontab
   cron: minute="0" hour="*" weekday="*"
@@ -27,5 +22,3 @@
         cron_file="CinderVolumeUsage"
         user="root"
         job="PYTHONIOENCODING=utf-8 /usr/bin/cinder-volume-usage-audit"
-  tags:
-    - cinder

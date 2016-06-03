@@ -7,7 +7,6 @@
     owner=mongodb
     group=mongodb
     mode=0600
-  tags: mongodb
 
 - name: Ensure dbpath directory
   file:
@@ -21,15 +20,12 @@
 
 - name: create the mongodb configuration file
   template: src=mongodb.conf.j2 dest=/etc/mongod.conf
-  tags: mongodb
 
 - name: copy limits mongodb
   copy: src=mongodb-limits.conf dest=/etc/security/limits.d/30-mongodb.conf mode=0644 owner=root group=root
-  tags: mongodb
 
 - name: start the mongodb service
   service: name=mongod state=started
-  tags: mongodb
 
 - name: Wait when mongodb is started
   wait_for:

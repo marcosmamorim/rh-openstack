@@ -36,36 +36,25 @@
 - name: force rabbitmq stop
   command: pkill -u rabbitmq
   ignore_errors: True
-  #no_log: True
 
 - name: restart all rabbimq servers
   command: systemctl restart rabbitmq-server
   ignore_errors: True
-  #no_log: True
 
 - name: include rabbitmq plugins
   include: plugins.yml
 
 - name: include rabbitmq-server to pacemaker
   include: pacemaker.yml
-  tags:
-    - rabbitmq
-    - rabbitmq-pacemaker
 
 - name: include rabbitmq vhost
   include: vhosts.yml
-  tags:
-    - rabbitmq-users
 
 - name: include rabbitmq policies
   include: policies.yml
-  tags:
-    - rabbitmq-users
 
 - name: include rabbitmq users
   include: users.yml
-  tags:
-    - rabbitmq-users
 
 - name: include rabbitmq sanity check
   include: sanitycheck.yml

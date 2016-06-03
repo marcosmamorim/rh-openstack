@@ -3,9 +3,6 @@
 - name: start openvswitch
   service: name=openvswitch state=started enabled=yes
   when: use_neutron
-  tags:
-    - neutron
-    - neutron-basics
 
 - name: Configure neutron
   ini_file: >
@@ -18,9 +15,6 @@
     owner=root
     mode=0640
   with_items: "{{ neutron_options }}"
-  tags:
-    - neutron
-    - neutron-config
 
 - name: Configure metadata
   ini_file: >
@@ -33,10 +27,6 @@
     owner=root
     mode=0640
   with_items: "{{ neutron_metadata_options }}"
-  tags:
-    - neutron
-    - neutron-config
-    - neutron-metadata
 
 - name: Configure dhcp agent
   ini_file: >
@@ -49,10 +39,6 @@
     owner=root
     mode=0640
   with_items: "{{ neutron_dhcp_agent_options }}"
-  tags:
-    - neutron
-    - neutron-config
-    - neutron-dhcp
 
 - name: Configure lbaas agent
   ini_file: >
@@ -65,10 +51,6 @@
     owner=root
     mode=0640
   with_items: "{{ neutron_lbaas_agent_options }}"
-  tags:
-    - neutron
-    - neutron-config
-    - neutron-lbaas
 
 - name: Configure l3 agent
   ini_file: >
@@ -81,10 +63,6 @@
     owner=root
     mode=0640
   with_items: "{{ neutron_l3_agent_options }}"
-  tags:
-    - neutron
-    - neutron-config
-    - neutron-l3
 
 - name: Fix perms plugins dir
   file:
@@ -95,10 +73,6 @@
     recurse=yes
     force=yes
     mode=0755
-  tags:
-    - neutron
-    - neutron-config
-    - neutron-ovs
 
 - name: Configure openvswitch plugin
   ini_file: >
@@ -111,10 +85,6 @@
     owner=root
     mode=0644
   with_items: "{{ neutron_ovs_plugin_options }}"
-  tags:
-    - neutron
-    - neutron-config
-    - neutron-ovs
 
 - name: Configure ml2 plugin
   ini_file: >
@@ -127,10 +97,6 @@
     owner=root
     mode=0640
   with_items: "{{ neutron_ml2_plugin_options }}"
-  tags:
-    - neutron
-    - neutron-config
-    - neutron-ml2
 
 - name: Configure lbaas
   ini_file: >
@@ -143,10 +109,6 @@
     owner=root
     mode=0640
   with_items: "{{ neutron_lbaas_options }}"
-  tags:
-    - neutron
-    - neutron-config
-    - neutron-lbaas
 
 - name: Configure metering agent
   ini_file: >
@@ -159,10 +121,6 @@
     owner=root
     mode=0640
   with_items: "{{ neutron_metering_agent_options }}"
-  tags:
-    - neutron
-    - neutron-config
-    - neutron-lbaas
 
 - name: Configure dnsmasq options
   copy:
@@ -171,10 +129,6 @@
     mode=0644
     owner=root
     group=neutron
-  tags:
-    - neutron
-    - neutron-config
-    - neutron-dnsmasq
 
 - name: Configure neutron sysctl options
   copy:
@@ -183,28 +137,16 @@
     mode=0644
     owner=root
     group=neutron
-#  notify: restart neutron server
-  tags:
-    - neutron
-    - neutron-config
-    - neutron-sysctl
 
 - name: restart sysctl
   command: sysctl -p
   when: use_neutron
-  tags:
-    - neutron
-    - neutron-deploy
-    - neutron-sysctl
 
 - name: link plugin.ini to the ml2 plugin config file
   file:
     src=/etc/neutron/plugins/ml2/ml2_conf.ini
     dest=/etc/neutron/plugin.ini
     state=link
-  tags:
-    - neutron
-    - neutron-ml2
 
 - name: sync neutron database
   command: neutron-db-manage upgrade heads

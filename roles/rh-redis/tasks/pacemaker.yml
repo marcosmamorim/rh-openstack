@@ -19,9 +19,6 @@
       - action: monitor
         options:
           interval: 60s
-  tags:
-    - pacemaker
-    - pacemaker-rabbit
 
 - name: create redis-sentinel cluster resource
   pcs_resource: command=create resource_id=redis-sentinel type=systemd:redis-sentinel clone=yes

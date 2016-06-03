@@ -12,5 +12,4 @@
     - python-glanceclient
     - openstack-utils
     - openstack-selinux
-  tags: heat
 

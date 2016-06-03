@@ -1,14 +1,11 @@
 ---
-# clustered variable is exported and will be used as a condition
+
 - name: Force delete a Galera cluster if already exists
   file:
     path=/etc/mysql_clustered
     state=absent
   when: galera_reset_cluster is defined and
         galera_reset_cluster
-  tags:
-    - galera
-    - galera-reset
 
 - name: Checking if a Galera cluster already exists
   stat:
@@ -17,18 +14,12 @@
 
 - name: Include galera packages
   include: packages.yml
-  tags:
-    - galera
-    - galera-repo
   when: galera_clustered.stat.exists != True
 
 - name: include galera reset
   include: reset.yml
   when: galera_reset_cluster is defined and
         galera_reset_cluster
-  tags:
-    - galera
-    - galera-reset
 
 - name: Fix mariadb permissions
   file:
@@ -37,17 +28,12 @@
     group=mysql
     state=file
   ignore_errors: True
-  tags:
-    - log-files
 
 - name: include galera firewall
   include: firewall.yml
   when: galera_firewalld is defined and
         galera_firewalld and
         galera_clustered.stat.exists != True
-  tags:
-    - galera
-    - galera-firewall
 
 - name: Stop firewalld
   service: name=firewalld state=stopped
@@ -55,49 +41,27 @@
 
 - name: include galera configuration
   include: configuration.yml
-  tags:
-    - galera
-    - galera-config
-    - galera-bind
   when: galera_clustered.stat.exists != True
 
 - name: include galera secure
   include: secure.yml
-  tags:
-    - galera
-    - galera-secure
   when: galera_clustered.stat.exists != True
 
 - name: include galera users
   include: user.yml
-  tags:
-    - galera
-    - galera-users
   when: galera_clustered.stat.exists != True
 
 - name: include galera bootstrap
   include: bootstrap.yml
-  tags:
-    - galera
-    - galera-bootstrap
   when: galera_clustered.stat.exists != True
 
 - name: include galera databases
   include: databases.yml
-  tags:
-    - galera
-    - galera-databases
   when: galera_clustered.stat.exists != True
 
 - name: include galera sanity check
   include: sanitycheck.yml
-  tags:
-    - galera
-    - galera-databases
   when: galera_clustered.stat.exists != True
 
 - name: include galera pacemaker
   include: pacemaker.yml
-  tags:
-    - galera
-    - galera-pacemaker

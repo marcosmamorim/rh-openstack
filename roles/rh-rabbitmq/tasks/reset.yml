@@ -4,9 +4,6 @@
 - name: remove rabbitmq from pacemaker
   command: pcs resource delete rabbitmq
   when: ansible_hostname == master_server
-  tags:
-    - pacemaker
-    - pacemaker-rabbitmq
   ignore_errors: True
 
 - name: remove rabbitmq clustered file

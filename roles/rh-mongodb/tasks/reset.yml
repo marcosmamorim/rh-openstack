@@ -8,13 +8,9 @@
 - name: stop the mongodb service
   service: name=mongod state=stopped enabled=no
   ignore_errors: True
-  tags:
-    - pacemaker
-    - pacemaker-mongodb
 
 - name: remove mongo data
   shell: rm -rf {{mongodb_db_path}}/*
-  #no_log: True
 
 - name: remove mongod.conf
   file:

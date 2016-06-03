@@ -3,7 +3,6 @@
 - name: stop memcached before add to pacemaker
   service: name=memcached state=stopped enabled=no
 
-
 - name: create memcached cluster resource
   when: ansible_hostname == master_server
   pcs_resource: command=create resource_id=memcached type=systemd:memcached clone=yes
@@ -17,6 +16,3 @@
       - action: start
         options:
           timeout: 30s
-  tags:
-    - pacemaker
-    - pacemaker-memcache

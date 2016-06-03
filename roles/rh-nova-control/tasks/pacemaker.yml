@@ -9,9 +9,6 @@
     - nova-consoleauth
     - nova-novncproxy
   ignore_errors: True
-  tags:
-    - pacemaker
-    - pacemaker-nova
 
 - name: create nova cluster resources
   pcs_resource: command=create resource_id={{ item }} type=systemd:openstack-{{ item }} clone=yes
@@ -37,25 +34,16 @@
 - name: create nova-scheduler constraint
   command: pcs constraint order nova-scheduler-clone then nova-conductor-clone kind=Optional
   when: ansible_hostname == master_server
-  tags:
-    - pacemaker
-    - pacemaker-nova
 
 #<rsc_order first="openstack-nova-consoleauth-clone" first-action="start" id="order-openstack-nova-consoleauth-clone-openstack-nova-novncproxy-clone-mandatory" then="openstack-nova-novncproxy-clone" then-action="start"/>
 - name: create nova-consoleauth constraint
   command: pcs constraint order nova-consoleauth-clone then nova-novncproxy-clone kind=Optional
   when: ansible_hostname == master_server
-  tags:
-    - pacemaker
-    - pacemaker-nova
 
 #<rsc_order first="openstack-nova-novncproxy-clone" first-action="start" id="order-openstack-nova-novncproxy-clone-openstack-nova-api-clone-mandatory" then="openstack-nova-api-clone" then-action="start"/>
 - name: create nova-novncproxy-clone constraint
   command: pcs constraint order nova-novncproxy-clone then nova-api-clone kind=Optional
   when: ansible_hostname == master_server
-  tags:
-    - pacemaker
-    - pacemaker-nova
 
 #<rsc_colocation id="colocation-openstack-nova-scheduler-clone-openstack-nova-api-clone-INFINITY" rsc="openstack-nova-scheduler-clone" score="INFINITY" with-rsc="openstack-nova-api-clone"/>
 - name: create constraint colocation nova-scheduler
@@ -64,8 +52,6 @@
   register: command_result
   when: ansible_hostname == master_server
   failed_when: "'FAILED' in command_result.stderr"
-  tags:
-    - pacemaker
 
 #<rsc_colocation id="colocation-openstack-nova-api-clone-openstack-nova-novncproxy-clone-INFINITY" rsc="openstack-nova-api-clone" score="INFINITY" with-rsc="openstack-nova-novncproxy-clone"/>
 - name: create constraint colocation nova-api
@@ -74,9 +60,6 @@
   register: command_result
   when: ansible_hostname == master_server
   failed_when: "'FAILED' in command_result.stderr"
-  tags:
-    - pacemaker
-    - pacemaker-nova
 
 - name: restart nova after configuration
   command: pcs resource restart {{ item }}

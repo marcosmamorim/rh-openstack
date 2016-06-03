@@ -6,9 +6,6 @@
     permanent=true
     state=enabled
     immediate=true
-  tags:
-    - rabbitmq
-    - rabbitmq-firewall
 
 - name: Erlang distribution firewalld rule
   firewalld:
@@ -16,9 +13,6 @@
     permanent=true
     state=enabled
     immediate=true
-  tags:
-    - rabbitmq
-    - rabbitmq-firewall
 
 - name: RabbitMQ firewalld rule
   firewalld:
@@ -26,9 +20,6 @@
     permanent=true
     state=enabled
     immediate=true
-  tags:
-    - rabbitmq
-    - rabbitmq-firewall
 
 - name: RabbitMQ SSL firewalld rule
   firewalld:
@@ -37,9 +28,6 @@
     state=enabled
     immediate=true
   when: rabbitmq_ssl
-  tags:
-    - rabbitmq
-    - rabbitmq-firewall
 
 - name: RabbitMQ management plugin rule
   firewalld:
@@ -48,6 +36,3 @@
     state=enabled
     immediate=true
   when: rabbitmq_management_plugin
-  tags:
-    - rabbitmq
-    - rabbitmq-firewall

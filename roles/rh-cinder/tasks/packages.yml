@@ -8,5 +8,4 @@
     - openstack-selinux
     - python-cinder
     - python-cinderclient
-  tags: cinder
 

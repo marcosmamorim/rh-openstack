@@ -10,9 +10,6 @@
   with_items: "{{ cinder_storage_backend }}"
   when: cinder_storage_backend |length > 0
   notify: restart cinder volume
-  tags:
-    - cinder
-    - cinder-lvm
 
 - name: start cinder services
   service: name={{ item }} state=restarted enabled=no
@@ -20,10 +17,7 @@
     - openstack-cinder-api
     - openstack-cinder-scheduler
     - openstack-cinder-volume
-  tags:
-    - cinder
 
-# TODO: create new method to deploy this
 - name: Create Storage type
   shell: cinder type-create {{ item.name }}
   run_once: true
@@ -32,10 +26,6 @@
   with_items: cinder_storage_types
   when: cinder_storage_types |length > 0
   notify: restart cinder volume
-  tags:
-    - cinder
-    - cinder-lvm
-    - cinder-type
 
 - name: Create storage type spec
   shell: cinder type-key {{ item.name }} set volume_backend_name={{ item.volume_backend_name }}
@@ -45,7 +35,3 @@
   with_items: cinder_storage_types
   when: cinder_storage_types |length > 0
   notify: restart cinder volume
-  tags:
-    - cinder
-    - cinder-lvm
-    - cinder-type

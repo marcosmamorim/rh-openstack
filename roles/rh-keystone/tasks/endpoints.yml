@@ -15,6 +15,4 @@
   with_items: "{{ keystone_endpoints }}"
   when: inventory_hostname == keystone_master
   ignore_errors: True
-  #no_log: True
-  tags: endpoints2
 

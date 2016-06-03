@@ -11,9 +11,6 @@
 - name: include keystone reset
   include: reset.yml
   when: keystone_reset and inventory_hostname == keystone_master
-  tags:
-    - keystone
-    - keystone-reset
 
 - name: include keystone configuration
   include: configuration.yml
@@ -42,10 +39,6 @@
 
 - name: Include keystone endpoints
   include: endpoints.yml
-  tags:
-    - endpoints
-    - keystone
-    - endpoints2
 
 - name: Include keystone tenants
   include: tenants.yml
@@ -63,10 +56,6 @@
 - name: Include keystone sanity check
   include: sanitycheck.yml
   when: keystone_run_sanity_check
-  tags:
-    - sanity-check
 
 - name: Include keystone pacemaker
   include: pacemaker.yml
-  tags:
-    - pacemaker-keystone

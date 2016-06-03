@@ -10,9 +10,6 @@
     - neutron-l3-agent
     - neutron-metering-agent
     - neutron-lbaas-agent
-  tags:
-    - pacemaker
-    - pacemaker-neutron
 
 - name: create neutron cluster resource
   when: ansible_hostname == master_server
@@ -34,9 +31,6 @@
     - neutron-l3-agent
     - neutron-metering-agent
     - neutron-lbaas-agent
-  tags:
-    - pacemaker
-    - pacemaker-neutron
 
 - name: create neutron cluster resource
   when: ansible_hostname == master_server
@@ -52,6 +46,3 @@
           timeout: 60s
   with_items:
     - neutron-lbaas-agent
-  tags:
-    - pacemaker
-    - pacemaker-neutron

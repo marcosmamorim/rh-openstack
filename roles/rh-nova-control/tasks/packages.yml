@@ -15,4 +15,3 @@
     - python-memcached
     - python-nova
     - python-novaclient
-  tags: nova

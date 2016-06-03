@@ -1,4 +1,5 @@
 ---
+
 - name: stop rabbitmq before add to pacemaker
   service: name=rabbitmq-server state=stopped enabled=no
 
@@ -14,15 +15,9 @@
       - action: start
         options:
           timeout: 60s
-  tags:
-    - pacemaker
-    - pacemaker-rabbit
 
 - name: pause to start rabbitmq services
   pause: seconds=30
 
 - name: create policy to ha
   command:  rabbitmqctl set_policy ha-all "^ha\." '{"ha-mode":"all"}'
-  tags:
-    - pacemaker
-    - pacemaker-rabbitmq

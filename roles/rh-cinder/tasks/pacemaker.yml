@@ -9,9 +9,6 @@
 
 - name: create cinder cluster resource
   pcs_resource: command=create resource_id={{ item }} type=systemd:openstack-{{ item }} clone=yes
-  tags:
-    - pacemaker
-    - pacemaker-haproxy
   args:
     options:
     operations:
@@ -27,22 +24,6 @@
     - cinder-api
     - cinder-volume
 
-#- name: create cinder-volume cluster resource
-#  pcs_resource: command=create resource_id={{ item }} type=systemd:openstack-{{ item }}
-#  args:
-#    options:
-#    operations:
-#      - action: monitor
-#        options:
-#          interval: 10s
-#      - action: start
-#        options:
-#          timeout: 100s
-#  when: ansible_hostname == master_server
-#  with_items:
-#    - cinder-volume
-
-# Constraints
 - name: create cinder-api constraint to keystone
   command: pcs constraint order keystone-clone then cinder-api-clone kind=Optional
   when: ansible_hostname == master_server

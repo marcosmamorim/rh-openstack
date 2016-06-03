@@ -11,10 +11,6 @@
     owner=root
     mode=0640
   with_items: "{{ nova_options }}"
-  #no_log: True
-  tags:
-    - nova
-    - nova-config
 
 - name: Configure nova api paste
   ini_file: >
@@ -27,13 +23,7 @@
     owner=root
     mode=0640
   with_items: "{{ nova_api_options }}"
-  #no_log: True
-  tags:
-    - nova
-    - nova-config
 
 - name: sync nova database
   command: nova-manage db sync
-  sudo: no
-  sudo_user: nova
   when: inventory_hostname == keystone_master

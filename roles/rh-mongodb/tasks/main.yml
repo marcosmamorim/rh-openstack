@@ -1,9 +1,7 @@
 ---
-# This role deploys the mongod processes and sets up the replication set.
 
 - name: include mongodb packages
   include: packages.yml
-  tags: mongodb
 
 - name: include mongodb reset
   include: reset.yml

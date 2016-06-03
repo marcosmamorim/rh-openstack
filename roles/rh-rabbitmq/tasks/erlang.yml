@@ -1,4 +1,5 @@
 ---
+
 - name: Set Erlang cookie for each RabbitMQ node
   copy:
     content="{{ rabbitmq_erlang_cookie }}"
@@ -6,6 +7,3 @@
     owner=rabbitmq
     group=rabbitmq
     mode=0400
-  tags:
-    - rabbitmq
-    - rabbitmq-cookie

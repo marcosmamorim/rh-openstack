@@ -5,7 +5,6 @@
 - name: include cinder facts
   include: facts.yml
 
-
 - name: include cinder packages
   include: packages.yml
 
@@ -22,8 +21,6 @@
   sudo_user: cinder
   when: cinder_bootstrap and
         inventory_hostname == cinder_master
-  tags:
-    - cinder-sync-db
 
 - name: include cinder storage
   include: storage.yml
@@ -31,4 +28,3 @@
 
 - name: include cinder pacemaker
   include: pacemaker.yml
-

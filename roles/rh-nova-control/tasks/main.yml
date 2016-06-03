@@ -4,9 +4,6 @@
 
 - name: include nova packages
   include: packages.yml
-  tags:
-    - nova
-    - nova-config
 
 - name: include nova reset
   include: reset.yml

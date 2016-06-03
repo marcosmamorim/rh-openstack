@@ -1,5 +1,4 @@
 ---
-# TODO: Check if already registred
 
 - name: Force unregister before register
   redhat_subscription:
@@ -28,9 +27,6 @@
   with_items: rhel_repos
   when: use_rhel
   changed_when: false
-  tags:
-    - subscribe
-    - register-repos
 
 - name: create redhat-support-tool
   file:

@@ -9,15 +9,12 @@
     - heat-api-cfn
     - heat-api-cloudwatch
     - heat-engine
-  tags: heat
 
 - name: remove heat configuration file
   file:
     dest: /etc/heat/heat.conf
     state: absent
   ignore_errors: True
-  tags:
-    - heat
 
 - name: Removing heat default database
   mysql_db:

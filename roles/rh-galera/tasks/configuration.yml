@@ -1,4 +1,5 @@
 ---
+
 - name: Deleting galera config file
   file:
     path=/etc/my.cnf.d/galera.cnf
@@ -7,9 +8,6 @@
 - include: selinux.yml
   when: galera_selinux is defined and
         galera_selinux == true
-  tags:
-    - galera
-    - galera-selinux
 
 - name: set bind address to local ip
   ini_file: >
@@ -30,7 +28,6 @@
     host=localhost
     state=present
   when: inventory_hostname == galera_master
-  ##no_log: True
 
 - name: Creating the /root/.my.cnf file
   ini_file: >
@@ -43,7 +40,6 @@
     owner=root
     mode=0600
   with_items: "{{ mycnf_options }}"
-  ##no_log: True
 
 - name: Configuring Galera cluster (RedHat family)
   template:
@@ -113,5 +109,3 @@
     dest=/etc/mysql_clustered
     owner=mysql
     group=mysql
-
-

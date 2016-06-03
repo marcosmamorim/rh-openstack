@@ -7,15 +7,9 @@
     - redis
     - redis-sentinel
   ignore_errors: True
-  tags:
-    - pacemaker
-    - pacemaker-redis
 
 - name: remove redis configuration file
   file:
     dest=/etc/redis.conf
     state=absent
   ignore_errors: True
-  tags:
-    - pacemaker
-    - pacemaker-redis

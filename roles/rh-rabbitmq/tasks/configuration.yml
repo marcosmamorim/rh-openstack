@@ -8,9 +8,6 @@
     mode=0750
     state=directory
   when: rabbitmq_ssl
-  tags:
-    - rabbitmq
-    - rabbitmq-ssl
 
 - name: Copying SSL certificates in /etc/rabbitmq/ssl/
   copy:
@@ -27,9 +24,6 @@
     - src: "{{ rabbitmq_key_file }}"
       dest: /etc/rabbitmq/ssl/key.pem
   when: rabbitmq_ssl
-  tags:
-    - rabbitmq
-    - rabbitmq-ssl
 
 - name: Configuring SSL for RabbitMQ
   template:
@@ -38,9 +32,6 @@
     owner=rabbitmq
     group=rabbitmq
     mode=0644
-  tags:
-    - rabbitmq
-    - rabbitmq-ssl
 
 - name: Generate environment variables for RabbitMQ
   template:
@@ -51,6 +42,3 @@
     mode=0644
   notify: restart rabbitmq
   when: rabbitmq_conf_env is defined and rabbitmq_env_vars == true
-  tags:
-    - rabbitmq
-    - rabbitmq-env-vars

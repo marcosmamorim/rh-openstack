@@ -14,7 +14,3 @@
     - xinetd
     - pykickstart
     - tftp-server
-#    - kickstart
-#    - kickstart-server
-  tags:
-    - kickstart

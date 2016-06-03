@@ -1,11 +1,8 @@
 ---
-# file: roles/rabbitmq/tasks/limits.yml
+
 - file:
     path=/etc/systemd/system/rabbitmq-server.service.d
     state=directory
-  tags:
-    - rabbit
-    - rabbitmq-limits
 
 - name: Increase file descriptor limit via Systemd
   template:
@@ -15,6 +12,3 @@
     group=root
     mode=0644
   notify: systemctl reload
-  tags:
-    - rabbit
-    - rabbitmq-limits

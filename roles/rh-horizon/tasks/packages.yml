@@ -8,5 +8,4 @@
     - python-memcached
     - openstack-dashboard
     - openstack-dashboard-theme
-  tags: horizon
 

@@ -2,7 +2,6 @@
 
 - name: set fact about primary ip address
   set_fact: primary_ipaddr={{ hostvars[inventory_hostname][ "ansible_" + mgmt_interface ].ipv4.address }}
-  tags: setfacts
   always_run: yes
 
 - name: get first node

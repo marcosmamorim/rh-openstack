@@ -12,7 +12,4 @@
     - neutron-lbaas-agent
   when: inventory_hostname == master_server
   ignore_errors: True
-  tags:
-    - pacemaker
-    - pacemaker-neutron
 

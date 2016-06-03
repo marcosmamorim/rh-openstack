@@ -1,7 +1,6 @@
 ---
 - name: pause for a while
   wait_for: timeout=10
-  tags: mongodb
 
 - name: Replication configuration without auth
   mongodb_replication:

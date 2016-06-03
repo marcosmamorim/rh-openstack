@@ -7,7 +7,6 @@
     - openstack-heat-api-cfn
     - openstack-heat-api-cloudwatch
     - openstack-heat-engine
-  tags: heat
 
 - name: create heat resource
   pcs_resource: command=create name={{ item }} type=systemd:openstack-{{ item }} clone=yes
@@ -16,6 +15,5 @@
     - heat-api-cfn
     - heat-api-cloudwatch
     - heat-engine
-  tags: heat
 
 

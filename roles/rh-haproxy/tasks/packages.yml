@@ -2,5 +2,4 @@
 
 - name: install haproxy
   yum: pkg=haproxy state=present
-  tags: haproxy
 

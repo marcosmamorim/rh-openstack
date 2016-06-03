@@ -3,9 +3,6 @@
 - name: create haproxy cluster resource
   when: ansible_hostname == master_server
   pcs_resource: command=create resource_id=haproxy type=systemd:haproxy clone=yes
-  tags:
-    - pacemaker
-    - pacemaker-haproxy
   args:
     options:
     operations:
@@ -22,14 +19,9 @@
   register: command_result
   when: ansible_hostname == master_server
   failed_when: "'FAILED' in command_result.stderr"
-  tags:
-    - pacemaker
 
 - name: create order constraint
   command: pcs constraint order vip-db then haproxy-clone kind=Optional
   ignore_errors: True
   when: ansible_hostname == master_server
   failed_when: "'FAILED' in command_result.stderr"
-  tags:
-    - pacemaker
-
