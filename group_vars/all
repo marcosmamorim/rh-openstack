@@ -10,8 +10,12 @@ neutron_metadata_proxy_shared_secret: 9a31180afe1171283712839712713f96516ce365
 
 openstack_version: 8
 
+# Upgrade all packages
+upgrade_packages: True
+
 # Used to bind services
 mgmt_interface: eth0
+
 internal_ip: "{{ hostvars[inventory_hostname][ 'ansible_' + mgmt_interface ].ipv4.address }}"
 
 controller_nodes:
@@ -1551,6 +1555,7 @@ rhel_subscription_pass: password_rhn
 # Attach to pool_id
 # Red Hat Employee
 # 8a85f98144844aff014488d058bf15be
+# 8a85f9874011071c01407da00b997cb2
 rhel_pool_id: redhat_pool_id
 
 # Register repos
