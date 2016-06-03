@@ -21,7 +21,6 @@
 
 - name: create the mongodb configuration file
   template: src=mongodb.conf.j2 dest=/etc/mongod.conf
-  notify: restart mongodb
   tags: mongodb
 
 - name: copy limits mongodb
