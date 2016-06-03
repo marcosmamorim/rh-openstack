@@ -2,6 +2,5 @@
 - hosts: compute
   gather_facts: True
   roles:
-    - rh-basics
-    - rh-nova-common
-    - rh-nova-compute
+    - rh-setfacts
+    - rh-compute
