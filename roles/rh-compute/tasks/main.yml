@@ -12,8 +12,11 @@
 - name: include compute network
   include: network.yml
 
+- name: include nova configuration
+  include: configuration.yml
+
 - name: start compute services
-  service: name={{ item }} enabled=yes state=started
+  service: name={{ item }} enabled=yes state=restarted
   ignore_errors: true
   with_items:
     - libvirtd
