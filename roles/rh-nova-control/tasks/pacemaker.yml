@@ -31,9 +31,6 @@
     - nova-conductor
     - nova-consoleauth
     - nova-novncproxy
-  tags:
-    - pacemaker
-    - pacemaker-nova
 
 # Colocation
 #<rsc_order first="openstack-nova-scheduler-clone" first-action="start" id="order-openstack-nova-scheduler-clone-openstack-nova-conductor-clone-mandatory" then="openstack-nova-conductor-clone" then-action="start"/>
@@ -80,3 +77,13 @@
   tags:
     - pacemaker
     - pacemaker-nova
+
+- name: restart nova after configuration
+  command: pcs resource restart {{ item }}
+  when: ansible_hostname == master_server
+  with_items:
+  - nova-scheduler
+  - nova-api
+  - nova-conductor
+  - nova-consoleauth
+  - nova-novncproxy
