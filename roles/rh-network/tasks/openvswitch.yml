@@ -60,7 +60,7 @@
     bridge: "{{ neutron_external_bridge | default('br-ex') }}"
     port: "{{ ext_interface }}"
     state: present
-  when: use_openvswitch
+  when: use_openvswitch and ext_interface is defined
   ignore_errors: True
   tags:
     - neutron

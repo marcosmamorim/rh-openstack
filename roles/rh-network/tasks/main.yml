@@ -1,5 +1,5 @@
 ---
-
+# TODO: kill dhclient
 - name: include network packages
   include: packages.yml
 
