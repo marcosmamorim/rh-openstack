@@ -1,0 +1,67 @@
+---
+
+- name: start openvswitch
+  service:
+    name: openvswitch
+    state: started
+    enabled: yes
+  when: use_openvswitch
+
+- name: create integration bridge
+  openvswitch_bridge:
+    bridge: br-int
+    state: present
+  when: use_openvswitch
+
+- name: create tunneling bridge
+  openvswitch_bridge:
+    bridge: br-tun
+    state: present
+  when: neutron_ovs_tunnel_type is defined
+
+- name: create ovs bridges
+  openvswitch_bridge:
+    bridge: {{ item }}
+    state: present
+  with_items: neutron_ovs_bridges
+  when: use_openvswitch
+
+- name: Configure neutron
+  ini_file: >
+    dest=/etc/neutron/neutron.conf
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=neutron
+    owner=root
+    mode=0640
+  with_items: "{{ neutron_options }}"
+
+- name: Fix perms plugins dir
+  file:
+    dest=/etc/neutron/plugins/openvswitch
+    state=directory
+    owner=root
+    group=neutron
+    recurse=yes
+    force=yes
+    mode=0755
+
+- name: Configure openvswitch plugin
+  ini_file: >
+    dest=/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini
+    section={{ item.section }}
+    option={{ item.option }}
+    value={{ item.value }}
+    state={{item.state| default('present')}}
+    group=neutron
+    owner=root
+    mode=0644
+  with_items: "{{ neutron_ovs_plugin_options }}"
+
+- name: start neutorn networking
+  service: name={{ item }} enabled=yes state=started
+  when: use_openvswitch
+  with_items:
+    - neutron-openvswitch-agent

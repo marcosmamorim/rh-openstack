@@ -1,0 +1,20 @@
+---
+
+- name: restart ksmtuned
+  service: name=ksmtuned state=restarted
+
+- name: restart ksm
+  service: name=ksm state=restarted
+
+- name: restart irqbalance
+  service: name=irqbalance state=restarted
+
+- name: restart libvirtd
+  service: name=libvirtd.service state=restarted
+
+- name: restart ksmtuned and ksm
+  service: name={{ item }} state=restarted
+  with_items:
+    - ksm.service
+    - ksmtuned.service
+

@@ -1,0 +1,51 @@
+---
+
+- name: set live migration add libvirtd.conf settings
+  template:
+    src: libvirtd.conf.j2
+    dest: /etc/libvirt/libvirtd.conf
+    mode: 0644
+    owner: root
+    group: root
+  notify: restart libvirtd
+
+- name: set live migration add libvirt in sysconfig
+  template:
+    src: libvirtd.j2
+    dest: /etc/sysconfig/libvirtd
+    mode: 0644
+    owner: root
+    group: root
+  notify: restart libvirtd
+
+#- name: set bash to nova user
+#  user:
+#    name: nova
+#    shell: /bin/bash
+
+- name: configure ksmtuned
+  template:
+    src: ksmtuned.conf.j2
+    dest: /etc/ksmtuned.conf
+    mode: 0644
+    owner: root
+    group: root
+  notify: restart ksmtuned and ksm
+
+- name: Configure LVM
+  template:
+    src: lvm.conf
+    dest: /etc/lvm/lvm.conf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Configure IRQBalance FOLLOW_ISOLCPUS
+  lineinfile:
+    dest: /etc/sysconfig/irqbalance
+    line: "FOLLOW_ISOLCPUS=yes"
+  notify:
+    - restart irqbalance
+
+- name: set tuned-adm to virtual-host
+  shell: tuned-adm profile virtual-host

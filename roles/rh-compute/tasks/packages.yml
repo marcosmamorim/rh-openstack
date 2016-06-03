@@ -1,0 +1,24 @@
+---
+
+- name: install nova compute packages
+  yum: pkg={{ item }} state=present
+  with_items:
+    - libguestfs-tools
+    - openstack-nova-compute
+    - openstack-utils
+    - python-cinder
+    - openstack-ceilometer-compute
+    - ceph-common
+    - iscsi-initiator-utils
+    - device-mapper-multipath
+    - nfs-utils
+    - openstack-neutron
+
+- name: install neutron network node
+  yum: pkg={{ item }} state=present
+  with_items:
+    - openvswitch
+    - openstack-neutron-openvswitch
+  when: use_openvswitch
+
+

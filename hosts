@@ -53,6 +53,9 @@ controller01 ansible_ssh_host=192.168.122.118
 controller02 ansible_ssh_host=192.168.122.116
 controller03 ansible_ssh_host=192.168.122.115
 
+[compute]
+compute01 ansible_ssh_host=192.168.122.200
+
 
 [kickstarter]
 kickstarter ansible_ssh_host=192.168.122.1
@@ -62,3 +65,5 @@ rabbitmq
 mariadb
 controller
 kickstarter
+compute
+

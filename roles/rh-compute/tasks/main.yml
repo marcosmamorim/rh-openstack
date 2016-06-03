@@ -1,0 +1,23 @@
+---
+
+- name: install compute packages
+  include: packages.yml
+
+- name: include compute system
+  include: system.yml
+
+- name: include compute ceilometer
+  include: ceilometer.yml
+
+- name: include compute network
+  include: network.yml
+
+- name: start compute services
+  service: name={{ item }} enabled=yes state=started
+  ignore_errors: true
+  with_items:
+    - libvirtd
+    - openstack-nova-compute
+    - openstack-ceilometer-compute
+    - ksm
+    - ksmtuned
