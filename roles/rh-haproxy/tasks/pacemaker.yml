@@ -16,7 +16,7 @@
         options:
           timeout: 60s
 
-- name: create constraint
+- name: create constraint vib-db and haproxy
   command: pcs constraint colocation add vip-db haproxy-clone INFINITY
   ignore_errors: True
   register: command_result

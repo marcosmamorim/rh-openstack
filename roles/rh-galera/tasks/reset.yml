@@ -8,7 +8,6 @@
   shell: pkill -9 -u mysql || true
   ignore_errors: True
 
-# TODO: Create flag to destroy database
 - name: Purging MariaDB data directory
   file:
     path: "{{ mariadb_datadir }}"

@@ -47,7 +47,6 @@
     state=absent
     regexp='^wsrep_cluster_address='
 
-# TODO: Port to pcs_resource module
 - name: create galera cluster resource
   command:
     pcs resource create galera galera enable_creation=true wsrep_cluster_address="gcomm://{{ galera_node_names|join(',')}}" meta master-max=3 ordered=true op promote timeout=300s on-fail=block --master
@@ -57,4 +56,3 @@
     - pacemaker-galera
 
 
-# TODO: Create constraints to galera

@@ -25,21 +25,22 @@
   with_items:
     - cinder-scheduler
     - cinder-api
-
-- name: create cinder-volume cluster resource
-  pcs_resource: command=create resource_id={{ item }} type=systemd:openstack-{{ item }}
-  args:
-    options:
-    operations:
-      - action: monitor
-        options:
-          interval: 10s
-      - action: start
-        options:
-          timeout: 100s
-  when: ansible_hostname == master_server
-  with_items:
     - cinder-volume
+
+#- name: create cinder-volume cluster resource
+#  pcs_resource: command=create resource_id={{ item }} type=systemd:openstack-{{ item }}
+#  args:
+#    options:
+#    operations:
+#      - action: monitor
+#        options:
+#          interval: 10s
+#      - action: start
+#        options:
+#          timeout: 100s
+#  when: ansible_hostname == master_server
+#  with_items:
+#    - cinder-volume
 
 # Constraints
 - name: create cinder-api constraint to keystone
@@ -62,6 +63,9 @@
   command: pcs constraint order cinder-scheduler-clone then cinder-volume kind=Optional
   when: ansible_hostname == master_server
 
-# Colocation
-# TODO: Fix cinder-scheduler and cinder-volume colocation
-#      <rsc_colocation id="colocation-openstack-cinder-volume-openstack-cinder-scheduler-clone-INFINITY" rsc="openstack-cinder-volume" score="INFINITY" with-rsc="openstack-cinder-scheduler-clone"/>
+- name: create constraint location cinder-volume and cinder-scheduler
+  command: pcs constraint colocation add cinder-scheduler-clone cinder-volume-clone INFINITY
+  ignore_errors: True
+  register: command_result
+  when: ansible_hostname == master_server
+  failed_when: "'FAILED' in command_result.stderr"

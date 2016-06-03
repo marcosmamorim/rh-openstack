@@ -1,7 +1,4 @@
 ---
-# TODO: Create purge database var
-# TODO: move default configuration vars to roles
-# TODO: controller_nodes used by haproxy, i need refactory to be better
 
 ###############################################
 # Users and Passwords
@@ -277,7 +274,6 @@ rabbitmq_vhost_list:
   - name: "{{ rabbitmq_neutron_vhost }}"
 
 # POLICIES
-# TODO: Fix permissions to admin to view all vhost
 rabbitmq_policies_list:
   - name: HA
     pattern: .*
@@ -484,7 +480,6 @@ keystone_api_version: v2.0
 keystone_api_retries_delay: 5
 keystone_api_retries: 3
 
-# TODO: Fix database IP address
 keystone_database_url: "mysql://{{ db_keystone_user }}:{{ db_keystone_password }}@{{ db_vip }}/{{ db_keystone_name }}"
 
 keystone_tenants:
@@ -1432,7 +1427,6 @@ ceilometer_metering_secret: d755f0cd352fa12490183r1db
 
 ceilometer_database_url: "mongodb://{{ mongodb_hosts |join(',')}}:27017/ceilometer?replicaSet=ceilometer"
 
-# TODO: This is horrible, but i don't have another option. :-(
 ceilometer_backend_url: 'redis://controller01:26379?sentinel=mymaster&sentinel_fallback=controller02:26379&sentinel_fallback=controller03:26379'
 
 # Five days in seconds

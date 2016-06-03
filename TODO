@@ -1,0 +1,9 @@
+# TODO: Create purge database var
+# TODO: Create flag to destroy database
+# TODO: move default configuration vars to roles
+# TODO: controller_nodes used by haproxy, i need refactory to be better
+# TODO: Port galera-cluster resource to pcs_resource module
+# TODO: Create pacemaker constraints to galera
+# TODO: Fix rabbitmq permissions to admin to view all vhost
+# TODO: Fix ceilometer_backend_url, but i don't have another option. :-(
+# TODO: Create nova constraint
