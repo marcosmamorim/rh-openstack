@@ -120,7 +120,10 @@ SECRET_KEY='{{ horizon_secret_key }}'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '{{ memcached_hosts | join(",") }}',
+        'LOCATION': [
+         {% for node in memcached_hosts %}
+                    '{{ node }}:{{ memcached_port }}',
+         {% endfor %}],
     }
 }
 
@@ -149,7 +152,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #    ('http://cluster2.example.com:5000/v2.0', 'cluster2'),
 #]
 
-OPENSTACK_HOST = "{{ keystone_internal_vip }}"
+OPENSTACK_HOST = '{{ keystone_internal_vip }}'
 OPENSTACK_KEYSTONE_URL = "http://%s:5000/v2.0" % OPENSTACK_HOST
 OPENSTACK_KEYSTONE_DEFAULT_ROLE = "_member_"
 
