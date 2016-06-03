@@ -118,6 +118,7 @@
 - name: Enable cluster
   command: pcs cluster enable --all
   register: cluster_configured
+  when: inventory_hostname == master_server
 
 - name: Pause to sync cluster before continue
   pause: seconds=20
