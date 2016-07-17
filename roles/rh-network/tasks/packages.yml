@@ -12,9 +12,9 @@
   with_items: network_packages
 
 - name: Install openvswitch if required
+  when: use_openvswitch
   yum:
     name: openvswitch
     state: installed
-  when: use_openvswitch
   notify: restart openvswitch
 

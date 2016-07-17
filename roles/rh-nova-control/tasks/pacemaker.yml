@@ -61,12 +61,12 @@
   when: ansible_hostname == master_server
   failed_when: "'FAILED' in command_result.stderr"
 
-- name: restart nova after configuration
-  command: pcs resource restart {{ item }}
-  when: ansible_hostname == master_server
-  with_items:
-  - nova-scheduler
-  - nova-api
-  - nova-conductor
-  - nova-consoleauth
-  - nova-novncproxy
+#- name: restart nova after configuration
+#  command: pcs resource restart {{ item }}
+#  when: ansible_hostname == master_server
+#  with_items:
+#  - nova-scheduler
+#  - nova-api
+#  - nova-conductor
+#  - nova-consoleauth
+#  - nova-novncproxy

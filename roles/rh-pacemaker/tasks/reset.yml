@@ -1,5 +1,10 @@
 ---
 
+- name: force stop pacemaker
+  command: killall corosync
+  when: pacemaker_reset
+  ignore_errors: True
+
 - name: Stop pacemaker cluster
   command: pcs cluster stop --force
   when: pacemaker_reset

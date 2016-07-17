@@ -761,6 +761,10 @@ cinder_storage_backend:
   - { section: lvm, option: volume_driver, value: cinder.volume.drivers.lvm.LVMISCSIDriver}
   - { section: lvm, option: volume_backend_name, value: LVM}
 
+  - { section: lvm, option: volume_group, value: cinder-volumes}
+  - { section: lvm, option: volume_driver, value: cinder.volume.drivers.lvm.LVMISCSIDriver}
+  - { section: lvm, option: volume_backend_name, value: LVM}
+
 #  - { section: lvm2, option: volume_group, value: cinder-volumes2}
 #  - { section: lvm2, option: volume_driver, value: cinder.volume.drivers.lvm.LVMISCSIDriver}
 #  - { section: lvm2, option: volume_backend_name, value: LVM2}
@@ -936,6 +940,7 @@ network_modules:
     - nf_nat_proto_gre
     - vhost_net
 
+
 network_os_tuning_params:
   - { name: net.netfilter.nf_conntrack_tcp_timeout_close_wait, value: 30 }
   - { name: net.netfilter.nf_conntrack_tcp_timeout_fin_wait, value: 60 }
@@ -952,6 +957,8 @@ network_packages:
   - iputils
   - tcpdump
   - nmap
+  - telnet
+  - net-utils
 
 ###############################################
 # Neutron
@@ -1559,6 +1566,10 @@ rhel_repos:
   - rhel-7-server-rpms
   - rhel-7-server-optional-rpms
   - rhel-7-server-openstack-8-rpms
+#  - rhel-7-server-satellite-6.1-rpms
+#  - rhel-7-server-satellite-tools-6.1-rpms
+#  - rhel-7-server-satellite-capsule-6.1-rpms
+#  - rhel-7-server-satellite-capsule-optional-6.0-rpms
 
 ################################################
 ## Kickstart server
